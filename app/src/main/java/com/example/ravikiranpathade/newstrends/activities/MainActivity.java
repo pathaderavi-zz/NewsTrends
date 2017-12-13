@@ -1,6 +1,8 @@
 package com.example.ravikiranpathade.newstrends.activities;
 
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -10,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.example.ravikiranpathade.newstrends.R;
@@ -29,10 +32,13 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements TopNewsFragment.OnFragmentInteractionListener, SearchLatestNews.OnFragmentInteractionListener {
 
-    public final String KEY ="16a2ce7a435e4acb8482fae088ba6b9e";
+    public final String KEY = "16a2ce7a435e4acb8482fae088ba6b9e";
+    SharedPreferences prefs;
+    SharedPreferences.Editor editor;
 
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle toggle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
 
 
         drawerLayout = findViewById(R.id.drawerLayout);
-        toggle = new ActionBarDrawerToggle(this,drawerLayout,R.string.open,R.string.close);
+        toggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -54,8 +60,8 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
         tabLayout.addTab(tabLayout.newTab().setText(R.string.searchlatest));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        final ViewPager viewPager =  findViewById(R.id.viewPager);
-        final PagerAdapter pagerAdapter = new adapters.PagerAdapter(getSupportFragmentManager(),tabLayout.getTabCount());
+        final ViewPager viewPager = findViewById(R.id.viewPager);
+        final PagerAdapter pagerAdapter = new adapters.PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(pagerAdapter);
 
         viewPager.setOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
@@ -99,6 +105,12 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
         });
         */
 
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+//        editor = prefs.edit();
+//        editor.putString("check","string value");
+//        editor.apply();
+        Toast.makeText(this, prefs.getString("check", ""), Toast.LENGTH_SHORT).show();
+
 
     }
 
@@ -114,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(toggle.onOptionsItemSelected(item)){
+        if (toggle.onOptionsItemSelected(item)) {
             return true;
         }
         return super.onOptionsItemSelected(item);

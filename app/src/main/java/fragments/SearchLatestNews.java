@@ -4,12 +4,15 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.SearchView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ravikiranpathade.newstrends.R;
@@ -31,6 +34,10 @@ public class SearchLatestNews extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    android.support.v7.widget.SearchView searchView;
+    Spinner spinner;
+    TextView textView;
 
     private OnFragmentInteractionListener mListener;
 
@@ -55,8 +62,7 @@ public class SearchLatestNews extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-    android.support.v7.widget.SearchView searchView;
-    Spinner spinner;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,18 +77,24 @@ public class SearchLatestNews extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        
-        View view =   inflater.inflate(R.layout.fragment_search_latest_news, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_search_latest_news, container, false);
         int h = view.getWidth();
+
         searchView = view.findViewById(R.id.searchViewLatest);
         spinner = view.findViewById(R.id.spinnerPriority);
+        textView = view.findViewById(R.id.showingLatestSearchText);
         searchView.setMaxWidth(h);
 
         searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 String spinnerText = spinner.getItemAtPosition(spinner.getSelectedItemPosition()).toString();
-                Toast.makeText(getContext(),query+" "+spinnerText,Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(),query+" "+spinnerText,Toast.LENGTH_SHORT).show();
+                //searchView.setIconified(true);
+                searchView.onActionViewCollapsed();
+                textView.setText("Showing results for " + query + " by " + spinnerText);
+
                 return false;
             }
 
@@ -92,8 +104,8 @@ public class SearchLatestNews extends Fragment {
             }
         });
 
-        String[] spinnerItems = {"Popularity","Published At","Relevancy"};
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getContext(),R.layout.support_simple_spinner_dropdown_item,spinnerItems);
+        String[] spinnerItems = {"Popularity", "Published At", "Relevancy"};
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getContext(), R.layout.support_simple_spinner_dropdown_item, spinnerItems);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         spinner.setAdapter(spinnerAdapter);
 
@@ -137,5 +149,15 @@ public class SearchLatestNews extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (!isVisibleToUser && searchView != null) {
+            searchView.onActionViewCollapsed();
+            searchView.clearFocus();
+        }
+
     }
 }

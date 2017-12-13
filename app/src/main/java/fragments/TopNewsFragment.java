@@ -4,11 +4,19 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.ravikiranpathade.newstrends.R;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import adapters.NewsRecyclerAdapter;
+import models.Articles;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,6 +38,9 @@ public class TopNewsFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
+    RecyclerView.LayoutManager layoutManager;
+    RecyclerView topNewsRecycler;
+    NewsRecyclerAdapter adapter;
     public TopNewsFragment() {
         // Required empty public constructor
     }
@@ -65,7 +76,20 @@ public class TopNewsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_top_news, container, false);
+        View view = inflater.inflate(R.layout.fragment_top_news, container, false);
+
+        layoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
+        topNewsRecycler = view.findViewById(R.id.topNewsRecycler);
+
+        topNewsRecycler.setLayoutManager(layoutManager);
+
+        List<Articles> test = new ArrayList<>();
+        test.add(new Articles("Ravi","Check Title","Check Description","","https://imgssl.constantcontact.com/kb/next-gen-image-link-editor-steps34.png","Chekc Date"));
+
+        adapter = new NewsRecyclerAdapter(test);
+
+        topNewsRecycler.setAdapter(adapter);
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
