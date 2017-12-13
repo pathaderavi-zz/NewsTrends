@@ -30,6 +30,7 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity implements TopNewsFragment.OnFragmentInteractionListener, SearchLatestNews.OnFragmentInteractionListener {
 
     public final String KEY ="16a2ce7a435e4acb8482fae088ba6b9e";
+
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle toggle;
     @Override
@@ -48,18 +49,12 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-
-
-
-
-
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.addTab(tabLayout.newTab().setText("Top News"));
-        tabLayout.addTab(tabLayout.newTab().setText("Search Latest News"));
+        TabLayout tabLayout = findViewById(R.id.tabs);
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.topnews));
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.searchlatest));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
+        final ViewPager viewPager =  findViewById(R.id.viewPager);
         final PagerAdapter pagerAdapter = new adapters.PagerAdapter(getSupportFragmentManager(),tabLayout.getTabCount());
         viewPager.setAdapter(pagerAdapter);
 
@@ -68,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+
                 viewPager.setCurrentItem(tab.getPosition());
             }
 
@@ -121,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
         if(toggle.onOptionsItemSelected(item)){
             return true;
         }
-        //return super.onOptionsItemSelected(item);
-        return false;
+        return super.onOptionsItemSelected(item);
+
     }
 }

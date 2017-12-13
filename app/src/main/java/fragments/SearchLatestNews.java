@@ -7,6 +7,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.SearchView;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.ravikiranpathade.newstrends.R;
 
@@ -51,7 +55,8 @@ public class SearchLatestNews extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-
+    android.support.v7.widget.SearchView searchView;
+    Spinner spinner;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,13 +64,40 @@ public class SearchLatestNews extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search_latest_news, container, false);
+        
+        View view =   inflater.inflate(R.layout.fragment_search_latest_news, container, false);
+        int h = view.getWidth();
+        searchView = view.findViewById(R.id.searchViewLatest);
+        spinner = view.findViewById(R.id.spinnerPriority);
+        searchView.setMaxWidth(h);
+
+        searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                String spinnerText = spinner.getItemAtPosition(spinner.getSelectedItemPosition()).toString();
+                Toast.makeText(getContext(),query+" "+spinnerText,Toast.LENGTH_SHORT).show();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+        String[] spinnerItems = {"Popularity","Published At","Relevancy"};
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getContext(),R.layout.support_simple_spinner_dropdown_item,spinnerItems);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+        spinner.setAdapter(spinnerAdapter);
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
