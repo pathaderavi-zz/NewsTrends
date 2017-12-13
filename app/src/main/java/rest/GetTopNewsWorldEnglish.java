@@ -17,4 +17,6 @@ public interface GetTopNewsWorldEnglish {
     @GET("/v2/top-headlines/")
     Call<CompleteResponse> getTopNewsArticles(@Query("apiKey") String key, @Query("language")String lang);
 
+    //TODO Query Types for TOPNEWS
+
 }
