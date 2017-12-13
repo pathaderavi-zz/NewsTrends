@@ -13,9 +13,8 @@ import retrofit2.http.Query;
  */
 
 public interface GetTopNewsWorldEnglish {
+
     @GET("/v2/top-headlines/")
     Call<CompleteResponse> getTopNewsArticles(@Query("apiKey") String key, @Query("language")String lang);
 
-//    @GET("/top-headlines/")
-//    Call<<List<Articles>> getTopNewsArticlesCountry(@Query("language")String lang, @Query("country") String country);
 }
