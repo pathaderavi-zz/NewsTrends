@@ -1,7 +1,11 @@
 package adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Parcelable;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +14,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.ravikiranpathade.newstrends.R;
+import com.example.ravikiranpathade.newstrends.activities.NewsDetailActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import models.Articles;
@@ -28,6 +34,8 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
 
     public NewsRecyclerAdapter(List<Articles> articlesList) {
         this.articles = articlesList;
+        Log.d("Check List",String.valueOf(articlesList.get(0).getSource()==null)
+        );
     }
 
     @Override
@@ -46,6 +54,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
     @Override
     public void onBindViewHolder(NewsListViewHolder holder, int position) {
         holder.bind(position);
+
     }
 
     @Override
@@ -63,6 +72,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
         TextView headline;
         TextView author;
         TextView description;
+        CardView cardView;
 
         public NewsListViewHolder(View itemView) {
             super(itemView);
@@ -72,10 +82,11 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
             headline = itemView.findViewById(R.id.headline_card);
             author = itemView.findViewById(R.id.author_card);
             description = itemView.findViewById(R.id.description_card);
+            cardView = itemView.findViewById(R.id.news_card);
         }
 
-        public void bind(int position) {
-            Articles article = articles.get(position);
+        public void bind(final int position) {
+            final Articles article = articles.get(position);
 
             if (article.getUrlToImage() != null) {
 
@@ -83,9 +94,20 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
             }
             headline.setText(article.getTitle());
             if(article.getAuthor()!=null){
-                author.setText(article.getAuthor());
+                author.setText("by "+article.getAuthor());
             }
-            description.setText(article.getDescription());
+
+
+            cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent i = new Intent(holderContext,NewsDetailActivity.class);
+                    i.putExtra("list_id",position);
+                    i.putExtra("title",article.getTitle());
+                    holderContext.startActivity(i);
+                }
+            });
+           // description.setText(article.getDescription());
         }
     }
 }
