@@ -1,15 +1,21 @@
 package fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
+import com.bumptech.glide.Glide;
 import com.example.ravikiranpathade.newstrends.R;
 
 import java.util.ArrayList;
@@ -62,22 +68,34 @@ public class NewsDescriptionFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_news_description, container, false);
 
         int j = getActivity().getIntent().getIntExtra("list_id",0);
         String title = getActivity().getIntent().getStringExtra("title");
+        String imageUrl = getActivity().getIntent().getStringExtra("urlToImage");
+        String desc = getActivity().getIntent().getStringExtra("description");
+        Log.d(title,""+imageUrl);
+        ImageView imageView = view.findViewById(R.id.detailImage);
+        TextView descCard = view.findViewById(R.id.detailDesc);
         TextView textView = view.findViewById(R.id.testText);
         textView.setText(title);
+        Glide.with(getContext()).load(imageUrl).into(imageView);
+        descCard.setText(desc);
 
         return view;
     }

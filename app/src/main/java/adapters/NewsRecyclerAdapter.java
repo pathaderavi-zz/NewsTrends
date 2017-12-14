@@ -104,6 +104,8 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
                     Intent i = new Intent(holderContext,NewsDetailActivity.class);
                     i.putExtra("list_id",position);
                     i.putExtra("title",article.getTitle());
+                    i.putExtra("description",article.getDescription());
+                    i.putExtra("urlToImage",article.getUrlToImage());
                     holderContext.startActivity(i);
                 }
             });
