@@ -106,6 +106,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
                     i.putExtra("title",article.getTitle());
                     i.putExtra("description",article.getDescription());
                     i.putExtra("urlToImage",article.getUrlToImage());
+                    i.putExtra("url",article.getUrl());
                     holderContext.startActivity(i);
                 }
             });

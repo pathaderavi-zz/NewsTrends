@@ -3,14 +3,21 @@ package fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toolbar;
@@ -76,26 +83,40 @@ public class NewsDescriptionFragment extends Fragment {
     }
 
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
 
+
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_news_description, container, false);
 
-        int j = getActivity().getIntent().getIntExtra("list_id",0);
+        android.support.v7.widget.Toolbar toolbar = view.findViewById(R.id.toolbarDetail);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+//        final Drawable upArrow = getResources().getDrawable(R.drawable.);
+//        upArrow.setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
+        setHasOptionsMenu(true);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        int j = getActivity().getIntent().getIntExtra("list_id", 0);
         String title = getActivity().getIntent().getStringExtra("title");
         String imageUrl = getActivity().getIntent().getStringExtra("urlToImage");
         String desc = getActivity().getIntent().getStringExtra("description");
-        Log.d(title,""+imageUrl);
+        String urlArticle = getActivity().getIntent().getStringExtra("url");
+
         ImageView imageView = view.findViewById(R.id.detailImage);
-        TextView descCard = view.findViewById(R.id.detailDesc);
-        TextView textView = view.findViewById(R.id.testText);
+        TextView descCard = view.findViewById(R.id.descDetail);
+        TextView textView = view.findViewById(R.id.titleDetail);
         textView.setText(title);
         Glide.with(getContext()).load(imageUrl).into(imageView);
         descCard.setText(desc);
+//        Log.d(title, desc);
+
+
+        //android.support.v7.widget.Toolbar toolbar = view.findViewById(R.id.toolBarDetail);
+        //toolbar.setTitle(title);
 
         return view;
     }
@@ -137,5 +158,11 @@ public class NewsDescriptionFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+        super.onCreateOptionsMenu(menu, inflater);
     }
 }

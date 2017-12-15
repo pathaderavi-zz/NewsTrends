@@ -109,7 +109,6 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
 //        editor = prefs.edit();
 //        editor.putString("check","string value");
 //        editor.apply();
-        Toast.makeText(this, prefs.getString("check", ""), Toast.LENGTH_SHORT).show();
 
 
     }
