@@ -8,16 +8,21 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.ravikiranpathade.newstrends.R;
+import com.github.thunder413.datetimeutils.DateTimeUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import adapters.NewsRecyclerAdapter;
@@ -57,6 +62,7 @@ public class TopNewsFragment extends Fragment {
     NewsRecyclerAdapter adapter;
     SharedPreferences prefs;
     SharedPreferences.Editor editor;
+
     public TopNewsFragment() {
         // Required empty public constructor
     }
@@ -94,7 +100,7 @@ public class TopNewsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_top_news, container, false);
 
-        layoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
+        layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         topNewsRecycler = view.findViewById(R.id.topNewsRecycler);
 
         topNewsRecycler.setLayoutManager(layoutManager);
@@ -107,24 +113,43 @@ public class TopNewsFragment extends Fragment {
         final Gson gson = new Gson();
 
         final GetTopNewsWorldEnglish service = Client.getClient().create(GetTopNewsWorldEnglish.class);
-        Call<CompleteResponse> call = service.getTopNewsArticles(KEY,"en");
+        Call<CompleteResponse> call = service.getTopNewsArticles(KEY, "en");
 
         final List<Articles>[] a1 = new List[]{new ArrayList<>()};
-        String resp = prefs.getString("topnews","");
-        Type type = new TypeToken<List<Articles>>(){}.getType();
-        a1[0] = gson.fromJson(resp,type);
-        adapter = new NewsRecyclerAdapter(a1[0]);
-        topNewsRecycler.setAdapter(adapter);
+//        String resp = prefs.getString("topnews","");
+//        Type type = new TypeToken<List<Articles>>(){}.getType();
+//        a1[0] = gson.fromJson(resp,type);
+//        adapter = new NewsRecyclerAdapter(a1[0]);
+//        topNewsRecycler.setAdapter(adapter);
 
-        /*
+
         call.enqueue(new Callback<CompleteResponse>() {
             @Override
             public void onResponse(Call<CompleteResponse> call, Response<CompleteResponse> response) {
                 a1[0] = response.body().getArticles();
+
+                for (int i = 0; i < a1[0].size(); i++) {
+                    Articles ar = a1[0].get(i);
+                    if (ar.getPublishedAt() == null) {
+                        a1[0].remove(i);
+                        i--;
+                    }
+                }
+
+                for (int i = 0; i < a1[0].size(); i++) {
+                    if (a1[0].get(i).getPublishedAt() != null ) {
+                        Articles ar = a1[0].get(i);
+                        Date date = DateTimeUtils.formatDate(ar.getPublishedAt());
+                        ar.setPublishedDate(date);
+
+                    }
+                }
+
+                Collections.sort(a1[0]);
                 adapter = new NewsRecyclerAdapter(a1[0]);
                 topNewsRecycler.setAdapter(adapter);
                 String json = gson.toJson(a1[0]);
-                editor.putString("topnews",json);
+                editor.putString("topnews", json);
                 editor.commit();
 
             }
@@ -134,7 +159,6 @@ public class TopNewsFragment extends Fragment {
                 t.printStackTrace();
             }
         });
-*/
 
 
         return view;

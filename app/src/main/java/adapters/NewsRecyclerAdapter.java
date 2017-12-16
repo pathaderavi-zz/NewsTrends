@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Parcelable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,9 +16,15 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.ravikiranpathade.newstrends.R;
 import com.example.ravikiranpathade.newstrends.activities.NewsDetailActivity;
+import com.github.thunder413.datetimeutils.DateTimeUtils;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import models.Articles;
 
@@ -96,7 +103,17 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
             if(article.getAuthor()!=null){
                 author.setText("by "+article.getAuthor());
             }
+             String dateString = article.getPublishedAt();
+//
+//        if(!dateString.equals("")||!dateString.isEmpty()){
+//            Date date = DateTimeUtils.formatDate(dateString);
+//            if(date!=null){
+//                Log.d("Check Date",date.toString());
+//            }}
 
+            //Log.d("Check Null",article.getSource().getId()+" "+article.getSource().getName());
+
+            Log.d("Check Source",article.getSource().getName());
 
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override

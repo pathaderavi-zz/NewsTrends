@@ -2,15 +2,18 @@ package models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.Date;
 
 /**
  * Created by ravikiranpathade on 12/12/17.
  */
 
-public class Articles implements Parcelable {
+public class Articles implements Parcelable,Comparable<Articles> {
     public Articles() {
     }
 
@@ -115,6 +118,16 @@ public class Articles implements Parcelable {
     @Expose
     private Source source;
 
+    public Date getPublishedDate() {
+        return publishedDate;
+    }
+
+    public void setPublishedDate(Date publishedDate) {
+        this.publishedDate = publishedDate;
+    }
+
+    private Date publishedDate;
+
     public Articles(String author,String title,String description,String url,String urlToImage,String publishedAt,Source source){
 
         //this.setSource(source);
@@ -141,5 +154,10 @@ public class Articles implements Parcelable {
         parcel.writeString(getUrlToImage());
         parcel.writeString(getPublishedAt());
        // parcel.writeParcelable(source,PARCELABLE_WRITE_RETURN_VALUE);
+    }
+
+    @Override
+    public int compareTo(@NonNull Articles articles) {
+        return getPublishedDate().compareTo(articles.getPublishedDate());
     }
 }
