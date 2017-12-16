@@ -111,9 +111,9 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
 //                Log.d("Check Date",date.toString());
 //            }}
 
-            //Log.d("Check Null",article.getSource().getId()+" "+article.getSource().getName());
 
-            Log.d("Check Source",article.getSource().getName());
+
+
 
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toolbar;
@@ -104,7 +105,7 @@ public class NewsDescriptionFragment extends Fragment {
         String title = getActivity().getIntent().getStringExtra("title");
         String imageUrl = getActivity().getIntent().getStringExtra("urlToImage");
         String desc = getActivity().getIntent().getStringExtra("description");
-        String urlArticle = getActivity().getIntent().getStringExtra("url");
+        final String urlArticle = getActivity().getIntent().getStringExtra("url");
 
         ImageView imageView = view.findViewById(R.id.detailImage);
         TextView descCard = view.findViewById(R.id.descDetail);
@@ -112,6 +113,15 @@ public class NewsDescriptionFragment extends Fragment {
         textView.setText(title);
         Glide.with(getContext()).load(imageUrl).into(imageView);
         descCard.setText(desc);
+
+
+        Button webLink = view.findViewById(R.id.webLinkButton);
+        webLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onButtonPressed(urlArticle);
+            }
+        });
 //        Log.d(title, desc);
 
 
@@ -122,9 +132,9 @@ public class NewsDescriptionFragment extends Fragment {
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+    public void onButtonPressed(String uri) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            mListener.onLinkButtonPressed(uri);
         }
     }
 
@@ -157,7 +167,7 @@ public class NewsDescriptionFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onLinkButtonPressed(String url);
     }
 
     @Override

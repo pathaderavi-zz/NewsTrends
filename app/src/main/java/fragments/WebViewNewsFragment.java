@@ -4,9 +4,12 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.example.ravikiranpathade.newstrends.R;
 
@@ -65,7 +68,19 @@ public class WebViewNewsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_web_view_news, container, false);
+        View view = inflater.inflate(R.layout.fragment_web_view_news, container, false);
+
+        android.support.v7.widget.Toolbar toolbar = view.findViewById(R.id.webViewToolbar);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        toolbar.setTitle("");
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        WebView web = view.findViewById(R.id.webViewLink);
+        web.setWebViewClient(new WebViewClient());
+        savedInstanceState = getArguments();
+        web.loadUrl(savedInstanceState.getString("urlForWeb"));
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

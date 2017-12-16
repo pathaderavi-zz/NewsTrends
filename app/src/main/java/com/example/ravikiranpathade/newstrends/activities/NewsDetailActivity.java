@@ -13,10 +13,14 @@ import android.widget.TextView;
 import com.example.ravikiranpathade.newstrends.R;
 
 import fragments.NewsDescriptionFragment;
+import fragments.WebViewNewsFragment;
 
-public class NewsDetailActivity extends AppCompatActivity implements NewsDescriptionFragment.OnFragmentInteractionListener{
+public class NewsDetailActivity extends AppCompatActivity implements NewsDescriptionFragment.OnFragmentInteractionListener,
+
+WebViewNewsFragment.OnFragmentInteractionListener{
 
     FragmentManager fragmentManager;
+    WebViewNewsFragment webFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,15 +30,8 @@ public class NewsDetailActivity extends AppCompatActivity implements NewsDescrip
         fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().add(R.id.newsDescriptionFragment,new NewsDescriptionFragment()).commit();
 
-//        android.support.v7.widget.Toolbar toolbar = findViewById(R.id.toolbarDetail);
-//        setSupportActionBar(toolbar);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
 
     @Override
     public void onBackPressed() {
@@ -47,6 +44,22 @@ public class NewsDetailActivity extends AppCompatActivity implements NewsDescrip
         Log.d("Back","Working2");
         onBackPressed();
         return super.onOptionsItemSelected(item);
+
+    }
+
+    @Override
+    public void onLinkButtonPressed(String url) {
+        //String url1 = getIntent().getStringExtra("url");
+        Bundle b = new Bundle();
+        b.putString("urlForWeb",url);
+        webFragment = new WebViewNewsFragment();
+        webFragment.setArguments(b);
+        fragmentManager.beginTransaction().replace(R.id.newsDescriptionFragment,webFragment).addToBackStack(null).commit();
+
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
 
     }
 }

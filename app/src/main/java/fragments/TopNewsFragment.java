@@ -116,13 +116,23 @@ public class TopNewsFragment extends Fragment {
         Call<CompleteResponse> call = service.getTopNewsArticles(KEY, "en");
 
         final List<Articles>[] a1 = new List[]{new ArrayList<>()};
-//        String resp = prefs.getString("topnews","");
-//        Type type = new TypeToken<List<Articles>>(){}.getType();
-//        a1[0] = gson.fromJson(resp,type);
-//        adapter = new NewsRecyclerAdapter(a1[0]);
-//        topNewsRecycler.setAdapter(adapter);
+        String resp = prefs.getString("topnews","");
+        Type type = new TypeToken<List<Articles>>(){}.getType();
+        a1[0] = gson.fromJson(resp,type);
+        adapter = new NewsRecyclerAdapter(a1[0]);
+        topNewsRecycler.setAdapter(adapter);
 
+        for(int i = 0 ; i < a1[0].size();i++){
+            if(a1[0].get(i).getUrlToImage()==null){
+                Log.d("Image Not ","found");
+            }
+        }
+//
+//        for(int i = 0 ; i < a1[0].size();i++){
+//            Log.d("Check Source",a1[0].get(i).getPublishedDate().toString());
+//        }
 
+/*
         call.enqueue(new Callback<CompleteResponse>() {
             @Override
             public void onResponse(Call<CompleteResponse> call, Response<CompleteResponse> response) {
@@ -160,7 +170,7 @@ public class TopNewsFragment extends Fragment {
             }
         });
 
-
+*/
         return view;
     }
 
