@@ -10,10 +10,12 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,6 +24,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,6 +60,8 @@ public class NewsDescriptionFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     Cursor existing;
+    FloatingActionButton fav;
+    View view;
 
     public NewsDescriptionFragment() {
         // Required empty public constructor
@@ -96,13 +101,11 @@ public class NewsDescriptionFragment extends Fragment {
                              Bundle savedInstanceState) {
 
 
-
-
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_news_description, container, false);
+        view = inflater.inflate(R.layout.fragment_news_description, container, false);
 
         android.support.v7.widget.Toolbar toolbar = view.findViewById(R.id.toolbarDetail);
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 //        final Drawable upArrow = getResources().getDrawable(R.drawable.);
 //        upArrow.setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
         setHasOptionsMenu(true);
@@ -113,6 +116,16 @@ public class NewsDescriptionFragment extends Fragment {
         final String imageUrl = getActivity().getIntent().getStringExtra("urlToImage");
         final String desc = getActivity().getIntent().getStringExtra("description");
         final String urlArticle = getActivity().getIntent().getStringExtra("url");
+
+        existing = getContext().getContentResolver().query(
+
+                NewsContract.NewsFavoritesEntry.FINAL_URI.buildUpon().appendPath("id").build(),
+                null,
+                title,
+                null, null, null
+        );
+
+        //TODO Change Fab Button Background based on Cursor Result
 
         ImageView imageView = view.findViewById(R.id.detailImage);
         TextView descCard = view.findViewById(R.id.descDetail);
@@ -129,39 +142,59 @@ public class NewsDescriptionFragment extends Fragment {
                 onButtonPressed(urlArticle);
             }
         });
-        FloatingActionButton fav = view.findViewById(R.id.favoritFloat);
+        fav = view.findViewById(R.id.favoritFloat);
+        if (existing != null && existing.getCount() > 0) {
+            fav.setImageResource(R.drawable.ic_star_white_24px);
+        }
         fav.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
-                       existing  = getContext().getContentResolver().query(
-                                NewsContract.NewsFavoritesEntry.FINAL_URI.buildUpon().appendPath("id").build(),
-                               null,
-                                title,
-                                null,null,null
-                        );
-                        Log.d("Check cursor",String.valueOf(existing==null));
-                        if(existing!=null && existing.getCount()>0){
-                            Toast.makeText(getContext(),"Already Exists",Toast.LENGTH_SHORT).show();
-                        }else{
-//                            ContentValues cv = new ContentValues();
-//                            cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_TITLE,title);
-//                            cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_DESCRIPTION,desc);
-//                            cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_URL,urlArticle);
-//                            cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_URL_TO_IMAGE,imageUrl);
-//
-//                            Uri uri= getContext().getContentResolver().insert(
-//                                    NewsContract.NewsFavoritesEntry.FINAL_URI,cv
-//                            );
-//                            //Log.d(String.valueOf(uri==null), NewsContract.NewsFavoritesEntry.FINAL_URI.toString());
-//                            Toast.makeText(getContext(), uri.toString(), Toast.LENGTH_SHORT).show();
-                        }
+                        onClickFab(title, desc, imageUrl, urlArticle);
                     }
                 }
         );
 
         return view;
+    }
+
+    private void onClickFab(String title, String desc, String imageUrl, String urlArticle) {
+
+        Snackbar snackbar;
+
+        existing = getContext().getContentResolver().query(
+
+                NewsContract.NewsFavoritesEntry.FINAL_URI.buildUpon().appendPath("id").build(),
+                null,
+                title,
+                null, null, null
+        );
+
+        if (existing != null && existing.getCount() > 0) {
+
+            Uri delete = NewsContract.NewsFavoritesEntry.FINAL_URI.buildUpon().appendPath("id").build();
+            getContext().getContentResolver().delete(delete, title, null);
+            //Toast.makeText(getContext(), "Deleted", Toast.LENGTH_SHORT).show();
+            fav.setImageResource(R.drawable.ic_star_border_white_24px);
+            snackbar = Snackbar.make(view, "News Deleted", Snackbar.LENGTH_SHORT);
+        } else {
+
+            ContentValues cv = new ContentValues();
+            cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_TITLE, title);
+            cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_DESCRIPTION, desc);
+            cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_URL, urlArticle);
+            cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_URL_TO_IMAGE, imageUrl);
+
+            Uri uri = getContext().getContentResolver().insert(
+                    NewsContract.NewsFavoritesEntry.FINAL_URI, cv
+            );
+            fav.setImageResource(R.drawable.ic_star_white_24px);
+            //Toast.makeText(getContext(), uri.toString(), Toast.LENGTH_SHORT).show();
+            snackbar = Snackbar.make(view, "News Added to Favorites", Snackbar.LENGTH_SHORT);
+
+        }
+
+        snackbar.show();
     }
 
     // TODO: Rename method, update argument and hook method into UI event

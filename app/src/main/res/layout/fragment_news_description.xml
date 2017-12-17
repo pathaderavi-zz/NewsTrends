@@ -124,8 +124,7 @@
             android:layout_gravity="left"
             android:id="@+id/favoritFloat"
             android:fitsSystemWindows="true"
-            android:src="@drawable/ic_favorite_black_24px"
-
+            android:src="@drawable/ic_star_border_white_24px"
             app:layout_anchorGravity="bottom|right|end"
             />
     </RelativeLayout>

@@ -37,7 +37,7 @@ public class NewsContentProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         Context context = getContext();
-        Log.d("Tried Creating ", "Database");
+
         favoriteNewsDBHelper = new FavoriteNewsDBHelper(context);
         return true;
     }
@@ -53,10 +53,10 @@ public class NewsContentProvider extends ContentProvider {
         switch (match) {
             case FAVORITES_ID:
                 try {
-                    selection = "TITLE="+"\""+selection+"\"";
-                    //selectionArgs = new String[]{"TITLE=?"};
-                Log.d("Selection",selection);
-                  returnCursor =  database.query(
+                    selection = "TITLE=" + "\"" + selection + "\"";
+
+
+                    returnCursor = database.query(
                             NewsContract.NewsFavoritesEntry.TABLE_NAME,
                             new String[]{"TITLE"},
                             selection,
@@ -69,10 +69,10 @@ public class NewsContentProvider extends ContentProvider {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                Log.d("Cursor Query", String.valueOf(returnCursor.getCount()));
+
                 break;
             case FAVORITES:
-                returnCursor =  database.query(
+                returnCursor = database.query(
                         NewsContract.NewsFavoritesEntry.TABLE_NAME,
                         projection,
                         selection,
@@ -81,8 +81,8 @@ public class NewsContentProvider extends ContentProvider {
                         null,
                         null
                 );
-                //Log.d("Cursor Query", String.valueOf(returnCursor.getCount()));
-                return returnCursor;
+
+                break;
             default:
                 throw new UnsupportedOperationException("Unable to find" + uri);
 
@@ -134,7 +134,19 @@ public class NewsContentProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String s, @Nullable String[] strings) {
-        return 0;
+        int matchUri = uriMatcher.match(uri);
+        int id = 0;
+        final SQLiteDatabase database = favoriteNewsDBHelper.getWritableDatabase();
+        s = "TITLE="+"\""+s+"\"";
+
+        switch (matchUri){
+            case FAVORITES_ID:
+                id = database.delete(NewsContract.NewsFavoritesEntry.TABLE_NAME,s,null);
+                break;
+            default:
+                    throw new UnsupportedOperationException("Unable to find "+uri);
+        }
+        return id;
     }
 
     @Override
