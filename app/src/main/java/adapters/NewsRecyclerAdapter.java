@@ -41,8 +41,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
 
     public NewsRecyclerAdapter(List<Articles> articlesList) {
         this.articles = articlesList;
-        Log.d("Check List",String.valueOf(articlesList.get(0).getSource()==null)
-        );
+
     }
 
     @Override

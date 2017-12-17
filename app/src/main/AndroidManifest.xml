@@ -19,6 +19,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.NewsDetailActivity"></activity>
+        <provider
+            android:name="data.NewsContentProvider"
+            android:authorities="com.example.ravikiranpathade.newstrends"
+            android:enabled="true"
+            />
     </application>
 
 </manifest>

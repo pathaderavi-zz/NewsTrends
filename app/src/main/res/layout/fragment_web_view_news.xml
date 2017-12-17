@@ -11,6 +11,7 @@
       android:layout_height="?attr/actionBarSize"
       android:id="@+id/webViewToolbar"/>
     </android.support.design.widget.AppBarLayout>
+    <!--Implement A Loading Indicator for loading a WebView-->
   <WebView
       android:layout_height="wrap_content"
       android:layout_width="match_parent"

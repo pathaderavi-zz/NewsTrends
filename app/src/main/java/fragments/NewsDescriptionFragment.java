@@ -1,12 +1,15 @@
 package fragments;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -21,6 +24,7 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
@@ -29,6 +33,7 @@ import com.example.ravikiranpathade.newstrends.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import data.NewsContract;
 import models.Articles;
 
 /**
@@ -50,6 +55,8 @@ public class NewsDescriptionFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    Cursor existing;
 
     public NewsDescriptionFragment() {
         // Required empty public constructor
@@ -102,9 +109,9 @@ public class NewsDescriptionFragment extends Fragment {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         int j = getActivity().getIntent().getIntExtra("list_id", 0);
-        String title = getActivity().getIntent().getStringExtra("title");
-        String imageUrl = getActivity().getIntent().getStringExtra("urlToImage");
-        String desc = getActivity().getIntent().getStringExtra("description");
+        final String title = getActivity().getIntent().getStringExtra("title");
+        final String imageUrl = getActivity().getIntent().getStringExtra("urlToImage");
+        final String desc = getActivity().getIntent().getStringExtra("description");
         final String urlArticle = getActivity().getIntent().getStringExtra("url");
 
         ImageView imageView = view.findViewById(R.id.detailImage);
@@ -122,11 +129,37 @@ public class NewsDescriptionFragment extends Fragment {
                 onButtonPressed(urlArticle);
             }
         });
-//        Log.d(title, desc);
+        FloatingActionButton fav = view.findViewById(R.id.favoritFloat);
+        fav.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
 
-
-        //android.support.v7.widget.Toolbar toolbar = view.findViewById(R.id.toolBarDetail);
-        //toolbar.setTitle(title);
+                       existing  = getContext().getContentResolver().query(
+                                NewsContract.NewsFavoritesEntry.FINAL_URI.buildUpon().appendPath("id").build(),
+                               null,
+                                title,
+                                null,null,null
+                        );
+                        Log.d("Check cursor",String.valueOf(existing==null));
+                        if(existing!=null && existing.getCount()>0){
+                            Toast.makeText(getContext(),"Already Exists",Toast.LENGTH_SHORT).show();
+                        }else{
+//                            ContentValues cv = new ContentValues();
+//                            cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_TITLE,title);
+//                            cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_DESCRIPTION,desc);
+//                            cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_URL,urlArticle);
+//                            cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_URL_TO_IMAGE,imageUrl);
+//
+//                            Uri uri= getContext().getContentResolver().insert(
+//                                    NewsContract.NewsFavoritesEntry.FINAL_URI,cv
+//                            );
+//                            //Log.d(String.valueOf(uri==null), NewsContract.NewsFavoritesEntry.FINAL_URI.toString());
+//                            Toast.makeText(getContext(), uri.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+        );
 
         return view;
     }
