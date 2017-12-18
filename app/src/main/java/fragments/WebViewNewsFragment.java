@@ -76,7 +76,8 @@ public class WebViewNewsFragment extends Fragment {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         WebView web = view.findViewById(R.id.webViewLink);
-        web.setWebViewClient(new WebViewClient());
+        WebViewClient webViewClient = new WebViewClient();
+        web.setWebViewClient(webViewClient);
         savedInstanceState = getArguments();
         web.loadUrl(savedInstanceState.getString("urlForWeb"));
 

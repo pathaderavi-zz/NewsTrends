@@ -58,7 +58,7 @@ public class NewsContentProvider extends ContentProvider {
 
                     returnCursor = database.query(
                             NewsContract.NewsFavoritesEntry.TABLE_NAME,
-                            new String[]{"TITLE"},
+                            null,
                             selection,
                             null,
                             null,

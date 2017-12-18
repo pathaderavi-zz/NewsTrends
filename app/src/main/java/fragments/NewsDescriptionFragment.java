@@ -1,6 +1,7 @@
 package fragments;
 
 import android.app.Activity;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -33,6 +34,7 @@ import android.widget.Toolbar;
 import com.bumptech.glide.Glide;
 import com.example.ravikiranpathade.newstrends.R;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,6 +64,8 @@ public class NewsDescriptionFragment extends Fragment {
     Cursor existing;
     FloatingActionButton fav;
     View view;
+    WebView w;
+    long id;
 
     public NewsDescriptionFragment() {
         // Required empty public constructor
@@ -160,6 +164,7 @@ public class NewsDescriptionFragment extends Fragment {
 
     private void onClickFab(String title, String desc, String imageUrl, String urlArticle) {
 
+
         Snackbar snackbar;
 
         existing = getContext().getContentResolver().query(
@@ -171,13 +176,20 @@ public class NewsDescriptionFragment extends Fragment {
         );
 
         if (existing != null && existing.getCount() > 0) {
+            new File(getContext().getFilesDir().getAbsolutePath()
+                    + File.separator + String.valueOf(id)+".mht").delete();
 
             Uri delete = NewsContract.NewsFavoritesEntry.FINAL_URI.buildUpon().appendPath("id").build();
             getContext().getContentResolver().delete(delete, title, null);
             //Toast.makeText(getContext(), "Deleted", Toast.LENGTH_SHORT).show();
             fav.setImageResource(R.drawable.ic_star_border_white_24px);
             snackbar = Snackbar.make(view, "News Deleted", Snackbar.LENGTH_SHORT);
+
         } else {
+            w = view.findViewById(R.id.detWeb);
+            WebViewClient wClient = new CustomWebViewClientForDownload();
+            w.setWebViewClient(wClient);
+            w.loadUrl(urlArticle);
 
             ContentValues cv = new ContentValues();
             cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_TITLE, title);
@@ -188,6 +200,8 @@ public class NewsDescriptionFragment extends Fragment {
             Uri uri = getContext().getContentResolver().insert(
                     NewsContract.NewsFavoritesEntry.FINAL_URI, cv
             );
+            id = ContentUris.parseId(uri);
+            Log.d("Check ID",String.valueOf(id));
             fav.setImageResource(R.drawable.ic_star_white_24px);
             //Toast.makeText(getContext(), uri.toString(), Toast.LENGTH_SHORT).show();
             snackbar = Snackbar.make(view, "News Added to Favorites", Snackbar.LENGTH_SHORT);
@@ -240,5 +254,15 @@ public class NewsDescriptionFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
         super.onCreateOptionsMenu(menu, inflater);
+    }
+    private class CustomWebViewClientForDownload extends WebViewClient{
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+            String id_file = String.valueOf(id);
+            w.saveWebArchive(getContext().getFilesDir().getAbsolutePath()
+                  + File.separator + id_file+".mht");
+        }
+
     }
 }

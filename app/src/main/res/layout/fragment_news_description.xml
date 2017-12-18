@@ -129,4 +129,10 @@
             />
     </RelativeLayout>
     </LinearLayout>
+    <WebView
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:id="@+id/detWeb"
+        android:visibility="gone"
+        />
 </RelativeLayout>
