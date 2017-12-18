@@ -41,6 +41,8 @@ import java.util.List;
 import data.NewsContract;
 import models.Articles;
 
+//TODO Implement to request Permissions during Runtime
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -164,7 +166,7 @@ public class NewsDescriptionFragment extends Fragment {
 
     private void onClickFab(String title, String desc, String imageUrl, String urlArticle) {
 
-
+        //TODO Save Image
         Snackbar snackbar;
 
         existing = getContext().getContentResolver().query(

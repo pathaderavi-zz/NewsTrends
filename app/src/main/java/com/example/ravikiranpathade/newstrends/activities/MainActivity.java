@@ -1,8 +1,12 @@
 package com.example.ravikiranpathade.newstrends.activities;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -10,8 +14,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
@@ -20,6 +26,7 @@ import com.example.ravikiranpathade.newstrends.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import fragments.FavoritesFragment;
 import fragments.SearchLatestNews;
 import fragments.TopNewsFragment;
 import models.Articles;
@@ -38,7 +45,11 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
 
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle toggle;
-
+    TabLayout tabLayout;
+    ViewPager viewPager;
+    FrameLayout frame;
+    NavigationView navigation;
+    android.support.v4.app.FragmentManager fragmentManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,19 +60,21 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
         getSupportActionBar().setTitle(null);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
+        frame = findViewById(R.id.mainActivityFramelayout);
         drawerLayout = findViewById(R.id.drawerLayout);
+        navigation = findViewById(R.id.navigationView);
         toggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        TabLayout tabLayout = findViewById(R.id.tabs);
+        tabLayout = findViewById(R.id.tabs);
         tabLayout.addTab(tabLayout.newTab().setText(R.string.topnews));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.searchlatest));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        fragmentManager = getSupportFragmentManager();
+        viewPager = findViewById(R.id.viewPager);
 
-        final ViewPager viewPager = findViewById(R.id.viewPager);
-        final PagerAdapter pagerAdapter = new adapters.PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
+        final PagerAdapter pagerAdapter = new adapters.PagerAdapter(fragmentManager, tabLayout.getTabCount());
         viewPager.setAdapter(pagerAdapter);
 
         viewPager.setOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
@@ -83,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
 
             }
         });
-
+        setupDrawer(navigation);
     /*
         final GetTopNewsWorldEnglish service = Client.getClient().create(GetTopNewsWorldEnglish.class);
         Call<CompleteResponse> call = service.getTopNewsArticles(KEY,"en");
@@ -113,6 +126,56 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
 
     }
 
+    private void selectNavigationDrawerItem(MenuItem menuItem) {
+        android.support.v4.app.Fragment fragment = null;
+        Class fragmentClass;
+
+        switch (menuItem.getItemId()) {
+            case R.id.home:
+                viewPager.setVisibility(View.VISIBLE);
+                tabLayout.setVisibility(View.VISIBLE);
+                frame.setVisibility(View.GONE);
+                break;
+            case R.id.settings:
+                //TODO Create PreferenceActivity
+                Toast.makeText(this, "reference Activity to be implemented", Toast.LENGTH_SHORT).show();
+            case R.id.favorites:
+                Log.d("Favorites","Clicked");
+                fragmentClass = FavoritesFragment.class;
+                viewPager.setVisibility(View.GONE);
+                tabLayout.setVisibility(View.GONE);
+                frame.setVisibility(View.VISIBLE);
+                try{
+                    fragment = (android.support.v4.app.Fragment) fragmentClass.newInstance();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                fragmentManager.beginTransaction().add(R.id.mainActivityFramelayout,fragment).commit();
+                break;
+            case R.id.alerts:
+                //fragment alerts
+                break;
+            default:
+
+        }
+        drawerLayout.closeDrawers();
+
+
+
+    }
+    private void setupDrawer(NavigationView navigationView){
+        Log.d("Selected","Item");
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Log.d("Selected","Item");
+                selectNavigationDrawerItem(item);
+                return true;
+            }
+        });
+
+    }
+
     @Override
     public void onFragmentInteraction(Uri uri) {
 
@@ -125,10 +188,12 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         if (toggle.onOptionsItemSelected(item)) {
             return true;
         }
         return super.onOptionsItemSelected(item);
 
     }
+
 }

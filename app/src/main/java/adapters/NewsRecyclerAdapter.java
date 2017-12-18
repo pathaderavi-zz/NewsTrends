@@ -77,7 +77,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
         ImageView newsCardImage;
         TextView headline;
         TextView author;
-        TextView description;
+
         CardView cardView;
 
         public NewsListViewHolder(View itemView) {
@@ -87,7 +87,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
             newsCardImage = itemView.findViewById(R.id.news_card_image);
             headline = itemView.findViewById(R.id.headline_card);
             author = itemView.findViewById(R.id.author_card);
-            description = itemView.findViewById(R.id.description_card);
+
             cardView = itemView.findViewById(R.id.news_card);
         }
 
@@ -99,9 +99,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
                 Glide.with(holderContext).load(article.getUrlToImage()).into(newsCardImage);
             }
             headline.setText(article.getTitle());
-            if(article.getAuthor()!=null){
-                author.setText("by "+article.getAuthor());
-            }
+
              String dateString = article.getPublishedAt();
 //
 //        if(!dateString.equals("")||!dateString.isEmpty()){
@@ -111,22 +109,37 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
 //            }}
 
 
-
-
+            final String title_string = article.getTitle();
+            final String desc_string= article.getDescription();
+            final String imageUrl_string = article.getUrlToImage();
+            final String urlArticle_string = article.getUrl();
+            final String author_string = article.getAuthor();
+            final String publishedAt_string = article.getPublishedAt();
+            final String source_id_string = article.getSource().getId();
+            final String source_name_string = article.getSource().getName();
+            if(article.getAuthor()!=null){
+                author.setText("by "+author_string+" at "+source_name_string);
+            }
 
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent i = new Intent(holderContext,NewsDetailActivity.class);
+
                     i.putExtra("list_id",position);
-                    i.putExtra("title",article.getTitle());
-                    i.putExtra("description",article.getDescription());
-                    i.putExtra("urlToImage",article.getUrlToImage());
-                    i.putExtra("url",article.getUrl());
+                    i.putExtra("title",title_string);
+                    i.putExtra("description",desc_string);
+                    i.putExtra("urlToImage",imageUrl_string);
+                    i.putExtra("url",urlArticle_string);
+                    i.putExtra("author",author_string);
+                    i.putExtra("publishedAt",publishedAt_string);
+                    i.putExtra("source_id",source_id_string);
+                    i.putExtra("source_name",source_name_string);
+
                     holderContext.startActivity(i);
                 }
             });
-           // description.setText(article.getDescription());
+
         }
     }
 }
