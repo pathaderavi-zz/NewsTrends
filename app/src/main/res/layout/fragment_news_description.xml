@@ -109,7 +109,7 @@
             android:background="#51c5e5"
             android:elevation="2dp"
             android:fitsSystemWindows="true"
-            android:text="@string/app_name"
+            android:text="Read Full Article"
             android:id="@+id/webLinkButton"
             />
     <RelativeLayout

@@ -8,7 +8,6 @@
     tools:context="com.example.ravikiranpathade.newstrends.activities.MainActivity">
 
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -39,13 +38,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
+            android:elevation="4dp"
             android:minHeight="?attr/actionBarSize"
             android:textAlignment="center"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:tabIndicatorColor="#000"
-            app:tabIndicatorHeight="7dp"
-            android:elevation="4dp"
-            />
+            app:tabIndicatorHeight="7dp" />
 
         <android.support.v4.view.ViewPager
             android:id="@+id/viewPager"
@@ -53,22 +51,22 @@
             android:layout_height="wrap_content" />
 
         <FrameLayout
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
             android:id="@+id/mainActivityFramelayout"
-            android:visibility="gone"/>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
 
 
     </LinearLayout>
+
     <android.support.design.widget.NavigationView
+        android:id="@+id/navigationView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:id="@+id/navigationView"
         android:layout_gravity="start"
         android:background="#FFF"
         app:itemIconTint="#000"
         app:itemTextColor="#000"
-        app:menu="@menu/drawer"
+        app:menu="@menu/drawer"/>
 
-        />
 </android.support.v4.widget.DrawerLayout>

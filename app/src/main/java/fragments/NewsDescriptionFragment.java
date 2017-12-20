@@ -6,7 +6,10 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -32,10 +35,21 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.ravikiranpathade.newstrends.R;
+import com.github.thunder413.datetimeutils.DateTimeUtils;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.Date;
 import java.util.List;
 
 import data.NewsContract;
@@ -68,6 +82,13 @@ public class NewsDescriptionFragment extends Fragment {
     View view;
     WebView w;
     long id;
+    int cursorID;
+    String authorName;
+    String publishedAt;
+    String sourceId;
+    String sourceName;
+    BitmapDrawable bitmapDrawable;
+
 
     public NewsDescriptionFragment() {
         // Required empty public constructor
@@ -122,6 +143,11 @@ public class NewsDescriptionFragment extends Fragment {
         final String imageUrl = getActivity().getIntent().getStringExtra("urlToImage");
         final String desc = getActivity().getIntent().getStringExtra("description");
         final String urlArticle = getActivity().getIntent().getStringExtra("url");
+        authorName = getActivity().getIntent().getStringExtra("author");
+        publishedAt = getActivity().getIntent().getStringExtra("publishedAt");
+        sourceId = getActivity().getIntent().getStringExtra("source_id");
+        sourceName = getActivity().getIntent().getStringExtra("source_name");
+
 
         existing = getContext().getContentResolver().query(
 
@@ -130,6 +156,9 @@ public class NewsDescriptionFragment extends Fragment {
                 title,
                 null, null, null
         );
+        if (existing != null || existing.getCount() > 0) {
+            cursorID = existing.getColumnIndex("ID");
+        }
 
         //TODO Change Fab Button Background based on Cursor Result
 
@@ -138,9 +167,11 @@ public class NewsDescriptionFragment extends Fragment {
         TextView textView = view.findViewById(R.id.titleDetail);
         textView.setText(title);
         Glide.with(getContext()).load(imageUrl).into(imageView);
+        bitmapDrawable = (BitmapDrawable) imageView.getDrawable();
         descCard.setText(desc);
 
-
+        Log.d("Check Exists", String.valueOf(new File(getContext().getFilesDir().getAbsolutePath()
+                + File.separator + "images" + File.separator + "1.jpg").exists()));
         Button webLink = view.findViewById(R.id.webLinkButton);
         webLink.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -178,8 +209,13 @@ public class NewsDescriptionFragment extends Fragment {
         );
 
         if (existing != null && existing.getCount() > 0) {
+            cursorID = existing.getColumnIndex("ID");
+            //TODO Delete Image
+
             new File(getContext().getFilesDir().getAbsolutePath()
-                    + File.separator + String.valueOf(id)+".mht").delete();
+                    + File.separator + String.valueOf(id) + ".mht").delete();
+            new File(getContext().getFilesDir().getAbsolutePath()
+                    + File.separator + "images", String.valueOf(cursorID) + ".jpg").delete();
 
             Uri delete = NewsContract.NewsFavoritesEntry.FINAL_URI.buildUpon().appendPath("id").build();
             getContext().getContentResolver().delete(delete, title, null);
@@ -192,20 +228,50 @@ public class NewsDescriptionFragment extends Fragment {
             WebViewClient wClient = new CustomWebViewClientForDownload();
             w.setWebViewClient(wClient);
             w.loadUrl(urlArticle);
+            Date dateInsert = DateTimeUtils.formatDate(publishedAt);
+
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
             ContentValues cv = new ContentValues();
             cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_TITLE, title);
             cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_DESCRIPTION, desc);
             cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_URL, urlArticle);
             cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_URL_TO_IMAGE, imageUrl);
-
+            cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_AUTHOR, authorName);
+            cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_PUBLISHED_AT, publishedAt);
+            cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_SOURCE_ID, sourceId);
+            cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_SOURCE_NAME, sourceName);
+            cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_DATE, simpleDateFormat.format(dateInsert));
             Uri uri = getContext().getContentResolver().insert(
                     NewsContract.NewsFavoritesEntry.FINAL_URI, cv
             );
             id = ContentUris.parseId(uri);
-            Log.d("Check ID",String.valueOf(id));
+
+            Glide.with(getContext()).asBitmap().load(imageUrl).into(new SimpleTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+
+
+                    File dir = new File(getContext().getFilesDir().getAbsolutePath()
+                            + File.separator + "images");
+                    if (!dir.exists()) {
+                        dir.mkdir();
+                    }
+                    File ff = new File(dir,String.valueOf(id)+".jpg");
+                    try{
+                        FileOutputStream fileOutputStream = new FileOutputStream(ff);
+                        resource.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
+                        fileOutputStream.flush();
+                        fileOutputStream.close();
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+
+                }
+            });
             fav.setImageResource(R.drawable.ic_star_white_24px);
-            //Toast.makeText(getContext(), uri.toString(), Toast.LENGTH_SHORT).show();
+
             snackbar = Snackbar.make(view, "News Added to Favorites", Snackbar.LENGTH_SHORT);
 
         }
@@ -257,14 +323,19 @@ public class NewsDescriptionFragment extends Fragment {
 
         super.onCreateOptionsMenu(menu, inflater);
     }
-    private class CustomWebViewClientForDownload extends WebViewClient{
+
+    private class CustomWebViewClientForDownload extends WebViewClient {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
             String id_file = String.valueOf(id);
             w.saveWebArchive(getContext().getFilesDir().getAbsolutePath()
-                  + File.separator + id_file+".mht");
+                    + File.separator + id_file + ".mht");
+            Log.d("Path", getContext().getFilesDir().getAbsolutePath()
+                    + File.separator + "images" + File.separator);
         }
 
     }
+
+
 }
