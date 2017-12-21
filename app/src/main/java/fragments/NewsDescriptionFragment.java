@@ -217,14 +217,15 @@ public class NewsDescriptionFragment extends Fragment {
             //TODO Delete Image
 
             File mht = new File(getContext().getFilesDir().getAbsolutePath()
-                    + File.separator, String.valueOf(id) + ".mht");
+                    + File.separator, String.valueOf(cursorID) + ".mht");
             mht.setWritable(true);
             File jpg = new File(getContext().getFilesDir().getAbsolutePath()
                     + File.separator + "images", String.valueOf(cursorID) + ".jpg");
-            Log.d(String.valueOf(mht.exists()), String.valueOf(jpg.exists()));
-            mht.delete();
-            jpg.delete();
-            Log.d(String.valueOf(mht.exists()), String.valueOf(jpg.exists()));
+
+            boolean mhtDel =  mht.delete();
+            boolean jpgDel = jpg.delete();
+
+            Log.d("Delete Status "+String.valueOf(mhtDel), String.valueOf(jpgDel));
 
             Uri delete = NewsContract.NewsFavoritesEntry.FINAL_URI.buildUpon().appendPath("id").build();
             getContext().getContentResolver().delete(delete, title, null);
