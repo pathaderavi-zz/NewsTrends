@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
     ViewPager viewPager;
     FrameLayout frame;
     NavigationView navigation;
+
     android.support.v4.app.FragmentManager fragmentManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
 
         switch (menuItem.getItemId()) {
             case R.id.home:
+
                 viewPager.setVisibility(View.VISIBLE);
                 tabLayout.setVisibility(View.VISIBLE);
                 frame.setVisibility(View.GONE);
@@ -140,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
                 //TODO Create PreferenceActivity
                 Toast.makeText(this, "reference Activity to be implemented", Toast.LENGTH_SHORT).show();
             case R.id.favorites:
-                Log.d("Favorites","Clicked");
+
                 fragmentClass = FavoritesFragment.class;
                 viewPager.setVisibility(View.GONE);
                 tabLayout.setVisibility(View.GONE);

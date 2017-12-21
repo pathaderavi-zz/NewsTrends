@@ -36,12 +36,14 @@ WebViewNewsFragment.OnFragmentInteractionListener{
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Log.d("Back","Working");
+
+        //TODO Implement Delete Files
+        // put ID and delete status
+        // and empty the preferences
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.d("Back","Working2");
         onBackPressed();
         return super.onOptionsItemSelected(item);
 

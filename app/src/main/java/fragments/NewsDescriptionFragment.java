@@ -223,6 +223,7 @@ public class NewsDescriptionFragment extends Fragment {
             fav.setImageResource(R.drawable.ic_star_border_white_24px);
             snackbar = Snackbar.make(view, "News Deleted", Snackbar.LENGTH_SHORT);
 
+
         } else {
             w = view.findViewById(R.id.detWeb);
             WebViewClient wClient = new CustomWebViewClientForDownload();
@@ -277,6 +278,7 @@ public class NewsDescriptionFragment extends Fragment {
         }
 
         snackbar.show();
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -337,5 +339,10 @@ public class NewsDescriptionFragment extends Fragment {
 
     }
 
+    @Override
+    public void setMenuVisibility(boolean menuVisible) {
+        super.setMenuVisibility(menuVisible);
+        Log.d("Frag is","Visible");
 
+    }
 }
