@@ -1,0 +1,47 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--<SwitchPreference
+        android:defaultValue="true"
+        android:key="example_switch"
+        android:summary="@string/pref_description_social_recommendations"
+        android:title="@string/pref_title_social_recommendations"
+        />-->
+
+    <!-- NOTE: EditTextPreference accepts EditText attributes. -->
+    <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
+    <ListPreference
+        android:defaultValue="0"
+        android:entries="@array/preferenceCategories"
+        android:entryValues="@array/preferenceCategoriesValues"
+        android:key="categoriesList"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="News Category"
+        android:summary="%s"/>
+
+    <ListPreference
+        android:defaultValue="2"
+        android:entries="@array/preferenceLanguage"
+        android:entryValues="@array/preferenceLanguageValues"
+        android:key="languageList"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="Language"
+        android:summary="%s"/>
+
+    <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
+         dismiss it. -->
+    <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
+    <ListPreference
+        android:defaultValue="0"
+        android:entries="@array/preferenceCountry"
+        android:entryValues="@array/preferenceCountryValues"
+        android:key="countryList"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="Country"
+        android:summary="%s"/>
+    <EditTextPreference
+        android:title="something"/>
+
+</PreferenceScreen>

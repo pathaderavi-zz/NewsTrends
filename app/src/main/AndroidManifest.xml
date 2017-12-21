@@ -3,7 +3,8 @@
     package="com.example.ravikiranpathade.newstrends">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -18,12 +19,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.NewsDetailActivity"></activity>
+        <activity android:name=".activities.NewsDetailActivity" />
+
         <provider
             android:name="data.NewsContentProvider"
             android:authorities="com.example.ravikiranpathade.newstrends"
-            android:enabled="true"
-            />
+            android:enabled="true" />
+
+        <activity
+            android:name=".activities.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".activities.MainActivity">
+
+        </activity>
     </application>
 
 </manifest>

@@ -45,6 +45,7 @@ public class FavoritesFragment extends Fragment {
     RecyclerView recyclerView;
     LinearLayoutManager layoutManager;
     View view;
+    TextView textView;
     public FavoritesFragment() {
         // Required empty public constructor
     }
@@ -83,7 +84,7 @@ public class FavoritesFragment extends Fragment {
 
         // Inflate the layout for this fragment
             view =  inflater.inflate(R.layout.fragment_favorites, container, false);
-            TextView textView = view.findViewById(R.id.favoritesTextView);
+            textView = view.findViewById(R.id.favoritesTextView);
 
 
             fetchFavorites(view);
@@ -121,6 +122,10 @@ public class FavoritesFragment extends Fragment {
 
         adapter = new NewsRecyclerAdapter(articleList);
         recyclerView = view.findViewById(R.id.favoriteRecycler);
+        if(mCursor.getCount()==0){
+            textView.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+        }
         layoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);

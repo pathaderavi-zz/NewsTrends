@@ -35,8 +35,10 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
+
 import com.example.ravikiranpathade.newstrends.R;
 import com.github.thunder413.datetimeutils.DateTimeUtils;
 
@@ -82,7 +84,7 @@ public class NewsDescriptionFragment extends Fragment {
     View view;
     WebView w;
     long id;
-    int cursorID;
+    String cursorID;
     String authorName;
     String publishedAt;
     String sourceId;
@@ -156,8 +158,9 @@ public class NewsDescriptionFragment extends Fragment {
                 title,
                 null, null, null
         );
-        if (existing != null || existing.getCount() > 0) {
-            cursorID = existing.getColumnIndex("ID");
+        if (existing != null && existing.getCount() > 0) {
+            existing.moveToFirst();
+            cursorID = String.valueOf(existing.getInt(existing.getColumnIndex("ID")));
         }
 
         //TODO Change Fab Button Background based on Cursor Result
@@ -166,8 +169,8 @@ public class NewsDescriptionFragment extends Fragment {
         TextView descCard = view.findViewById(R.id.descDetail);
         TextView textView = view.findViewById(R.id.titleDetail);
         textView.setText(title);
-        Glide.with(getContext()).load(imageUrl).into(imageView);
-        bitmapDrawable = (BitmapDrawable) imageView.getDrawable();
+        Glide.with(getContext()).load(imageUrl).override(400,300).centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE).into(imageView);
+
         descCard.setText(desc);
 
         Log.d("Check Exists", String.valueOf(new File(getContext().getFilesDir().getAbsolutePath()
@@ -209,13 +212,19 @@ public class NewsDescriptionFragment extends Fragment {
         );
 
         if (existing != null && existing.getCount() > 0) {
-            cursorID = existing.getColumnIndex("ID");
+            existing.moveToFirst();
+            cursorID = String.valueOf(existing.getInt(existing.getColumnIndex("ID")));
             //TODO Delete Image
 
-            new File(getContext().getFilesDir().getAbsolutePath()
-                    + File.separator + String.valueOf(id) + ".mht").delete();
-            new File(getContext().getFilesDir().getAbsolutePath()
-                    + File.separator + "images", String.valueOf(cursorID) + ".jpg").delete();
+            File mht = new File(getContext().getFilesDir().getAbsolutePath()
+                    + File.separator, String.valueOf(id) + ".mht");
+            mht.setWritable(true);
+            File jpg = new File(getContext().getFilesDir().getAbsolutePath()
+                    + File.separator + "images", String.valueOf(cursorID) + ".jpg");
+            Log.d(String.valueOf(mht.exists()), String.valueOf(jpg.exists()));
+            mht.delete();
+            jpg.delete();
+            Log.d(String.valueOf(mht.exists()), String.valueOf(jpg.exists()));
 
             Uri delete = NewsContract.NewsFavoritesEntry.FINAL_URI.buildUpon().appendPath("id").build();
             getContext().getContentResolver().delete(delete, title, null);
@@ -248,28 +257,26 @@ public class NewsDescriptionFragment extends Fragment {
             );
             id = ContentUris.parseId(uri);
 
-            Glide.with(getContext()).asBitmap().load(imageUrl).into(new SimpleTarget<Bitmap>() {
+            Glide.with(getContext()).load(imageUrl).asBitmap().override(400,300).centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE).into(new SimpleTarget<Bitmap>() {
                 @Override
-                public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
-
-
+                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                     File dir = new File(getContext().getFilesDir().getAbsolutePath()
                             + File.separator + "images");
                     if (!dir.exists()) {
                         dir.mkdir();
                     }
-                    File ff = new File(dir,String.valueOf(id)+".jpg");
-                    try{
+                    File ff = new File(dir, String.valueOf(id) + ".jpg");
+                    try {
                         FileOutputStream fileOutputStream = new FileOutputStream(ff);
                         resource.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
                         fileOutputStream.flush();
                         fileOutputStream.close();
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
-
-
                 }
+
+
             });
             fav.setImageResource(R.drawable.ic_star_white_24px);
 
@@ -326,11 +333,12 @@ public class NewsDescriptionFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    private class CustomWebViewClientForDownload extends WebViewClient {
+        private class CustomWebViewClientForDownload extends WebViewClient {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
             String id_file = String.valueOf(id);
+            //TODO  NULL OBJECT REFERENCE ERROR
             w.saveWebArchive(getContext().getFilesDir().getAbsolutePath()
                     + File.separator + id_file + ".mht");
             Log.d("Path", getContext().getFilesDir().getAbsolutePath()
@@ -342,7 +350,7 @@ public class NewsDescriptionFragment extends Fragment {
     @Override
     public void setMenuVisibility(boolean menuVisible) {
         super.setMenuVisibility(menuVisible);
-        Log.d("Frag is","Visible");
+        Log.d("Frag is", "Visible");
 
     }
 }

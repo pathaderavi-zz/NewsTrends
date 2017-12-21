@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.ravikiranpathade.newstrends.R;
 import com.example.ravikiranpathade.newstrends.activities.NewsDetailActivity;
 import com.github.thunder413.datetimeutils.DateTimeUtils;
@@ -96,7 +97,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
 
             if (article.getUrlToImage() != null) {
 
-                Glide.with(holderContext).load(article.getUrlToImage()).into(newsCardImage);
+                Glide.with(holderContext).load(article.getUrlToImage()).centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE).into(newsCardImage);
             }
             headline.setText(article.getTitle());
 

@@ -2,6 +2,7 @@ package com.example.ravikiranpathade.newstrends.activities;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.preference.PreferenceManager;
@@ -98,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
             }
         });
         setupDrawer(navigation);
+        Log.d("On "+String.valueOf(viewPager.getVisibility()==View.VISIBLE),String.valueOf(tabLayout.getVisibility()==View.VISIBLE));
     /*
         final GetTopNewsWorldEnglish service = Client.getClient().create(GetTopNewsWorldEnglish.class);
         Call<CompleteResponse> call = service.getTopNewsArticles(KEY,"en");
@@ -123,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
 //        editor = prefs.edit();
 //        editor.putString("check","string value");
 //        editor.apply();
-
+        Log.d("Check Prefs",prefs.getString("categoriesList",""));
 
     }
 
@@ -139,8 +141,10 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
                 frame.setVisibility(View.GONE);
                 break;
             case R.id.settings:
-                //TODO Create PreferenceActivity
-                Toast.makeText(this, "reference Activity to be implemented", Toast.LENGTH_SHORT).show();
+               Log.d(String.valueOf(viewPager.getVisibility()==View.VISIBLE),String.valueOf(tabLayout.getVisibility()==View.VISIBLE));
+                Intent i = new Intent(this,SettingsActivity.class);
+                startActivity(i);
+                break;
             case R.id.favorites:
 
                 fragmentClass = FavoritesFragment.class;
@@ -197,5 +201,6 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
         return super.onOptionsItemSelected(item);
 
     }
+
 
 }
