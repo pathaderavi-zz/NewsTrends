@@ -29,8 +29,18 @@
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".activities.MainActivity"></activity>
-        <activity android:name=".activities.AddKeywordActivity"></activity>
+            android:parentActivityName=".activities.MainActivity" />
+
+
+        <activity android:name=".activities.AddKeywordActivity" />
+
+        <service
+            android:name="services.JobDispatcherForNotifications"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

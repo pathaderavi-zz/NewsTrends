@@ -31,9 +31,10 @@ public class KeywordsAdapter extends ArrayAdapter<String> {
     List<String> allString;
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
+
     public KeywordsAdapter(@NonNull Context context, List<String> strings) {
 
-        super(context, R.layout.custom_row_keywords,strings);
+        super(context, R.layout.custom_row_keywords, strings);
         allString = strings;
     }
 
@@ -41,7 +42,7 @@ public class KeywordsAdapter extends ArrayAdapter<String> {
     @Override
     public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         LayoutInflater inflater = LayoutInflater.from(getContext());
-        View view= inflater.inflate(R.layout.custom_row_keywords,parent,false);
+        View view = inflater.inflate(R.layout.custom_row_keywords, parent, false);
         preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         editor = preferences.edit();
 
@@ -56,13 +57,13 @@ public class KeywordsAdapter extends ArrayAdapter<String> {
                 allString.remove(position);
 
                 JSONArray j = new JSONArray();
-                for(int i = 0; i < allString.size();i++){
+                for (int i = 0; i < allString.size(); i++) {
                     j.put(allString.get(i));
                 }
                 editor.putString("jArrayWords", j.toString());
                 editor.commit();
-                Log.d("Check Adapter",j.toString());
-                //TODO REMOVE from preferences
+                Log.d("Check Adapter", j.toString());
+
                 notifyDataSetChanged();
             }
         });

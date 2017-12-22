@@ -30,21 +30,16 @@ import adapters.KeywordsAdapter;
 public class AddKeywordActivity extends AppCompatActivity {
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
-    List<String> list;
+
     ListAdapter adapter;
     ListView listView;
     JSONArray jArray;
-
+    //TODO Implement Delete All
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_keyword);
-        list = new ArrayList<>();
-        list.add("One");
-        list.add("Two");
-        list.add("Three");
-        list.add("Four");
-        list.add("Five");
+
         Toolbar t = findViewById(R.id.keywordBar);
         setSupportActionBar(t);
         getSupportActionBar().setTitle("Manage Alert Keywords");
@@ -95,7 +90,7 @@ public class AddKeywordActivity extends AppCompatActivity {
     }
 
     private void setAdapter(String query) {
-        //TODO Get put jArray String in preferences
+
         try {
             jArray = new JSONArray(preferences.getString("jArrayWords", ""));
             Log.d("Check setAdapter", jArray.toString());
@@ -114,7 +109,7 @@ public class AddKeywordActivity extends AppCompatActivity {
 
     public void adapterInput(JSONArray j) {
         List<String> adapterList = new ArrayList<>();
-        if(j!=null) {
+        if (j != null) {
             for (int i = 0; i < j.length(); i++) {
                 try {
                     adapterList.add(j.getString(i));

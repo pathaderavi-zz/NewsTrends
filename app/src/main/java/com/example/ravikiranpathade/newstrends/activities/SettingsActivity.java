@@ -25,11 +25,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Switch;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.example.ravikiranpathade.newstrends.R;
+import com.firebase.jobdispatcher.Constraint;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
+import com.firebase.jobdispatcher.Lifetime;
+import com.firebase.jobdispatcher.RetryStrategy;
+import com.firebase.jobdispatcher.Trigger;
 
 import java.util.List;
+
+import services.JobDispatcherForNotifications;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -198,6 +209,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements and
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class GeneralPreferenceFragment extends PreferenceFragment {
+
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -239,6 +252,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements and
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class NotificationPreferenceFragment extends PreferenceFragment {
+        private static final String JOB_TAG = "notifications_job";
+        private FirebaseJobDispatcher dispatcher;
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -251,6 +267,34 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements and
             // updated to reflect the new value, per the Android Design
             // guidelines.
             bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
+
+            Preference switchPref = findPreference("notifications_new_message");
+            switchPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object o) {
+                    boolean on = (boolean) o;
+                    dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(getActivity()));
+                if(on){
+                    Job job = dispatcher.newJobBuilder().
+                            setService(JobDispatcherForNotifications.class)
+                            .setLifetime(Lifetime.FOREVER)
+                            .setRecurring(true)
+                            .setTag(JOB_TAG)
+                            .setTrigger(Trigger.executionWindow(2,10))
+                            .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
+                            .setReplaceCurrent(false).
+                            setConstraints(Constraint.ON_ANY_NETWORK)
+                            .build();
+
+                    dispatcher.mustSchedule(job);
+                }else{
+                    dispatcher.cancel(JOB_TAG);
+                }
+
+
+                    return true;
+                }
+            });
         }
 
         @Override
