@@ -29,9 +29,8 @@
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".activities.MainActivity">
-
-        </activity>
+            android:parentActivityName=".activities.MainActivity"></activity>
+        <activity android:name=".activities.AddKeywordActivity"></activity>
     </application>
 
 </manifest>

@@ -169,7 +169,7 @@ public class NewsDescriptionFragment extends Fragment {
         TextView descCard = view.findViewById(R.id.descDetail);
         TextView textView = view.findViewById(R.id.titleDetail);
         textView.setText(title);
-        Glide.with(getContext()).load(imageUrl).override(400,300).centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE).into(imageView);
+        Glide.with(getContext()).load(imageUrl).override(400, 300).centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE).into(imageView);
 
         descCard.setText(desc);
 
@@ -222,10 +222,9 @@ public class NewsDescriptionFragment extends Fragment {
             File jpg = new File(getContext().getFilesDir().getAbsolutePath()
                     + File.separator + "images", String.valueOf(cursorID) + ".jpg");
 
-            boolean mhtDel =  mht.delete();
+            boolean mhtDel = mht.delete();
             boolean jpgDel = jpg.delete();
 
-            Log.d("Delete Status "+String.valueOf(mhtDel), String.valueOf(jpgDel));
 
             Uri delete = NewsContract.NewsFavoritesEntry.FINAL_URI.buildUpon().appendPath("id").build();
             getContext().getContentResolver().delete(delete, title, null);
@@ -258,7 +257,7 @@ public class NewsDescriptionFragment extends Fragment {
             );
             id = ContentUris.parseId(uri);
 
-            Glide.with(getContext()).load(imageUrl).asBitmap().override(400,300).centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE).into(new SimpleTarget<Bitmap>() {
+            Glide.with(getContext()).load(imageUrl).asBitmap().override(400, 300).centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE).into(new SimpleTarget<Bitmap>() {
                 @Override
                 public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                     File dir = new File(getContext().getFilesDir().getAbsolutePath()
@@ -334,12 +333,17 @@ public class NewsDescriptionFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-        private class CustomWebViewClientForDownload extends WebViewClient {
+    private class CustomWebViewClientForDownload extends WebViewClient {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
             String id_file = String.valueOf(id);
             //TODO  NULL OBJECT REFERENCE ERROR
+            File dir = new File(getContext().getFilesDir().getAbsolutePath()
+                    + File.separator);
+            if(!dir.exists()){
+                dir.mkdir();
+            }
             w.saveWebArchive(getContext().getFilesDir().getAbsolutePath()
                     + File.separator + id_file + ".mht");
             Log.d("Path", getContext().getFilesDir().getAbsolutePath()

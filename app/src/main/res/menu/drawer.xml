@@ -4,4 +4,5 @@
     <item android:id="@+id/settings" android:title="@string/settingsMenu" android:icon="@drawable/ic_settings_black_24px"/>
     <item android:id="@+id/favorites" android:title="@string/favoritesMenu" android:icon="@drawable/ic_favorite_black_24px"/>
     <item android:id="@+id/alerts" android:title="@string/alertsMenu" android:icon="@drawable/ic_local_post_office_black_24px"/>
+    <item android:id="@+id/addKeywords" android:title="@string/addKeywordsMenu" android:icon="@drawable/ic_assignment_black_24px"></item>
 </menu>

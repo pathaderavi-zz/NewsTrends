@@ -5,6 +5,7 @@ import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -23,6 +24,9 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.example.ravikiranpathade.newstrends.R;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         fragmentManager = getSupportFragmentManager();
         viewPager = findViewById(R.id.viewPager);
+
 
         final PagerAdapter pagerAdapter = new adapters.PagerAdapter(fragmentManager, tabLayout.getTabCount());
         viewPager.setAdapter(pagerAdapter);
@@ -160,6 +165,10 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
                 break;
             case R.id.alerts:
                 //fragment alerts
+                break;
+            case R.id.addKeywords:
+                Intent intentAdd = new Intent(this,AddKeywordActivity.class);
+                startActivity(intentAdd);
                 break;
             default:
 
