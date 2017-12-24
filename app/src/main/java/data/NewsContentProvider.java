@@ -30,6 +30,7 @@ public class NewsContentProvider extends ContentProvider {
 
     public static final UriMatcher uriMatcher = buildUriMatcher();
     private FavoriteNewsDBHelper favoriteNewsDBHelper;
+    private AlertNewsDBHelper alertDB;
 
     private static UriMatcher buildUriMatcher() {
         UriMatcher match = new UriMatcher(UriMatcher.NO_MATCH);
@@ -48,6 +49,7 @@ public class NewsContentProvider extends ContentProvider {
         Context context = getContext();
 
         favoriteNewsDBHelper = new FavoriteNewsDBHelper(context);
+        alertDB = new AlertNewsDBHelper(context);
         return true;
     }
 
@@ -57,6 +59,7 @@ public class NewsContentProvider extends ContentProvider {
         int match = uriMatcher.match(uri);
 
         final SQLiteDatabase database = favoriteNewsDBHelper.getReadableDatabase();
+
         Cursor returnCursor = null;
 
         switch (match) {
@@ -142,6 +145,7 @@ public class NewsContentProvider extends ContentProvider {
         int matchUri = uriMatcher.match(uri);
 
         final SQLiteDatabase database = favoriteNewsDBHelper.getWritableDatabase();
+
         Uri returnUri = null;
         long id;
         switch (matchUri) {
@@ -190,6 +194,7 @@ public class NewsContentProvider extends ContentProvider {
         int matchUri = uriMatcher.match(uri);
         int id = 0;
         final SQLiteDatabase database = favoriteNewsDBHelper.getWritableDatabase();
+
         s = "TITLE=" + "\"" + s + "\"";
 
         switch (matchUri) {
@@ -219,7 +224,8 @@ public class NewsContentProvider extends ContentProvider {
     @Override
     public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
         int match = uriMatcher.match(uri);
-        SQLiteDatabase database = favoriteNewsDBHelper.getWritableDatabase();
+
+        final SQLiteDatabase database = alertDB.getWritableDatabase();
         int numInserted = 0;
         switch (match){
             case ALERTS:
@@ -234,7 +240,9 @@ public class NewsContentProvider extends ContentProvider {
                     database.setTransactionSuccessful();
                     getContext().getContentResolver().notifyChange(uri, null);
                     numInserted = values.length;
-                } finally {
+                } catch (Exception e){
+                    e.printStackTrace();
+                }finally {
                     database.endTransaction();
                 }
                 break;

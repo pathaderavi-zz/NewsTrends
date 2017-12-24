@@ -280,13 +280,14 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements and
                             .setLifetime(Lifetime.FOREVER)
                             .setRecurring(true)
                             .setTag(JOB_TAG)
-                            .setTrigger(Trigger.executionWindow(2,10))
+                            .setTrigger(Trigger.executionWindow(0,5))
                             .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
                             .setReplaceCurrent(false).
                             setConstraints(Constraint.ON_ANY_NETWORK)
                             .build();
 
                     dispatcher.mustSchedule(job);
+
                 }else{
                     dispatcher.cancel(JOB_TAG);
                 }
