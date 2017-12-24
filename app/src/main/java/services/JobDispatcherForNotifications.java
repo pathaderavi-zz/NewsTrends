@@ -85,84 +85,76 @@ public class JobDispatcherForNotifications extends JobService {
                     Call<CompleteResponse> call = service.getForAlerts(KEY, keyword);
 
                     call.enqueue(new Callback<CompleteResponse>() {
-                        @Override
-                        public void onResponse(Call<CompleteResponse> call, Response<CompleteResponse> response) {
-                            List<Articles> articles = response.body().getArticles();
-                            for (Articles a : articles) {
-                                mCursor = getApplicationContext().getContentResolver().query(
-                                        NewsContract.NewsAlertsEntry.FINAL_URI.buildUpon().appendPath("id")
-                                                .build(),
-                                        null,
-                                        a.getTitle(),
-                                        null, null, null);
+                                     @Override
+                                     public void onResponse(Call<CompleteResponse> call, Response<CompleteResponse> response) {
+                                         List<Articles> articles = response.body().getArticles();
+                                         for (Articles a : articles) {
+                                             mCursor = getApplicationContext().getContentResolver().query(
+                                                     NewsContract.NewsAlertsEntry.FINAL_URI.buildUpon().appendPath("id")
+                                                             .build(),
+                                                     null,
+                                                     a.getTitle(),
+                                                     null, null, null);
 
 
+                                             if (mCursor != null && mCursor.getCount() == 0) {
+                                                 ContentValues values = new ContentValues();
+                                                 Date dateInsert = DateTimeUtils.formatDate(a.getPublishedAt());
 
-                                if (mCursor != null && mCursor.getCount() == 0) {
-                                    ContentValues values = new ContentValues();
-                                    Date dateInsert = DateTimeUtils.formatDate(a.getPublishedAt());
+                                                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-                                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                                 values.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_TITLE, a.getTitle());
+                                                 values.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_DESCRIPTION, a.getDescription());
+                                                 values.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_URL, a.getUrl());
+                                                 values.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_URL_TO_IMAGE, a.getUrlToImage());
+                                                 values.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_AUTHOR, a.getAuthor());
+                                                 values.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_PUBLISHED_AT, a.getPublishedAt());
+                                                 values.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_SOURCE_ID, a.getSource().getId());
+                                                 values.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_SOURCE_NAME, a.getSource().getName());
+                                                 values.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_DATE, simpleDateFormat.format(dateInsert));
 
-                                    values.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_TITLE, a.getTitle());
-                                    values.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_DESCRIPTION, a.getDescription());
-                                    values.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_URL, a.getUrl());
-                                    values.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_URL_TO_IMAGE, a.getUrlToImage());
-                                    values.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_AUTHOR, a.getAuthor());
-                                    values.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_PUBLISHED_AT, a.getPublishedAt());
-                                    values.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_SOURCE_ID, a.getSource().getId());
-                                    values.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_SOURCE_NAME, a.getSource().getName());
-                                    values.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_DATE, simpleDateFormat.format(dateInsert));
+                                                 finalListValues.add(values);
+                                                 Log.d("Check Final", String.valueOf(finalListValues.size()));
+                                             }
+                                         }
 
-                                    finalListValues.add(values);
-                                    Log.d("Check Final",String.valueOf(finalListValues.size()));
-                                }
-                            }
+                                     }
 
-                        }
-
-                        @Override
-                        public void onFailure(Call<CompleteResponse> call, Throwable t) {
-                            t.printStackTrace();
-                        }
-                    }
+                                     @Override
+                                     public void onFailure(Call<CompleteResponse> call, Throwable t) {
+                                         t.printStackTrace();
+                                     }
+                                 }
                     );
 
                 }
 
 
             }
+
             final Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (finalListValues != null) {
+                    if (finalListValues.size() > 0) {
                         ContentValues[] cv = new ContentValues[finalListValues.size()];
                         finalListValues.toArray(cv);
-                        Log.d("Insertion Started","Here ");
+                        Log.d("Insertion Started", "Here ");
                         newAlertsNumber = getApplicationContext().getContentResolver().bulkInsert(
                                 NewsContract.NewsAlertsEntry.FINAL_URI, cv
                         );
                     }
-                    if (newAlertsNumber > 0) {
+                    if (finalListValues.size() > 0) {
                         setNotification(finalListValues.size());
                     }
-                    Log.d("Job Finished","Here Check");
-                    Log.d(String.valueOf(finalListValues.size()),"Here Check");
-                    Toast.makeText(getApplicationContext(), "Ended", Toast.LENGTH_SHORT).show();}
-            }, 10000);
-
-            for (int i = 0; i < newAlerts.size(); i++) {
-                List<Articles> articles = newAlerts.get(i);
-
-
-            }
+                }
+            }, 60000); //TODO 1 Minute for Notifications
 
 
         }
 
         jobFinished(jobParameters, false);
-        return false;
+        return true;
 
     }
 
@@ -188,7 +180,5 @@ public class JobDispatcherForNotifications extends JobService {
 
         NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         manager.notify(NOTIFICATION_ID, notification.build());
-
-
-    }
+}
 }

@@ -200,7 +200,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements and
             onBackPressed();
 
         }
-        return super.onMenuItemSelected(android.R.id.home,item);
+        return super.onMenuItemSelected(android.R.id.home, item);
     }
 
     /**
@@ -242,7 +242,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements and
                 startActivity(new Intent(getActivity(), SettingsActivity.class));
                 return true;
             }
-           return false;
+            return false;
         }
     }
 
@@ -274,23 +274,23 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements and
                 public boolean onPreferenceChange(Preference preference, Object o) {
                     boolean on = (boolean) o;
                     dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(getActivity()));
-                if(on){
-                    Job job = dispatcher.newJobBuilder().
-                            setService(JobDispatcherForNotifications.class)
-                            .setLifetime(Lifetime.FOREVER)
-                            .setRecurring(true)
-                            .setTag(JOB_TAG)
-                            .setTrigger(Trigger.executionWindow(0,5))
-                            .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
-                            .setReplaceCurrent(false).
-                            setConstraints(Constraint.ON_ANY_NETWORK)
-                            .build();
+                    if (on) {
+                        Job job = dispatcher.newJobBuilder().
+                                setService(JobDispatcherForNotifications.class)
+                                .setLifetime(Lifetime.FOREVER)
+                                .setRecurring(true)
+                                .setTag(JOB_TAG)
+                                .setTrigger(Trigger.executionWindow(0, 10800)) //Set for 3 Hours //TODO Change to 12/24 hours
+                                .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
+                                .setReplaceCurrent(false).
+                                        setConstraints(Constraint.ON_ANY_NETWORK)
+                                .build();
 
-                    dispatcher.mustSchedule(job);
+                        dispatcher.mustSchedule(job);
 
-                }else{
-                    dispatcher.cancel(JOB_TAG);
-                }
+                    } else {
+                        dispatcher.cancel(JOB_TAG);
+                    }
 
 
                     return true;

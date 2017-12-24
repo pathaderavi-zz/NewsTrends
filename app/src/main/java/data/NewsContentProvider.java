@@ -75,7 +75,7 @@ public class NewsContentProvider extends ContentProvider {
                             null,
                             null,
                             null,
-                            null
+                            sortOrder
                     );
 
                 } catch (Exception e) {
@@ -103,7 +103,7 @@ public class NewsContentProvider extends ContentProvider {
                         null,
                         null,
                         null,
-                        null
+                        sortOrder
                 );
                 break;
             case ALERTS_ID:

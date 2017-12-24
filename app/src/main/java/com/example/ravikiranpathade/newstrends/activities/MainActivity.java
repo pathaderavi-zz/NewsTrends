@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
             }
         });
         setupDrawer(navigation);
-        Log.d("On "+String.valueOf(viewPager.getVisibility()==View.VISIBLE),String.valueOf(tabLayout.getVisibility()==View.VISIBLE));
+
     /*
         final GetTopNewsWorldEnglish service = Client.getClient().create(GetTopNewsWorldEnglish.class);
         Call<CompleteResponse> call = service.getTopNewsArticles(KEY,"en");
@@ -127,10 +127,13 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
         */
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        editor = prefs.edit();
+
+
 //        editor = prefs.edit();
 //        editor.putString("check","string value");
 //        editor.apply();
-        Log.d("Check Prefs",prefs.getString("categoriesList",""));
+
 
     }
 
