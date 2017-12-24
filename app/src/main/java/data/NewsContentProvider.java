@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -22,6 +23,11 @@ public class NewsContentProvider extends ContentProvider {
 
     public static final int FAVORITES_ID = 101;
 
+    public static final int ALERTS = 200;
+
+    public static final int ALERTS_ID = 201;
+
+
     public static final UriMatcher uriMatcher = buildUriMatcher();
     private FavoriteNewsDBHelper favoriteNewsDBHelper;
 
@@ -30,6 +36,9 @@ public class NewsContentProvider extends ContentProvider {
 
         match.addURI(NewsContract.AUTHORITY, NewsContract.PATH_FAVORITES, FAVORITES);
         match.addURI(NewsContract.AUTHORITY, NewsContract.PATH_FAVORITES + "/id", FAVORITES_ID);
+
+        match.addURI(NewsContract.AUTHORITY, NewsContract.PATH_ALERTS, ALERTS);
+        match.addURI(NewsContract.AUTHORITY, NewsContract.PATH_ALERTS + "/id", ALERTS_ID);
 
         return match;
     }
@@ -83,6 +92,36 @@ public class NewsContentProvider extends ContentProvider {
                 );
 
                 break;
+            case ALERTS:
+                returnCursor = database.query(
+                        NewsContract.NewsAlertsEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        null,
+                        null,
+                        null,
+                        null
+                );
+                break;
+            case ALERTS_ID:
+                try {
+                    selection = "TITLE=" + "\"" + selection + "\"";
+
+
+                    returnCursor = database.query(
+                            NewsContract.NewsAlertsEntry.TABLE_NAME,
+                            null,
+                            selection,
+                            null,
+                            null,
+                            null,
+                            null
+                    );
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
             default:
                 throw new UnsupportedOperationException("Unable to find" + uri);
 
@@ -104,10 +143,10 @@ public class NewsContentProvider extends ContentProvider {
 
         final SQLiteDatabase database = favoriteNewsDBHelper.getWritableDatabase();
         Uri returnUri = null;
-
+        long id;
         switch (matchUri) {
             case FAVORITES:
-                long id = 0;
+                id = 0;
                 try {
                     id = database.insert(
                             NewsContract.NewsFavoritesEntry.TABLE_NAME,
@@ -123,8 +162,22 @@ public class NewsContentProvider extends ContentProvider {
                 }
                 break;
 
-            case FAVORITES_ID:
-                return null;
+            case ALERTS:
+                id = 0;
+                try {
+                    id = database.insert(
+                            NewsContract.NewsAlertsEntry.TABLE_NAME,
+                            null,
+                            contentValues
+                    );
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if (id > 0) {
+                    returnUri = ContentUris.withAppendedId(NewsContract.NewsAlertsEntry.FINAL_URI, id);
+                    Log.d("Check Insert ID", returnUri.toString());
+                }
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown Uri " + uri);
         }
@@ -137,14 +190,23 @@ public class NewsContentProvider extends ContentProvider {
         int matchUri = uriMatcher.match(uri);
         int id = 0;
         final SQLiteDatabase database = favoriteNewsDBHelper.getWritableDatabase();
-        s = "TITLE="+"\""+s+"\"";
+        s = "TITLE=" + "\"" + s + "\"";
 
-        switch (matchUri){
+        switch (matchUri) {
             case FAVORITES_ID:
-                id = database.delete(NewsContract.NewsFavoritesEntry.TABLE_NAME,s,null);
+                id = database.delete(NewsContract.NewsFavoritesEntry.TABLE_NAME, s, null);
+                break;
+            case FAVORITES:
+                id = database.delete(NewsContract.NewsFavoritesEntry.TABLE_NAME, null, null);
+                break;
+            case ALERTS_ID:
+                id = database.delete(NewsContract.NewsAlertsEntry.TABLE_NAME, s, null);
+                break;
+            case ALERTS:
+                id = database.delete(NewsContract.NewsAlertsEntry.TABLE_NAME, null, null);
                 break;
             default:
-                    throw new UnsupportedOperationException("Unable to find "+uri);
+                throw new UnsupportedOperationException("Unable to find " + uri);
         }
         return id;
     }
@@ -152,5 +214,32 @@ public class NewsContentProvider extends ContentProvider {
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String s, @Nullable String[] strings) {
         return 0;
+    }
+
+    @Override
+    public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
+        int match = uriMatcher.match(uri);
+        SQLiteDatabase database = favoriteNewsDBHelper.getWritableDatabase();
+        int numInserted = 0;
+        switch (match){
+            case ALERTS:
+                database.beginTransaction();
+                try {
+                    for (ContentValues cv : values) {
+                        long newID = database.insertOrThrow(NewsContract.NewsAlertsEntry.TABLE_NAME, null, cv);
+                        if (newID <= 0) {
+                            throw new SQLException("Failed to insert row into " + uri);
+                        }
+                    }
+                    database.setTransactionSuccessful();
+                    getContext().getContentResolver().notifyChange(uri, null);
+                    numInserted = values.length;
+                } finally {
+                    database.endTransaction();
+                }
+                break;
+
+        }
+        return numInserted;
     }
 }

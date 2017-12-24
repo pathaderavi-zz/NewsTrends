@@ -164,7 +164,8 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
                 fragmentManager.beginTransaction().add(R.id.mainActivityFramelayout,fragment).commit();
                 break;
             case R.id.alerts:
-                //fragment alerts
+                Intent intentAlert= new Intent(this,AlertedNewsActivity.class);
+                startActivity(intentAlert);
                 break;
             case R.id.addKeywords:
                 Intent intentAdd = new Intent(this,AddKeywordActivity.class);
