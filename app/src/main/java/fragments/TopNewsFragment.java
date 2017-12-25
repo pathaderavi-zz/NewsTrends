@@ -113,64 +113,79 @@ public class TopNewsFragment extends Fragment {
         final Gson gson = new Gson();
 
         final GetTopNewsWorldEnglish service = Client.getClient().create(GetTopNewsWorldEnglish.class);
-        Call<CompleteResponse> call = service.getTopNewsArticles(KEY, "en");
+
+        String country = prefs.getString("countryList","");
+
+        String language = prefs.getString("languageList","");
+
+        String category = prefs.getString("categoriesList","");
+
+        if(String.valueOf(language).equals("null")){
+            language = "en";
+        }
+        if(String.valueOf(country).equals("null")){
+            country="";
+            Log.d("Check Country",country+"h");
+        }
+
+        if(String.valueOf(category).equals("null")){
+            category="";
+            Log.d("Check Category",category);
+        }
+
+        Call<CompleteResponse> call = service.getTopNewsArticles(KEY, language,country,category);
 
         final List<Articles>[] a1 = new List[]{new ArrayList<>()};
-        String resp = prefs.getString("topnews","");
-        Type type = new TypeToken<List<Articles>>(){}.getType();
-        a1[0] = gson.fromJson(resp,type);
-        adapter = new NewsRecyclerAdapter(a1[0]);
-        topNewsRecycler.setAdapter(adapter);
+        String resp = prefs.getString("topnews", "");
+        if (resp != "" || resp != null) {
+            Type type = new TypeToken<List<Articles>>() {
+            }.getType();
+            a1[0] = gson.fromJson(resp, type);
+            adapter = new NewsRecyclerAdapter(a1[0]);
+            topNewsRecycler.setAdapter(adapter);
+        } else {
 
-        for(int i = 0 ; i < a1[0].size();i++){
-            if(a1[0].get(i).getUrlToImage()==null){
-                Log.d("Image Not ","found");
-            }
-        }
+            call.enqueue(new Callback<CompleteResponse>() {
+                @Override
+                public void onResponse(Call<CompleteResponse> call, Response<CompleteResponse> response) {
+                    a1[0] = response.body().getArticles();
+
+                       Log.d("Check u", call.request().url().toString());
+
+//                    for (int i = 0; i < a1[0].size(); i++) {
+//                        Articles ar = a1[0].get(i);
+//                        if (ar.getPublishedAt() == null) {
+//                            a1[0].remove(i);
+//                            i--;
+//                        }
+//                    }
 //
-//        for(int i = 0 ; i < a1[0].size();i++){
-//            Log.d("Check Source",a1[0].get(i).getPublishedDate().toString());
-//        }
+//                    for (int i = 0; i < a1[0].size(); i++) {
+//                        if (a1[0].get(i).getPublishedAt() != null) {
+//                            Articles ar = a1[0].get(i);
+//                            Date date = DateTimeUtils.formatDate(ar.getPublishedAt());
+//                            ar.setPublishedDate(date);
+//
+//                        }
+//                    }
+//
+//                    Collections.sort(a1[0]);
+                    adapter = new NewsRecyclerAdapter(a1[0]);
+                    topNewsRecycler.setAdapter(adapter);
+                    String json = gson.toJson(a1[0]);
+                    editor.putString("topnews", json);
+                    editor.commit();
+                    //TODO Start FirebaseService to schedule the job
 
-/*
-        call.enqueue(new Callback<CompleteResponse>() {
-            @Override
-            public void onResponse(Call<CompleteResponse> call, Response<CompleteResponse> response) {
-                a1[0] = response.body().getArticles();
-
-                for (int i = 0; i < a1[0].size(); i++) {
-                    Articles ar = a1[0].get(i);
-                    if (ar.getPublishedAt() == null) {
-                        a1[0].remove(i);
-                        i--;
-                    }
                 }
 
-                for (int i = 0; i < a1[0].size(); i++) {
-                    if (a1[0].get(i).getPublishedAt() != null ) {
-                        Articles ar = a1[0].get(i);
-                        Date date = DateTimeUtils.formatDate(ar.getPublishedAt());
-                        ar.setPublishedDate(date);
-
-                    }
+                @Override
+                public void onFailure(Call<CompleteResponse> call, Throwable t) {
+                    t.printStackTrace();
                 }
+            });
 
-                Collections.sort(a1[0]);
-                adapter = new NewsRecyclerAdapter(a1[0]);
-                topNewsRecycler.setAdapter(adapter);
-                String json = gson.toJson(a1[0]);
-                editor.putString("topnews", json);
-                editor.commit();
-
-            }
-
-            @Override
-            public void onFailure(Call<CompleteResponse> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
-
-*/
+        }
         return view;
     }
 
