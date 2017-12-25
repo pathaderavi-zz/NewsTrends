@@ -208,4 +208,6 @@ Quis non odit sordidos, vanos, leves, futtiles? Sed venio ad inconstantiae crime
         <item>us</item>
         <item>za</item>
     </string-array>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>

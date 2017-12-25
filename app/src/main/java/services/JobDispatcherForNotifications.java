@@ -99,9 +99,7 @@ public class JobDispatcherForNotifications extends JobService {
 
                                              if (mCursor != null && mCursor.getCount() == 0) {
                                                  ContentValues values = new ContentValues();
-                                                 Date dateInsert = DateTimeUtils.formatDate(a.getPublishedAt());
 
-                                                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
                                                  values.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_TITLE, a.getTitle());
                                                  values.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_DESCRIPTION, a.getDescription());
@@ -111,7 +109,12 @@ public class JobDispatcherForNotifications extends JobService {
                                                  values.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_PUBLISHED_AT, a.getPublishedAt());
                                                  values.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_SOURCE_ID, a.getSource().getId());
                                                  values.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_SOURCE_NAME, a.getSource().getName());
-                                                 values.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_DATE, simpleDateFormat.format(dateInsert));
+
+                                                 if (a.getPublishedAt() != "" || !a.getPublishedAt().isEmpty()) {
+                                                     Date dateInsert = DateTimeUtils.formatDate(a.getPublishedAt());
+                                                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                                     values.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_DATE, simpleDateFormat.format(dateInsert));
+                                                 }
 
                                                  finalListValues.add(values);
                                                  Log.d("Check Final", String.valueOf(finalListValues.size()));
@@ -180,5 +183,5 @@ public class JobDispatcherForNotifications extends JobService {
 
         NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         manager.notify(NOTIFICATION_ID, notification.build());
-}
+    }
 }
