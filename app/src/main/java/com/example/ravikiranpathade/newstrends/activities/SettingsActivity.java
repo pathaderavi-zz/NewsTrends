@@ -40,6 +40,7 @@ import com.firebase.jobdispatcher.Trigger;
 
 import java.util.List;
 
+import services.FetchTopNewsService;
 import services.JobDispatcherForNotifications;
 
 /**

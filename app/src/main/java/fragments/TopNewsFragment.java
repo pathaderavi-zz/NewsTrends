@@ -14,6 +14,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.ravikiranpathade.newstrends.R;
+import com.example.ravikiranpathade.newstrends.activities.MainActivity;
+import com.firebase.jobdispatcher.Constraint;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
+import com.firebase.jobdispatcher.Lifetime;
+import com.firebase.jobdispatcher.RetryStrategy;
+import com.firebase.jobdispatcher.Trigger;
 import com.github.thunder413.datetimeutils.DateTimeUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -33,6 +41,7 @@ import rest.GetTopNewsWorldEnglish;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import services.FetchTopNewsService;
 
 import static android.provider.Contacts.SettingsColumns.KEY;
 
@@ -62,7 +71,8 @@ public class TopNewsFragment extends Fragment {
     NewsRecyclerAdapter adapter;
     SharedPreferences prefs;
     SharedPreferences.Editor editor;
-
+    private String JOB_TAG = "fetch_top_news";
+    FirebaseJobDispatcher dispatcher;
     public TopNewsFragment() {
         // Required empty public constructor
     }
@@ -105,7 +115,7 @@ public class TopNewsFragment extends Fragment {
 
         topNewsRecycler.setLayoutManager(layoutManager);
 
-        List<Articles> test = new ArrayList<>();
+
         //test.add(new Articles("Ravi","Check Title","Check Description","","https://imgssl.constantcontact.com/kb/next-gen-image-link-editor-steps34.png","Chekc Date"));
 
         prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
@@ -177,6 +187,20 @@ public class TopNewsFragment extends Fragment {
                     editor.commit();
                     //TODO Start FirebaseService to schedule the job
 
+                    dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(getContext()));
+
+                    Job job = dispatcher.newJobBuilder().
+                            setService(FetchTopNewsService.class)
+                            .setLifetime(Lifetime.FOREVER)
+                            .setRecurring(true)
+                            .setTag(JOB_TAG)
+                            .setTrigger(Trigger.executionWindow(0, 10800)) //Set for 3 Hours //TODO Change to 12/24 hours
+                            .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
+                            .setReplaceCurrent(false).setConstraints(Constraint.ON_ANY_NETWORK)
+                            .build();
+
+                    dispatcher.mustSchedule(job);
+
                 }
 
                 @Override
@@ -186,6 +210,8 @@ public class TopNewsFragment extends Fragment {
             });
 
         }
+
+
         return view;
     }
 
@@ -211,6 +237,18 @@ public class TopNewsFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        //TODO Try to implement to load data while Settings Changed and Service Runs
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     /**

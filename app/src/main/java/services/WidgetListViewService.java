@@ -28,32 +28,34 @@ import models.Articles;
 
 public class WidgetListViewService extends RemoteViewsService {
     private Context context;
-    private  int widgetId;
+    private int widgetId;
     List<Articles> articlesList;
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
-        Log.d("Running Check ","getViewAt");
-        return new WidgetListViewFactory(getApplicationContext(),intent);
+
+        return new WidgetListViewFactory(getApplicationContext(), intent);
     }
 
-    class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory{
+    class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
         public WidgetListViewFactory(Context applicationContext, Intent intent) {
-            Log.d("Running ","getViewAt");
+
             context = applicationContext;
-            widgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,AppWidgetManager.INVALID_APPWIDGET_ID);
+            widgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
             articlesList = new ArrayList<>();
         }
 
-        public List<Articles> getArticles(){
+        public List<Articles> getArticles() {
             articlesList = new ArrayList<>();
             SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
-            String news = pref.getString("topnews","");
+            String news = pref.getString("topnews", "");
             Gson gson = new Gson();
-            Type type = new TypeToken<List<Articles>>(){}.getType();
-            articlesList = gson.fromJson(news,type);
+            Type type = new TypeToken<List<Articles>>() {
+            }.getType();
+            articlesList = gson.fromJson(news, type);
             return articlesList;
         }
+
         @Override
         public void onCreate() {
             getArticles();
@@ -72,17 +74,20 @@ public class WidgetListViewService extends RemoteViewsService {
 
         @Override
         public int getCount() {
-            return Math.min(articlesList.size(),10);
+
+            return Math.min(articlesList.size(), 10);
+
+
         }
 
         @Override
         public RemoteViews getViewAt(int i) {
             RemoteViews remtoteView = new RemoteViews(context.getPackageName(), R.layout.widget_list_item);
-            Log.d("Check",articlesList.get(i).getTitle());
-            if(articlesList.size()>0){
+
+            if (articlesList.size() > 0) {
                 String title = articlesList.get(i).getTitle();
 
-                remtoteView.setTextViewText(R.id.widgetTitleTextView,title);
+                remtoteView.setTextViewText(R.id.widgetTitleTextView, title);
 
             }
             return remtoteView;

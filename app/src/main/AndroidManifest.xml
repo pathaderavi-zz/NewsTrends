@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
@@ -39,10 +40,20 @@
                 <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
             </intent-filter>
         </service>
-        <service android:name="services.WidgetListViewService"
-            android:exported="false"
-            android:permission="android.permission.BIND_REMOTEVIEWS"/>
 
+        <service
+            android:name="services.WidgetListViewService"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <service
+            android:name="services.FetchTopNewsService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
+            </intent-filter>
+        </service>
+        <service android:name="services.WidgetUpdateService" />
         <activity android:name=".activities.AlertedNewsActivity" />
 
         <receiver android:name=".NewsAppWidget">

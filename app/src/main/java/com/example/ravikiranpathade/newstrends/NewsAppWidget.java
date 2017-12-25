@@ -39,7 +39,7 @@ public class NewsAppWidget extends AppWidgetProvider {
         else{
            // views.setTextViewText(R.id.appwidget_text,"");
             //TODO
-            //appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId,R.id.listViewWidget);
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId,R.id.listViewWidget);
         }
         Intent listIntent = new Intent(context, WidgetListViewService.class);
         views.setRemoteAdapter(R.id.listViewWidget,listIntent);
@@ -54,7 +54,7 @@ public class NewsAppWidget extends AppWidgetProvider {
         // There may be multiple widgets active, so update all of them
 
         for (int appWidgetId : appWidgetIds) {
-            Log.d("Running ","getViewAt Update");
+
             updateAppWidget(context, appWidgetManager, appWidgetId);
         }
     }

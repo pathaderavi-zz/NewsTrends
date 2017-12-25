@@ -151,7 +151,7 @@ public class JobDispatcherForNotifications extends JobService {
                         setNotification(finalListValues.size());
                     }
                 }
-            }, 60000); //TODO 1 Minute for Notifications
+            }, 5000); //TODO 1 Minute for Notifications
 
 
         }

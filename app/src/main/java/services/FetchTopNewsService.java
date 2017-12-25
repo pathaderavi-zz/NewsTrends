@@ -1,11 +1,12 @@
 package services;
 
 import android.annotation.SuppressLint;
-import android.app.job.JobParameters;
-import android.app.job.JobService;
+import com.firebase.jobdispatcher.JobParameters;
+import com.firebase.jobdispatcher.JobService;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -35,7 +36,7 @@ public class FetchTopNewsService extends JobService {
 
     @Override
     public boolean onStartJob(JobParameters jobParameters) {
-
+        Toast.makeText(getApplicationContext(),"Started Again",Toast.LENGTH_SHORT).show();
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         editor = preferences.edit();
 
@@ -70,6 +71,9 @@ public class FetchTopNewsService extends JobService {
                 editor.putString("topnews", json);
                 editor.commit();
                 //TODO Update Widget
+                WidgetUpdateService updateWidget = new WidgetUpdateService();
+                updateWidget.updateWidget(getApplicationContext());
+
             }
 
             @Override
@@ -79,7 +83,7 @@ public class FetchTopNewsService extends JobService {
         });
 
 
-        jobFinished(jobParameters, true);
+        jobFinished(jobParameters, false);
         return true;
     }
 
