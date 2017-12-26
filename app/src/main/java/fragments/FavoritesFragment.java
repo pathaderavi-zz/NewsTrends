@@ -1,6 +1,9 @@
 package fragments;
 
 
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.ravikiranpathade.newstrends.R;
@@ -20,6 +24,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import adapters.NewsCursorAdapter;
 import adapters.NewsRecyclerAdapter;
 import data.NewsContract;
 import models.Articles;
@@ -30,7 +35,7 @@ import models.Source;
  * Use the {@link FavoritesFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FavoritesFragment extends Fragment {
+public class FavoritesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -46,6 +51,10 @@ public class FavoritesFragment extends Fragment {
     LinearLayoutManager layoutManager;
     View view;
     TextView textView;
+    ListView listView;
+    Cursor cursor1;
+    NewsCursorAdapter cursorAdapter;
+
     public FavoritesFragment() {
         // Required empty public constructor
     }
@@ -76,6 +85,8 @@ public class FavoritesFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        cursorAdapter = new NewsCursorAdapter(getContext(), null);
+        getActivity().getSupportLoaderManager().initLoader(0, null, this).forceLoad();
     }
 
     @Override
@@ -83,58 +94,60 @@ public class FavoritesFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-            view =  inflater.inflate(R.layout.fragment_favorites, container, false);
-            textView = view.findViewById(R.id.favoritesTextView);
+        view = inflater.inflate(R.layout.fragment_favorites, container, false);
+        textView = view.findViewById(R.id.favoritesTextView);
 
 
-            fetchFavorites(view);
-
+        listView = view.findViewById(R.id.favoriteRecycler);
+        listView.setAdapter(cursorAdapter);
 
         return view;
     }
 
-    public void fetchFavorites(View view){
-        mCursor = getContext().getContentResolver().query(NewsContract.NewsFavoritesEntry.FINAL_URI,
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+
+        return new CursorLoader(getContext(), NewsContract.NewsFavoritesEntry.FINAL_URI,
                 null,
                 null,
                 null,
                 "ID DESC");
-        //textView.setText(String.valueOf(mCursor.getCount()));
 
-        articleList = new ArrayList<>();
+    }
 
-
-        while(mCursor.moveToNext()){
-            String cursorId = String.valueOf(mCursor.getInt(mCursor.getColumnIndex("ID")));
-            articleList.add(new Articles(mCursor.getString(mCursor.getColumnIndex("AUTHOR")),
-                    mCursor.getString(mCursor.getColumnIndex("TITLE")),
-                    mCursor.getString(mCursor.getColumnIndex("DESCRIPTION")),
-                    mCursor.getString(mCursor.getColumnIndex("URL")),
-                    getContext().getFilesDir().getAbsolutePath()
-                            + File.separator + "images"+File.separator+ String.valueOf(cursorId) + ".jpg",
-                    mCursor.getString(mCursor.getColumnIndex("PUBLISHEDAT")),
-                    new Source(
-                            mCursor.getString(mCursor.getColumnIndex("SOURCEID")),
-                            mCursor.getString(mCursor.getColumnIndex("SOURCENAME"))
-                    )
-            ));
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        if (cursor1 != null) {
+            cursor1 = null;
         }
+        cursor1 = getContext().getContentResolver().query(
+                NewsContract.NewsFavoritesEntry.FINAL_URI,
+                null,
+                null,
+                null,
+                "ID DESC"
+        );
+       if(cursor1==null||cursor1.getCount()==0){
+           textView = view.findViewById(R.id.favoritesTextView);
+           listView = view.findViewById(R.id.favoriteRecycler);
 
-        adapter = new NewsRecyclerAdapter(articleList);
-        recyclerView = view.findViewById(R.id.favoriteRecycler);
-        if(mCursor.getCount()==0){
-            textView.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.GONE);
-        }
-        layoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
+           textView.setVisibility(View.VISIBLE);
+           listView.setVisibility(View.GONE);
 
+       }
+        cursorAdapter.swapCursor(cursor1);
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        cursorAdapter.swapCursor(null);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        fetchFavorites(view);
+        getActivity().getSupportLoaderManager().initLoader(0, null, this);
     }
 }

@@ -143,6 +143,7 @@ public class NewsDescriptionFragment extends Fragment {
         int j = getActivity().getIntent().getIntExtra("list_id", 0);
         final String title = getActivity().getIntent().getStringExtra("title");
         final String imageUrl = getActivity().getIntent().getStringExtra("urlToImage");
+        //TODO Check Internet Connectivity and set image accordingly
         final String desc = getActivity().getIntent().getStringExtra("description");
         final String urlArticle = getActivity().getIntent().getStringExtra("url");
         authorName = getActivity().getIntent().getStringExtra("author");
@@ -160,7 +161,7 @@ public class NewsDescriptionFragment extends Fragment {
         );
         if (existing != null && existing.getCount() > 0) {
             existing.moveToFirst();
-            cursorID = String.valueOf(existing.getInt(existing.getColumnIndex("ID")));
+            cursorID = String.valueOf(existing.getInt(existing.getColumnIndex("_id")));
         }
 
         //TODO Change Fab Button Background based on Cursor Result
@@ -213,7 +214,7 @@ public class NewsDescriptionFragment extends Fragment {
 
         if (existing != null && existing.getCount() > 0) {
             existing.moveToFirst();
-            cursorID = String.valueOf(existing.getInt(existing.getColumnIndex("ID")));
+            cursorID = String.valueOf(existing.getInt(existing.getColumnIndex("_id")));
             //TODO Delete Image
 
             File mht = new File(getContext().getFilesDir().getAbsolutePath()
@@ -235,7 +236,7 @@ public class NewsDescriptionFragment extends Fragment {
 
         } else {
             w = view.findViewById(R.id.detWeb);
-            WebViewClient wClient = new CustomWebViewClientForDownload();
+            WebViewClient wClient = new CustomWebViewClientForDownload(getContext());
             w.setWebViewClient(wClient);
             w.loadUrl(urlArticle);
             Date dateInsert = DateTimeUtils.formatDate(publishedAt);
@@ -334,20 +335,24 @@ public class NewsDescriptionFragment extends Fragment {
     }
 
     private class CustomWebViewClientForDownload extends WebViewClient {
+        Context customContext;
+        public CustomWebViewClientForDownload(Context context1) {
+            customContext = context1;
+        }
+
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
             String id_file = String.valueOf(id);
-            //TODO  NULL OBJECT REFERENCE ERROR
-            File dir = new File(getContext().getFilesDir().getAbsolutePath()
+
+            File dir = new File(customContext.getFilesDir().getAbsolutePath()
                     + File.separator);
             if(!dir.exists()){
                 dir.mkdir();
             }
-            w.saveWebArchive(getContext().getFilesDir().getAbsolutePath()
+            w.saveWebArchive(customContext.getFilesDir().getAbsolutePath()
                     + File.separator + id_file + ".mht");
-            Log.d("Path", getContext().getFilesDir().getAbsolutePath()
-                    + File.separator + "images" + File.separator);
+
         }
 
     }

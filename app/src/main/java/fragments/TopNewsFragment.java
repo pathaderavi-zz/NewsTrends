@@ -1,6 +1,8 @@
 package fragments;
 
+import android.app.LoaderManager;
 import android.content.Context;
+import android.content.Loader;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -73,6 +75,7 @@ public class TopNewsFragment extends Fragment {
     SharedPreferences.Editor editor;
     private String JOB_TAG = "fetch_top_news";
     FirebaseJobDispatcher dispatcher;
+
     public TopNewsFragment() {
         // Required empty public constructor
     }
@@ -102,6 +105,7 @@ public class TopNewsFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+       // getActivity().getSupportLoaderManager().initLoader(0, savedInstanceState, this);
     }
 
     @Override
@@ -119,33 +123,31 @@ public class TopNewsFragment extends Fragment {
 
         //getActivity().getSupportLoaderManager().initLoader(0,null,getActivity());
 
-      //--------------------------
+        //--------------------------
         prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         editor = prefs.edit();
         final Gson gson = new Gson();
 
         final GetTopNewsWorldEnglish service = Client.getClient().create(GetTopNewsWorldEnglish.class);
 
-        String country = prefs.getString("countryList","");
+        String country = prefs.getString("countryList", "");
 
-        String language = prefs.getString("languageList","");
+        String language = prefs.getString("languageList", "");
 
-        String category = prefs.getString("categoriesList","");
+        String category = prefs.getString("categoriesList", "");
 
-        if(String.valueOf(language).equals("null")){
+        if (String.valueOf(language).equals("null")) {
             language = "en";
         }
-        if(String.valueOf(country).equals("null")){
-            country="";
-            Log.d("Check Country",country+"h");
+        if (String.valueOf(country).equals("null")) {
+            country = "";
         }
 
-        if(String.valueOf(category).equals("null")){
-            category="";
-            Log.d("Check Category",category);
+        if (String.valueOf(category).equals("null")) {
+            category = "";
         }
 
-        Call<CompleteResponse> call = service.getTopNewsArticles(KEY, language,country,category);
+        Call<CompleteResponse> call = service.getTopNewsArticles(KEY, language, country, category);
 
         final List<Articles>[] a1 = new List[]{new ArrayList<>()};
         String resp = prefs.getString("topnews", "");
@@ -162,7 +164,7 @@ public class TopNewsFragment extends Fragment {
                 public void onResponse(Call<CompleteResponse> call, Response<CompleteResponse> response) {
                     a1[0] = response.body().getArticles();
 
-                       Log.d("Check u", call.request().url().toString());
+                    Log.d("Check u", call.request().url().toString());
 
 //                    for (int i = 0; i < a1[0].size(); i++) {
 //                        Articles ar = a1[0].get(i);

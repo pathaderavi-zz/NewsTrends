@@ -78,7 +78,6 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
         ImageView newsCardImage;
         TextView headline;
         TextView author;
-
         CardView cardView;
 
         public NewsListViewHolder(View itemView) {
@@ -101,7 +100,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
             }
             headline.setText(article.getTitle());
 
-             String dateString = article.getPublishedAt();
+             //String dateString = article.getPublishedAt();
 //
 //        if(!dateString.equals("")||!dateString.isEmpty()){
 //            Date date = DateTimeUtils.formatDate(dateString);

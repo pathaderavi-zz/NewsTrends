@@ -45,7 +45,7 @@ public class AlertedNewsActivity extends AppCompatActivity {
                 "DATE DESC");
         articleList = new ArrayList<>();
 
-
+    //TODO Implement CursorLoader
         while(alertCursor.moveToNext()){
 
             articleList.add(new Articles(alertCursor.getString(alertCursor.getColumnIndex("AUTHOR")),

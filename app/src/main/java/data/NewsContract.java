@@ -23,7 +23,7 @@ public class NewsContract {
 
         public static final String TABLE_NAME = "favorites";
 
-        public static final String COLUMN_ID = "ID"; //TODO Check if needed
+        public static final String COLUMN_ID = "_id"; //TODO Check if needed
         public static final String COLUMN_NAME_TITLE = "TITLE";
         public static final String COLUMN_NAME_AUTHOR = "AUTHOR";
         public static final String COLUMN_NAME_DESCRIPTION = "DESCRIPTION";
@@ -41,7 +41,7 @@ public class NewsContract {
 
         public static final String TABLE_NAME = "alerts";
 
-        public static final String COLUMN_ID = "ID"; //TODO Check if needed
+        public static final String COLUMN_ID = "_id"; //TODO Check if needed
         public static final String COLUMN_NAME_TITLE = "TITLE";
         public static final String COLUMN_NAME_AUTHOR = "AUTHOR";
         public static final String COLUMN_NAME_DESCRIPTION = "DESCRIPTION";
