@@ -6,10 +6,13 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">#3470c2</item>
         <item name="colorAccent">#fe9c5b</item>
+        <item name="android:textViewStyle">@style/CustomTextStyle</item>
  </style>
 
     <style name="ToolbarColoredBackArrow" parent="AppTheme">
         <item name="android:textColorSecondary">#FFF</item>
     </style>
-
+    <style name="CustomTextStyle" parent="android:Widget.TextView">
+        <item name="android:fontFamily">@font/unicode_utopia</item>
+    </style>
 </resources>

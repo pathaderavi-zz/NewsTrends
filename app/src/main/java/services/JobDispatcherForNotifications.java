@@ -151,7 +151,7 @@ public class JobDispatcherForNotifications extends JobService {
                         setNotification(finalListValues.size());
                     }
                 }
-            }, 5000); //TODO 1 Minute for Notifications
+            }, 60000); //TODO Check if this works now
 
 
         }
@@ -171,7 +171,7 @@ public class JobDispatcherForNotifications extends JobService {
 
         notification = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID);
         notification.setAutoCancel(true);
-        notification.setSmallIcon(R.drawable.ic_favorite_black_24px)
+        notification.setSmallIcon(R.drawable.ic_favorite_black_24px) //TODO Change Notification Logo
                 .setTicker("You have got latest NEWS ALERTS")
                 .setWhen(System.currentTimeMillis())
                 .setContentTitle("Your picked NEWS Alerts")

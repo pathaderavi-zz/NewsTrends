@@ -36,7 +36,7 @@ public class FetchTopNewsService extends JobService {
 
     @Override
     public boolean onStartJob(JobParameters jobParameters) {
-        Toast.makeText(getApplicationContext(),"Started Again",Toast.LENGTH_SHORT).show();
+
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         editor = preferences.edit();
 

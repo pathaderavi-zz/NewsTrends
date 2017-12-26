@@ -114,10 +114,12 @@ public class TopNewsFragment extends Fragment {
         topNewsRecycler = view.findViewById(R.id.topNewsRecycler);
 
         topNewsRecycler.setLayoutManager(layoutManager);
+        //TODO Manage Loader
 
 
-        //test.add(new Articles("Ravi","Check Title","Check Description","","https://imgssl.constantcontact.com/kb/next-gen-image-link-editor-steps34.png","Chekc Date"));
+        //getActivity().getSupportLoaderManager().initLoader(0,null,getActivity());
 
+      //--------------------------
         prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         editor = prefs.edit();
         final Gson gson = new Gson();
