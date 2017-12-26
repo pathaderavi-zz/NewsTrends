@@ -25,9 +25,10 @@ import java.io.File;
  */
 
 public class NewsCursorAdapter extends CursorAdapter {
-
-    public NewsCursorAdapter(Context context, Cursor c) {
+    String check;
+    public NewsCursorAdapter(Context context, Cursor c,String from) {
         super(context, c, 0);
+        check = from;
     }
 
     @Override
@@ -53,12 +54,21 @@ public class NewsCursorAdapter extends CursorAdapter {
         final String source_id_string = cursor.getString(cursor.getColumnIndex("SOURCEID"));
         final String source_name_string = cursor.getString(cursor.getColumnIndex("SOURCENAME"));
 
+        //TODO Load Images for Alerts and Favorites Separately
+
+        final String imageUrl_string_web = cursor.getString(cursor.getColumnIndex("URL"));
+
+
         if(author_string!=null){
             author.setText("by "+author_string+" at "+source_name_string);
         }
         if (imageUrl_string != null) {
+            if(check==null) {
+                Glide.with(context).load(imageUrl_string).centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE).into(newsCardImage);
+            }else{
+                Glide.with(context).load(imageUrl_string_web).centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE).into(newsCardImage);
 
-            Glide.with(context).load(imageUrl_string).centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE).into(newsCardImage);
+            }
         }
 
         headline.setText(title_string);

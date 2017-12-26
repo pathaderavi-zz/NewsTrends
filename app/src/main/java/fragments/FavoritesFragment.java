@@ -85,7 +85,7 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        cursorAdapter = new NewsCursorAdapter(getContext(), null);
+        cursorAdapter = new NewsCursorAdapter(getContext(), null,null);
         getActivity().getSupportLoaderManager().initLoader(0, null, this).forceLoad();
     }
 

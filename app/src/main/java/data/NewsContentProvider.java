@@ -30,7 +30,7 @@ public class NewsContentProvider extends ContentProvider {
 
     public static final UriMatcher uriMatcher = buildUriMatcher();
     private FavoriteNewsDBHelper favoriteNewsDBHelper;
-    private AlertNewsDBHelper alertDB;
+
 
     private static UriMatcher buildUriMatcher() {
         UriMatcher match = new UriMatcher(UriMatcher.NO_MATCH);
@@ -49,7 +49,7 @@ public class NewsContentProvider extends ContentProvider {
         Context context = getContext();
 
         favoriteNewsDBHelper = new FavoriteNewsDBHelper(context);
-        alertDB = new AlertNewsDBHelper(context);
+
         return true;
     }
 
@@ -225,7 +225,7 @@ public class NewsContentProvider extends ContentProvider {
     public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
         int match = uriMatcher.match(uri);
 
-        final SQLiteDatabase database = alertDB.getWritableDatabase();
+        final SQLiteDatabase database = favoriteNewsDBHelper.getWritableDatabase();
         int numInserted = 0;
         switch (match){
             case ALERTS:
