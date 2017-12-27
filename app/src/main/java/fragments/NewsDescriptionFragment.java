@@ -143,7 +143,7 @@ public class NewsDescriptionFragment extends Fragment {
 
         if (title != null) {
             outState.putString("title_pref", title);
-            Log.d("Check1" + outState.get("title_pref"), String.valueOf(title == null));
+            Log.d("Check1"+outState.get("title_pref"),String.valueOf(title==null));
         }
         if (desc != null) {
             outState.putString("desc_pref", desc);
@@ -172,23 +172,6 @@ public class NewsDescriptionFragment extends Fragment {
 
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        if (savedInstanceState != null) {
-            j = savedInstanceState.getInt("id_pref", 0);
-            title = savedInstanceState.getString("title_pref", "");
-            imageUrl = savedInstanceState.getString("imageUrl_pref", "");
-            //TODO Check Internet Connectivity and set image accordingly
-            desc = savedInstanceState.getString("desc_pref", "");
-            urlArticle = savedInstanceState.getString("urlArticle_pref", "");
-            authorName = savedInstanceState.getString("authorName_pref", "");
-            publishedAt = savedInstanceState.getString("publishedAt_pref", "");
-            sourceId = savedInstanceState.getString("sourceId_pref", "");
-            sourceName = savedInstanceState.getString("sourceName_pref", "");
-            Log.d("Check1"+desc,"Check"+title);
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -218,8 +201,23 @@ public class NewsDescriptionFragment extends Fragment {
             publishedAt = getActivity().getIntent().getStringExtra("publishedAt");
             sourceId = getActivity().getIntent().getStringExtra("source_id");
             sourceName = getActivity().getIntent().getStringExtra("source_name");
+        } else {
+            j = savedInstanceState.getInt("id_pref");
+            title = savedInstanceState.getString("title_pref");
+            imageUrl = savedInstanceState.getString("imageUrl_pref");
+            //TODO Check Internet Connectivity and set image accordingly
+            desc = savedInstanceState.getString("desc_pref");
+            urlArticle = savedInstanceState.getString("urlArticle_pref");
+            authorName = savedInstanceState.getString("authorName_pref");
+            publishedAt = savedInstanceState.getString("publishedAt_pref");
+            sourceId = savedInstanceState.getString("sourceId_pref");
+            sourceName = savedInstanceState.getString("sourceName_pref");
         }
-        Log.d("Check2"+authorName,"c"+title);
+
+
+        Log.d("Check Bundle", String.valueOf(savedInstanceState == null));
+        Log.d("Check image", imageUrl);
+
         existing = getContext().getContentResolver().query(
 
                 NewsContract.NewsFavoritesEntry.FINAL_URI.buildUpon().appendPath("id").build(),
@@ -238,7 +236,7 @@ public class NewsDescriptionFragment extends Fragment {
         TextView descCard = view.findViewById(R.id.descDetail);
         TextView textView = view.findViewById(R.id.titleDetail);
         textView.setText(title);
-        Glide.with(getContext()).load(imageUrl).override(400, 300).centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE).into(imageView);
+        Glide.with(getContext()).load(imageUrl).override(400, 300).centerCrop().diskCacheStrategy(DiskCacheStrategy.SOURCE).skipMemoryCache(true).into(imageView);
 
         descCard.setText(desc);
 
@@ -326,7 +324,7 @@ public class NewsDescriptionFragment extends Fragment {
             );
             id = ContentUris.parseId(uri);
 
-            Glide.with(getContext()).load(imageUrl).asBitmap().override(400, 300).centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE).into(new SimpleTarget<Bitmap>() {
+            Glide.with(getContext()).load(imageUrl).asBitmap().override(400, 300).centerCrop().diskCacheStrategy(DiskCacheStrategy.SOURCE).skipMemoryCache(true).into(new SimpleTarget<Bitmap>() {
                 @Override
                 public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                     File dir = new File(getContext().getFilesDir().getAbsolutePath()
