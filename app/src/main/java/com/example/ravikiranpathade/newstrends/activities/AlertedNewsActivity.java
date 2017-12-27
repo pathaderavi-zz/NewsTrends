@@ -90,4 +90,10 @@ public class AlertedNewsActivity extends AppCompatActivity implements LoaderMana
 
         adapter.swapCursor(null);
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        getSupportLoaderManager().initLoader(1, null, this);
+    }
 }

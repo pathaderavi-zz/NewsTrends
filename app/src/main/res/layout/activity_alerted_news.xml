@@ -13,7 +13,6 @@
         android:layout_width="match_parent"
         android:minHeight="?attr/actionBarSize"
         android:elevation="4dp"
-
         />
 <ListView
     android:id="@+id/alertsRecyclerView"

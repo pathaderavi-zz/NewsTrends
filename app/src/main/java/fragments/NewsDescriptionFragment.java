@@ -5,6 +5,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,6 +14,9 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -85,12 +89,19 @@ public class NewsDescriptionFragment extends Fragment {
     WebView w;
     long id;
     String cursorID;
+
     String authorName;
     String publishedAt;
     String sourceId;
     String sourceName;
-    BitmapDrawable bitmapDrawable;
+    String title;
+    String imageUrl;
+    String desc;
+    String urlArticle;
+    int j;
 
+    SharedPreferences preferences;
+    SharedPreferences.Editor editor;
 
     public NewsDescriptionFragment() {
         // Required empty public constructor
@@ -126,10 +137,65 @@ public class NewsDescriptionFragment extends Fragment {
 
 
     @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //TODO Optimize this with Parcelabel later
+
+        if (title != null) {
+            outState.putString("title_pref", title);
+            Log.d("Check1" + outState.get("title_pref"), String.valueOf(title == null));
+        }
+        if (desc != null) {
+            outState.putString("desc_pref", desc);
+        }
+        if (imageUrl != null) {
+            outState.putString("imageUrl_pref", imageUrl);
+        }
+        if (urlArticle != null) {
+            outState.putString("urlArticle_pref", urlArticle);
+        }
+        if (authorName != null) {
+            outState.putString("authorName_pref", authorName);
+        }
+        if (sourceId != null) {
+            outState.putString("sourceId_pref", sourceId);
+        }
+        if (sourceName != null) {
+            outState.putString("sourceName_pref", sourceName);
+        }
+        if (publishedAt != null) {
+            outState.putString("publishedAt_pref", publishedAt);
+        }
+        if (j != 0) {
+            outState.putInt("id_pref", j);
+        }
+
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            j = savedInstanceState.getInt("id_pref", 0);
+            title = savedInstanceState.getString("title_pref", "");
+            imageUrl = savedInstanceState.getString("imageUrl_pref", "");
+            //TODO Check Internet Connectivity and set image accordingly
+            desc = savedInstanceState.getString("desc_pref", "");
+            urlArticle = savedInstanceState.getString("urlArticle_pref", "");
+            authorName = savedInstanceState.getString("authorName_pref", "");
+            publishedAt = savedInstanceState.getString("publishedAt_pref", "");
+            sourceId = savedInstanceState.getString("sourceId_pref", "");
+            sourceName = savedInstanceState.getString("sourceName_pref", "");
+            Log.d("Check1"+desc,"Check"+title);
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
+        preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        editor = preferences.edit();
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_news_description, container, false);
 
@@ -140,18 +206,20 @@ public class NewsDescriptionFragment extends Fragment {
         setHasOptionsMenu(true);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        int j = getActivity().getIntent().getIntExtra("list_id", 0);
-        final String title = getActivity().getIntent().getStringExtra("title");
-        final String imageUrl = getActivity().getIntent().getStringExtra("urlToImage");
-        //TODO Check Internet Connectivity and set image accordingly
-        final String desc = getActivity().getIntent().getStringExtra("description");
-        final String urlArticle = getActivity().getIntent().getStringExtra("url");
-        authorName = getActivity().getIntent().getStringExtra("author");
-        publishedAt = getActivity().getIntent().getStringExtra("publishedAt");
-        sourceId = getActivity().getIntent().getStringExtra("source_id");
-        sourceName = getActivity().getIntent().getStringExtra("source_name");
 
-
+        if (savedInstanceState == null) {
+            j = getActivity().getIntent().getIntExtra("list_id", 0);
+            title = getActivity().getIntent().getStringExtra("title");
+            imageUrl = getActivity().getIntent().getStringExtra("urlToImage");
+            //TODO Check Internet Connectivity and set image accordingly
+            desc = getActivity().getIntent().getStringExtra("description");
+            urlArticle = getActivity().getIntent().getStringExtra("url");
+            authorName = getActivity().getIntent().getStringExtra("author");
+            publishedAt = getActivity().getIntent().getStringExtra("publishedAt");
+            sourceId = getActivity().getIntent().getStringExtra("source_id");
+            sourceName = getActivity().getIntent().getStringExtra("source_name");
+        }
+        Log.d("Check2"+authorName,"c"+title);
         existing = getContext().getContentResolver().query(
 
                 NewsContract.NewsFavoritesEntry.FINAL_URI.buildUpon().appendPath("id").build(),
@@ -336,6 +404,7 @@ public class NewsDescriptionFragment extends Fragment {
 
     private class CustomWebViewClientForDownload extends WebViewClient {
         Context customContext;
+
         public CustomWebViewClientForDownload(Context context1) {
             customContext = context1;
         }
@@ -347,7 +416,7 @@ public class NewsDescriptionFragment extends Fragment {
 
             File dir = new File(customContext.getFilesDir().getAbsolutePath()
                     + File.separator);
-            if(!dir.exists()){
+            if (!dir.exists()) {
                 dir.mkdir();
             }
             w.saveWebArchive(customContext.getFilesDir().getAbsolutePath()

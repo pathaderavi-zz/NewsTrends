@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
     NavigationView navigation;
 
     android.support.v4.app.FragmentManager fragmentManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,73 +106,35 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
         });
         setupDrawer(navigation);
 
-    /*
-        final GetTopNewsWorldEnglish service = Client.getClient().create(GetTopNewsWorldEnglish.class);
-        Call<CompleteResponse> call = service.getTopNewsArticles(KEY,"en");
-
-        final List<Articles>[] a1 = new List[]{new ArrayList<>()};
-
-
-        call.enqueue(new Callback<CompleteResponse>() {
-            @Override
-            public void onResponse(Call<CompleteResponse> call, Response<CompleteResponse> response) {
-                a1[0] = response.body().getArticles();
-
-            }
-
-            @Override
-            public void onFailure(Call<CompleteResponse> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
-        */
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         editor = prefs.edit();
 
 
-//        editor = prefs.edit();
-//        editor.putString("check","string value");
-//        editor.apply();
-
-
     }
 
     private void selectNavigationDrawerItem(MenuItem menuItem) {
-        android.support.v4.app.Fragment fragment = null;
-        Class fragmentClass;
+
 
         switch (menuItem.getItemId()) {
             case R.id.home:
 
-                viewPager.setVisibility(View.VISIBLE);
-                tabLayout.setVisibility(View.VISIBLE);
-                frame.setVisibility(View.GONE);
                 break;
             case R.id.settings:
-               Log.d(String.valueOf(viewPager.getVisibility()==View.VISIBLE),String.valueOf(tabLayout.getVisibility()==View.VISIBLE));
-                Intent i = new Intent(this,SettingsActivity.class);
+                Log.d(String.valueOf(viewPager.getVisibility() == View.VISIBLE), String.valueOf(tabLayout.getVisibility() == View.VISIBLE));
+                Intent i = new Intent(this, SettingsActivity.class);
                 startActivity(i);
                 break;
             case R.id.favorites:
-
-                fragmentClass = FavoritesFragment.class;
-                viewPager.setVisibility(View.GONE);
-                tabLayout.setVisibility(View.GONE);
-                frame.setVisibility(View.VISIBLE);
-                try{
-                    fragment = (android.support.v4.app.Fragment) fragmentClass.newInstance();
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-                fragmentManager.beginTransaction().add(R.id.mainActivityFramelayout,fragment).commit();
+                Intent intentFav = new Intent(this,FavoritesActivity.class);
+                startActivity(intentFav);
                 break;
             case R.id.alerts:
-                Intent intentAlert= new Intent(this,AlertedNewsActivity.class);
+                Intent intentAlert = new Intent(this, AlertedNewsActivity.class);
                 startActivity(intentAlert);
                 break;
             case R.id.addKeywords:
-                Intent intentAdd = new Intent(this,AddKeywordActivity.class);
+                Intent intentAdd = new Intent(this, AddKeywordActivity.class);
                 startActivity(intentAdd);
                 break;
             default:
@@ -180,14 +143,14 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
         drawerLayout.closeDrawers();
 
 
-
     }
-    private void setupDrawer(NavigationView navigationView){
-        Log.d("Selected","Item");
+
+    private void setupDrawer(NavigationView navigationView) {
+        Log.d("Selected", "Item");
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Log.d("Selected","Item");
+                Log.d("Selected", "Item");
                 selectNavigationDrawerItem(item);
                 return true;
             }
@@ -215,5 +178,13 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
 
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
 
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+    }
 }

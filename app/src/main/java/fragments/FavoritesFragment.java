@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -85,15 +86,16 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        cursorAdapter = new NewsCursorAdapter(getContext(), null,null);
+        cursorAdapter = new NewsCursorAdapter(getContext(), null, null);
         getActivity().getSupportLoaderManager().initLoader(0, null, this).forceLoad();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Favorite News");
 
-        // Inflate the layout for this fragment
+        Log.d("onCreateView Check", "Here");
         view = inflater.inflate(R.layout.fragment_favorites, container, false);
         textView = view.findViewById(R.id.favoritesTextView);
 
@@ -128,15 +130,18 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
                 null,
                 "ID DESC"
         );
-       if(cursor1==null||cursor1.getCount()==0){
-           textView = view.findViewById(R.id.favoritesTextView);
-           listView = view.findViewById(R.id.favoriteRecycler);
 
-           textView.setVisibility(View.VISIBLE);
-           listView.setVisibility(View.GONE);
 
-       }
         cursorAdapter.swapCursor(cursor1);
+
+//        if (cursor1 == null || cursor1.getCount() == 0) {
+//            textView = view.findViewById(R.id.favoritesTextView);
+//            listView = view.findViewById(R.id.favoriteRecycler);
+//            //TODO Solve Error movie in createView
+//            textView.setVisibility(View.VISIBLE);
+//            listView.setVisibility(View.GONE);
+//
+//        }
 
     }
 
@@ -148,6 +153,7 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
     @Override
     public void onStart() {
         super.onStart();
-        getActivity().getSupportLoaderManager().initLoader(0, null, this);
+        //TODO Change this for activity Rotations
+        //getActivity().getSupportLoaderManager().initLoader(0, null, this);
     }
 }

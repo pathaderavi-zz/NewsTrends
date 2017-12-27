@@ -82,10 +82,11 @@
         </android.support.v4.widget.NestedScrollView>
 
         <android.support.design.widget.FloatingActionButton
+            android:id="@+id/favoritFloat"
+            app:srcCompat="@drawable/ic_star_border_white_24px"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
-            android:src="@drawable/ic_favorite_black_24px"
             app:layout_anchor="@id/appBarLayoutDetail"
             app:layout_anchorGravity="bottom|right|end"
             android:layout_marginRight="15dp"
@@ -98,8 +99,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:gravity="right"
-        android:layout_marginLeft="50dp"
+        android:gravity="center"
         android:orientation="horizontal">
 
         <Button
@@ -112,22 +112,6 @@
             android:text="Read Full Article"
             android:id="@+id/webLinkButton"
             />
-    <RelativeLayout
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"
-        android:layout_marginLeft="30dp"
-        android:layout_gravity="right|end"
-        >
-        <android.support.design.widget.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:id="@+id/favoritFloat"
-            android:fitsSystemWindows="true"
-            android:src="@drawable/ic_star_border_white_24px"
-            app:layout_anchorGravity="bottom|right|end"
-            />
-    </RelativeLayout>
     </LinearLayout>
     <WebView
         android:layout_height="wrap_content"

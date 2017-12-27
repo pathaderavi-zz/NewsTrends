@@ -105,7 +105,7 @@ public class TopNewsFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-       // getActivity().getSupportLoaderManager().initLoader(0, savedInstanceState, this);
+        // getActivity().getSupportLoaderManager().initLoader(0, savedInstanceState, this);
     }
 
     @Override
@@ -136,54 +136,39 @@ public class TopNewsFragment extends Fragment {
 
         String category = prefs.getString("categoriesList", "");
 
-        if (String.valueOf(language).equals("null")) {
+        if (String.valueOf(language).equals("null") || String.valueOf(language).equals("")
+                ||String.valueOf(language).equals("0")) {
             language = "en";
         }
-        if (String.valueOf(country).equals("null")) {
+        if (String.valueOf(country).equals("null")||String.valueOf(country).equals("0")) {
             country = "";
         }
-
-        if (String.valueOf(category).equals("null")) {
+        //TODO Implement Counrty Specific API
+        if (String.valueOf(category).equals("null")|| String.valueOf(category).equals("0")) {
             category = "";
         }
 
         Call<CompleteResponse> call = service.getTopNewsArticles(KEY, language, country, category);
 
         final List<Articles>[] a1 = new List[]{new ArrayList<>()};
-        String resp = prefs.getString("topnews", "");
-        if (resp != "" || resp != null) {
+        final String resp = prefs.getString("topnews", "");
+        if (!resp.equals("") && !resp.equals("[]")) {
             Type type = new TypeToken<List<Articles>>() {
             }.getType();
             a1[0] = gson.fromJson(resp, type);
             adapter = new NewsRecyclerAdapter(a1[0]);
             topNewsRecycler.setAdapter(adapter);
+            Log.d("Check ",String.valueOf(resp.equals("[]")));
         } else {
 
             call.enqueue(new Callback<CompleteResponse>() {
                 @Override
                 public void onResponse(Call<CompleteResponse> call, Response<CompleteResponse> response) {
+                    Log.d("Check Response", String.valueOf(call.request().url()));
                     a1[0] = response.body().getArticles();
 
                     Log.d("Check u", call.request().url().toString());
 
-//                    for (int i = 0; i < a1[0].size(); i++) {
-//                        Articles ar = a1[0].get(i);
-//                        if (ar.getPublishedAt() == null) {
-//                            a1[0].remove(i);
-//                            i--;
-//                        }
-//                    }
-//
-//                    for (int i = 0; i < a1[0].size(); i++) {
-//                        if (a1[0].get(i).getPublishedAt() != null) {
-//                            Articles ar = a1[0].get(i);
-//                            Date date = DateTimeUtils.formatDate(ar.getPublishedAt());
-//                            ar.setPublishedDate(date);
-//
-//                        }
-//                    }
-//
-//                    Collections.sort(a1[0]);
                     adapter = new NewsRecyclerAdapter(a1[0]);
                     topNewsRecycler.setAdapter(adapter);
                     String json = gson.toJson(a1[0]);
@@ -246,13 +231,14 @@ public class TopNewsFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
+        Log.d("onStart Check","Here");
         //TODO Try to implement to load data while Settings Changed and Service Runs
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.d("onStop Check","Here");
     }
 
     /**
@@ -269,4 +255,5 @@ public class TopNewsFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
 }

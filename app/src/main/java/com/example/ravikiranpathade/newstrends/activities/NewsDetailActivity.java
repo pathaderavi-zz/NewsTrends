@@ -17,18 +17,22 @@ import fragments.WebViewNewsFragment;
 
 public class NewsDetailActivity extends AppCompatActivity implements NewsDescriptionFragment.OnFragmentInteractionListener,
 
-WebViewNewsFragment.OnFragmentInteractionListener{
+        WebViewNewsFragment.OnFragmentInteractionListener {
 
     FragmentManager fragmentManager;
     WebViewNewsFragment webFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_detail);
         fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().add(R.id.newsDescriptionFragment,new NewsDescriptionFragment()).commit();
+        if (savedInstanceState == null) {
+            fragmentManager.beginTransaction().add(R.id.newsDescriptionFragment, new NewsDescriptionFragment()).commit();
+        } else {
+            fragmentManager.getFragment(savedInstanceState,"fragment_news_detail");
+        }
 
     }
 
@@ -53,15 +57,26 @@ WebViewNewsFragment.OnFragmentInteractionListener{
     public void onLinkButtonPressed(String url) {
         //String url1 = getIntent().getStringExtra("url");
         Bundle b = new Bundle();
-        b.putString("urlForWeb",url);
+        b.putString("urlForWeb", url);
         webFragment = new WebViewNewsFragment();
         webFragment.setArguments(b);
-        fragmentManager.beginTransaction().replace(R.id.newsDescriptionFragment,webFragment).addToBackStack(null).commit();
+        fragmentManager.beginTransaction().replace(R.id.newsDescriptionFragment, webFragment).addToBackStack(null).commit();
 
     }
 
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        fragmentManager.putFragment(outState,"fragment_news_detail",fragmentManager.findFragmentById(R.id.newsDescriptionFragment));
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
     }
 }

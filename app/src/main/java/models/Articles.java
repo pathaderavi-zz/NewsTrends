@@ -153,7 +153,7 @@ public class Articles implements Parcelable,Comparable<Articles> {
         parcel.writeString(getUrl());
         parcel.writeString(getUrlToImage());
         parcel.writeString(getPublishedAt());
-       // parcel.writeParcelable(source,PARCELABLE_WRITE_RETURN_VALUE);
+
     }
 
     @Override

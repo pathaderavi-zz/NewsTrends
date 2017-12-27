@@ -65,9 +65,10 @@ public class NewsCursorAdapter extends CursorAdapter {
         if (imageUrl_string != null) {
             if(check==null) {
                 Glide.with(context).load(imageUrl_string).centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE).into(newsCardImage);
+                Log.d("Check image",String.valueOf(imageUrl_string));
             }else{
                 Glide.with(context).load(imageUrl_string_web).centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE).into(newsCardImage);
-
+                Log.d("Check image",String.valueOf(imageUrl_string_web));
             }
         }
 
