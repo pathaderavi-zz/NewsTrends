@@ -1,10 +1,15 @@
 package fragments;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +35,7 @@ public class WebViewNewsFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    WebView web;
 
     private OnFragmentInteractionListener mListener;
 
@@ -65,6 +71,19 @@ public class WebViewNewsFragment extends Fragment {
     }
 
     @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("scrollX",web.getScrollX());
+        outState.putInt("scrollX",web.getScrollY());
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -75,9 +94,20 @@ public class WebViewNewsFragment extends Fragment {
         toolbar.setTitle("");
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        WebView web = view.findViewById(R.id.webViewLink);
-        WebViewClient webViewClient = new WebViewClient();
-        web.setWebViewClient(webViewClient);
+        web  = view.findViewById(R.id.webViewLink);
+        final Bundle checkBundle = savedInstanceState;
+           // Log.d("Check SSSS" + String.valueOf(savedInstanceState.getInt("scrollX")), String.valueOf(savedInstanceState.getInt("scrollY")));
+
+        web.setWebViewClient(new WebViewClient(){
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+
+                if(checkBundle!=null) {
+                    scrollXToCustom(checkBundle.getInt("scrollX"));
+                }
+            }
+        });
         savedInstanceState = getArguments();
         web.loadUrl(savedInstanceState.getString("urlForWeb"));
 
@@ -89,6 +119,16 @@ public class WebViewNewsFragment extends Fragment {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
+    }
+    public void scrollXToCustom(final int x){
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                web.scrollTo(0,x);
+            }
+        },200);
+
     }
 
     @Override
@@ -122,4 +162,5 @@ public class WebViewNewsFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
 }
