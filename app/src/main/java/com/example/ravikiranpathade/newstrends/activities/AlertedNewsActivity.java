@@ -46,7 +46,7 @@ public class AlertedNewsActivity extends AppCompatActivity implements LoaderMana
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-        adapter = new NewsCursorAdapter(this, null,"CHECK");
+        adapter = new NewsCursorAdapter(this, null, "CHECK");
         listView = findViewById(R.id.alertsRecyclerView);
         text = findViewById(R.id.noAlertTextView);
         listView.setAdapter(adapter);

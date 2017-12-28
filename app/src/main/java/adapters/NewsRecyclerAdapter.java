@@ -3,6 +3,7 @@ package adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Parcelable;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
@@ -137,6 +138,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
                     i.putExtra("source_name", source_name_string);
 
                     holderContext.startActivity(i);
+
                 }
             });
 

@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -44,6 +45,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import services.FetchTopNewsService;
+import utils.HelperFunctions;
 
 import static android.provider.Contacts.SettingsColumns.KEY;
 
@@ -75,6 +77,7 @@ public class TopNewsFragment extends Fragment {
     SharedPreferences.Editor editor;
     private String JOB_TAG = "fetch_top_news";
     FirebaseJobDispatcher dispatcher;
+    boolean isConnected;
 
     public TopNewsFragment() {
         // Required empty public constructor
@@ -113,11 +116,17 @@ public class TopNewsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_top_news, container, false);
+        isConnected = new HelperFunctions().getConnectionInfo(getContext());
 
         layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         topNewsRecycler = view.findViewById(R.id.topNewsRecycler);
-
-        topNewsRecycler.setLayoutManager(layoutManager);
+        boolean isTablet = getActivity().getResources().getBoolean(R.bool.isTablet);
+        boolean isTabletLandscape = getActivity().getResources().getBoolean(R.bool.isTabletLandscape);
+        if (isTablet) {
+            topNewsRecycler.setLayoutManager(new GridLayoutManager(view.getContext(), 2));
+        } else {
+            topNewsRecycler.setLayoutManager(layoutManager);
+        }
         //TODO Manage Loader
 
 
@@ -137,14 +146,14 @@ public class TopNewsFragment extends Fragment {
         String category = prefs.getString("categoriesList", "");
 
         if (String.valueOf(language).equals("null") || String.valueOf(language).equals("")
-                ||String.valueOf(language).equals("0")) {
+                || String.valueOf(language).equals("0")) {
             language = "en";
         }
-        if (String.valueOf(country).equals("null")||String.valueOf(country).equals("0")) {
+        if (String.valueOf(country).equals("null") || String.valueOf(country).equals("0")) {
             country = "";
         }
         //TODO Implement Counrty Specific API
-        if (String.valueOf(category).equals("null")|| String.valueOf(category).equals("0")) {
+        if (String.valueOf(category).equals("null") || String.valueOf(category).equals("0")) {
             category = "";
         }
 
@@ -158,46 +167,49 @@ public class TopNewsFragment extends Fragment {
             a1[0] = gson.fromJson(resp, type);
             adapter = new NewsRecyclerAdapter(a1[0]);
             topNewsRecycler.setAdapter(adapter);
-            Log.d("Check ",String.valueOf(resp.equals("[]")));
+            Log.d("Check ", String.valueOf(resp.equals("[]")));
         } else {
+            if (isConnected) {
+                call.enqueue(new Callback<CompleteResponse>() {
+                    @Override
+                    public void onResponse(Call<CompleteResponse> call, Response<CompleteResponse> response) {
+                        Log.d("Check Response", String.valueOf(call.request().url()));
+                        a1[0] = response.body().getArticles();
 
-            call.enqueue(new Callback<CompleteResponse>() {
-                @Override
-                public void onResponse(Call<CompleteResponse> call, Response<CompleteResponse> response) {
-                    Log.d("Check Response", String.valueOf(call.request().url()));
-                    a1[0] = response.body().getArticles();
+                        Log.d("Check u", call.request().url().toString());
 
-                    Log.d("Check u", call.request().url().toString());
+                        adapter = new NewsRecyclerAdapter(a1[0]);
+                        topNewsRecycler.setAdapter(adapter);
+                        String json = gson.toJson(a1[0]);
+                        editor.putString("topnews", json);
+                        editor.commit();
+                        //TODO Start FirebaseService to schedule the job
 
-                    adapter = new NewsRecyclerAdapter(a1[0]);
-                    topNewsRecycler.setAdapter(adapter);
-                    String json = gson.toJson(a1[0]);
-                    editor.putString("topnews", json);
-                    editor.commit();
-                    //TODO Start FirebaseService to schedule the job
+                        dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(getContext()));
 
-                    dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(getContext()));
+                        Job job = dispatcher.newJobBuilder().
+                                setService(FetchTopNewsService.class)
+                                .setLifetime(Lifetime.FOREVER)
+                                .setRecurring(true)
+                                .setTag(JOB_TAG)
+                                .setTrigger(Trigger.executionWindow(0, 10800)) //Set for 3 Hours //TODO Change to 12/24 hours
+                                .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
+                                .setReplaceCurrent(false).setConstraints(Constraint.ON_ANY_NETWORK)
+                                .build();
 
-                    Job job = dispatcher.newJobBuilder().
-                            setService(FetchTopNewsService.class)
-                            .setLifetime(Lifetime.FOREVER)
-                            .setRecurring(true)
-                            .setTag(JOB_TAG)
-                            .setTrigger(Trigger.executionWindow(0, 10800)) //Set for 3 Hours //TODO Change to 12/24 hours
-                            .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
-                            .setReplaceCurrent(false).setConstraints(Constraint.ON_ANY_NETWORK)
-                            .build();
+                        dispatcher.mustSchedule(job);
 
-                    dispatcher.mustSchedule(job);
+                    }
 
-                }
+                    @Override
+                    public void onFailure(Call<CompleteResponse> call, Throwable t) {
+                        t.printStackTrace();
+                    }
+                });
 
-                @Override
-                public void onFailure(Call<CompleteResponse> call, Throwable t) {
-                    t.printStackTrace();
-                }
-            });
-
+            }else{
+                //TODO Setup an Empty View
+            }
         }
 
 
@@ -231,14 +243,14 @@ public class TopNewsFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        Log.d("onStart Check","Here");
+        Log.d("onStart Check", "Here");
         //TODO Try to implement to load data while Settings Changed and Service Runs
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d("onStop Check","Here");
+        Log.d("onStop Check", "Here");
     }
 
     /**

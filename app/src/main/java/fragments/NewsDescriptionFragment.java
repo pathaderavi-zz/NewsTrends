@@ -6,6 +6,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,16 +19,19 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
@@ -34,6 +39,7 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
@@ -99,6 +105,7 @@ public class NewsDescriptionFragment extends Fragment {
     String desc;
     String urlArticle;
     int j;
+    CoordinatorLayout coordinatorLayout;
 
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
@@ -143,7 +150,7 @@ public class NewsDescriptionFragment extends Fragment {
 
         if (title != null) {
             outState.putString("title_pref", title);
-            Log.d("Check1"+outState.get("title_pref"),String.valueOf(title==null));
+            Log.d("Check1" + outState.get("title_pref"), String.valueOf(title == null));
         }
         if (desc != null) {
             outState.putString("desc_pref", desc);
@@ -169,6 +176,9 @@ public class NewsDescriptionFragment extends Fragment {
         if (j != 0) {
             outState.putInt("id_pref", j);
         }
+        outState.putInt("scrollXRelative", coordinatorLayout.getScrollX());
+        outState.putInt("scrollYRelative", coordinatorLayout.getScrollY());
+        Log.d("Check Scroll " + String.valueOf(coordinatorLayout.getScrollX()), String.valueOf(coordinatorLayout.getScrollY()));
 
     }
 
@@ -181,7 +191,7 @@ public class NewsDescriptionFragment extends Fragment {
         editor = preferences.edit();
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_news_description, container, false);
-
+        coordinatorLayout = view.findViewById(R.id.coordinatorDetail);
         android.support.v7.widget.Toolbar toolbar = view.findViewById(R.id.toolbarDetail);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 //        final Drawable upArrow = getResources().getDrawable(R.drawable.);
@@ -261,8 +271,47 @@ public class NewsDescriptionFragment extends Fragment {
                     }
                 }
         );
+        if (savedInstanceState != null) {
+            Log.d("Check Scroll " + String.valueOf(savedInstanceState.getInt("scrollXRelative")), String.valueOf(savedInstanceState.getInt("scrollYRelative")));
+            coordinatorLayout.scrollTo(savedInstanceState.getInt("scrollXRelative"), savedInstanceState.getInt("scrollYRelative"));
+        }
+        ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) descCard
+                .getLayoutParams();
+        int x = getActivity().getResources().getConfiguration().orientation;
+        boolean isTablet = getActivity().getResources().getBoolean(R.bool.isTablet);
+        ViewGroup.MarginLayoutParams imageGroup = (ViewGroup.MarginLayoutParams) imageView
+                .getLayoutParams();
+        Resources r = getResources();
+        if (!isTablet) {
+            if (x == Configuration.ORIENTATION_LANDSCAPE) {
+
+                mlp.setMargins(100, 0, 100, 0);
+                float pxImage = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 160, r.getDisplayMetrics());
+                imageGroup.height = (int) pxImage;
+
+            } else {
+                mlp.setMargins(50, 0, 50, 0);
+
+            }
+        } else {
+            mlp.setMargins(200, 50, 200, 0);
+            float pxImage = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 410, r.getDisplayMetrics());
+            imageGroup.height = (int) pxImage;
+
+        }
+
+        if (!isTablet && x == Configuration.ORIENTATION_LANDSCAPE) {
+            //TODO
+
+        }
 
         return view;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void onClickFab(String title, String desc, String imageUrl, String urlArticle) {
@@ -324,7 +373,7 @@ public class NewsDescriptionFragment extends Fragment {
             );
             id = ContentUris.parseId(uri);
 
-            Glide.with(getContext()).load(imageUrl).asBitmap().override(400, 300).centerCrop().diskCacheStrategy(DiskCacheStrategy.SOURCE).skipMemoryCache(true).into(new SimpleTarget<Bitmap>() {
+            Glide.with(getContext()).load(imageUrl).asBitmap().override(400, 300).centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).into(new SimpleTarget<Bitmap>() {
                 @Override
                 public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                     File dir = new File(getContext().getFilesDir().getAbsolutePath()
@@ -419,6 +468,7 @@ public class NewsDescriptionFragment extends Fragment {
             }
             w.saveWebArchive(customContext.getFilesDir().getAbsolutePath()
                     + File.separator + id_file + ".mht");
+            view.goBack();
 
         }
 
@@ -430,4 +480,5 @@ public class NewsDescriptionFragment extends Fragment {
         Log.d("Frag is", "Visible");
 
     }
+
 }

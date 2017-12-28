@@ -108,8 +108,12 @@ public class WebViewNewsFragment extends Fragment {
                 }
             }
         });
+
         savedInstanceState = getArguments();
         web.loadUrl(savedInstanceState.getString("urlForWeb"));
+        //web.loadDataWithBaseURL(null, savedInstanceState.getString("urlForWeb"), "application/x-webarchive-xml", "UTF-8", null);
+        Log.d("Check Webs1",savedInstanceState.getString("urlForWeb"));
+
 
         return view;
     }

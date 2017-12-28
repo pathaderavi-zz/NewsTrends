@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
     ViewPager viewPager;
     FrameLayout frame;
     NavigationView navigation;
-
+    PagerAdapter pagerAdapter;
     android.support.v4.app.FragmentManager fragmentManager;
 
     @Override
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
         viewPager = findViewById(R.id.viewPager);
 
 
-        final PagerAdapter pagerAdapter = new adapters.PagerAdapter(fragmentManager, tabLayout.getTabCount());
+        pagerAdapter = new adapters.PagerAdapter(fragmentManager, tabLayout.getTabCount());
         viewPager.setAdapter(pagerAdapter);
 
         viewPager.setOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
@@ -118,7 +118,11 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
 
         switch (menuItem.getItemId()) {
             case R.id.home:
+                //TODO Add new Fragment
+                pagerAdapter = new adapters.PagerAdapter(fragmentManager, tabLayout.getTabCount());
+                viewPager.setAdapter(pagerAdapter);
 
+                viewPager.setOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
                 break;
             case R.id.settings:
                 Log.d(String.valueOf(viewPager.getVisibility() == View.VISIBLE), String.valueOf(tabLayout.getVisibility() == View.VISIBLE));

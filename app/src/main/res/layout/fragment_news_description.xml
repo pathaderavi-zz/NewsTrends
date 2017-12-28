@@ -3,13 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
-        tools:context="fragments.NewsDescriptionFragment">
+        tools:context="fragments.NewsDescriptionFragment"
+        android:id="@+id/coordinatorDetail">
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/appBarLayoutDetail"
@@ -30,7 +32,7 @@
                     android:layout_height="250dp"
                     android:scaleType="centerCrop"
                     app:layout_collapseMode="parallax"
-
+                    android:transitionName="mainListImage"
                     />
 
 
@@ -100,10 +102,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        >
 
         <Button
-            android:layout_width="250dp"
+            android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_gravity="bottom|right"
             android:background="#51c5e5"
