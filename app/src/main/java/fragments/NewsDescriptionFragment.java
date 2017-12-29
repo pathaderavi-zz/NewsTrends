@@ -16,6 +16,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -28,6 +29,7 @@ import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -66,6 +68,7 @@ import java.util.List;
 
 import data.NewsContract;
 import models.Articles;
+import utils.HelperFunctions;
 
 //TODO Implement to request Permissions during Runtime
 
@@ -246,7 +249,7 @@ public class NewsDescriptionFragment extends Fragment {
         TextView descCard = view.findViewById(R.id.descDetail);
         TextView textView = view.findViewById(R.id.titleDetail);
         textView.setText(title);
-        Glide.with(getContext()).load(imageUrl).override(400, 300).centerCrop().diskCacheStrategy(DiskCacheStrategy.SOURCE).skipMemoryCache(true).into(imageView);
+        Glide.with(getContext()).load(imageUrl).override(400, 300).centerCrop().diskCacheStrategy(DiskCacheStrategy.ALL).error(R.drawable.noimageavailable).skipMemoryCache(true).into(imageView);
 
         descCard.setText(desc);
 
@@ -326,91 +329,128 @@ public class NewsDescriptionFragment extends Fragment {
                 title,
                 null, null, null
         );
-
-        if (existing != null && existing.getCount() > 0) {
-            existing.moveToFirst();
-            cursorID = String.valueOf(existing.getInt(existing.getColumnIndex("_id")));
-            //TODO Delete Image
-
-            File mht = new File(getContext().getFilesDir().getAbsolutePath()
-                    + File.separator, String.valueOf(cursorID) + ".mht");
-            mht.setWritable(true);
-            File jpg = new File(getContext().getFilesDir().getAbsolutePath()
-                    + File.separator + "images", String.valueOf(cursorID) + ".jpg");
-
-            boolean mhtDel = mht.delete();
-            boolean jpgDel = jpg.delete();
+        boolean isConnected = new HelperFunctions().getConnectionInfo(getContext());
+        if (isConnected) {
+            if (existing != null && existing.getCount() > 0) {
+                existing.moveToFirst();
+                cursorID = String.valueOf(existing.getInt(existing.getColumnIndex("_id")));
 
 
-            Uri delete = NewsContract.NewsFavoritesEntry.FINAL_URI.buildUpon().appendPath("id").build();
-            getContext().getContentResolver().delete(delete, title, null);
-            //Toast.makeText(getContext(), "Deleted", Toast.LENGTH_SHORT).show();
-            fav.setImageResource(R.drawable.ic_star_border_white_24px);
-            snackbar = Snackbar.make(view, "News Deleted", Snackbar.LENGTH_SHORT);
+                File mht = new File(getContext().getFilesDir().getAbsolutePath()
+                        + File.separator, String.valueOf(cursorID) + ".mht");
+                mht.setWritable(true);
+                File jpg = new File(getContext().getFilesDir().getAbsolutePath()
+                        + File.separator + "images", String.valueOf(cursorID) + ".jpg");
+
+                //boolean mhtDel = mht.delete();
+                //boolean jpgDel = jpg.delete();
+
+                editor.putString("delete_image", String.valueOf(jpg));
+                editor.putString("delete_mht", String.valueOf(mht));
+                editor.putBoolean("delete_files",true);
+                editor.commit();
+
+                Uri delete = NewsContract.NewsFavoritesEntry.FINAL_URI.buildUpon().appendPath("id").build();
+                getContext().getContentResolver().delete(delete, title, null);
+                //Toast.makeText(getContext(), "Deleted", Toast.LENGTH_SHORT).show();
+                fav.setImageResource(R.drawable.ic_star_border_white_24px);
+                snackbar = Snackbar.make(view, "News Deleted", Snackbar.LENGTH_SHORT);
 
 
+            } else {
+                w = view.findViewById(R.id.detWeb);
+                WebViewClient wClient = new CustomWebViewClientForDownload(getContext());
+                w.setWebViewClient(wClient);
+                w.loadUrl(urlArticle);
+                Date dateInsert = DateTimeUtils.formatDate(publishedAt);
+
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+                ContentValues cv = new ContentValues();
+                cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_TITLE, title);
+                cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_DESCRIPTION, desc);
+                cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_URL, urlArticle);
+                cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_URL_TO_IMAGE, imageUrl);
+                cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_AUTHOR, authorName);
+                cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_PUBLISHED_AT, publishedAt);
+                cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_SOURCE_ID, sourceId);
+                cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_SOURCE_NAME, sourceName);
+                cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_DATE, simpleDateFormat.format(dateInsert));
+                Uri uri = getContext().getContentResolver().insert(
+                        NewsContract.NewsFavoritesEntry.FINAL_URI, cv
+                );
+                id = ContentUris.parseId(uri);
+
+                Glide.with(getContext()).load(imageUrl).asBitmap().override(400, 300).centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        File dir = new File(getContext().getFilesDir().getAbsolutePath()
+                                + File.separator + "images");
+                        if (!dir.exists()) {
+                            dir.mkdir();
+                        }
+                        File ff = new File(dir, String.valueOf(id) + ".jpg");
+                        try {
+                            FileOutputStream fileOutputStream = new FileOutputStream(ff);
+                            resource.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
+                            fileOutputStream.flush();
+                            fileOutputStream.close();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+
+                });
+                fav.setImageResource(R.drawable.ic_star_white_24px);
+
+                snackbar = Snackbar.make(view, "News Added to Favorites", Snackbar.LENGTH_SHORT);
+
+            }
+
+            snackbar.show();
         } else {
-            w = view.findViewById(R.id.detWeb);
-            WebViewClient wClient = new CustomWebViewClientForDownload(getContext());
-            w.setWebViewClient(wClient);
-            w.loadUrl(urlArticle);
-            Date dateInsert = DateTimeUtils.formatDate(publishedAt);
-
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-            ContentValues cv = new ContentValues();
-            cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_TITLE, title);
-            cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_DESCRIPTION, desc);
-            cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_URL, urlArticle);
-            cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_URL_TO_IMAGE, imageUrl);
-            cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_AUTHOR, authorName);
-            cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_PUBLISHED_AT, publishedAt);
-            cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_SOURCE_ID, sourceId);
-            cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_SOURCE_NAME, sourceName);
-            cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_DATE, simpleDateFormat.format(dateInsert));
-            Uri uri = getContext().getContentResolver().insert(
-                    NewsContract.NewsFavoritesEntry.FINAL_URI, cv
-            );
-            id = ContentUris.parseId(uri);
-
-            Glide.with(getContext()).load(imageUrl).asBitmap().override(400, 300).centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).into(new SimpleTarget<Bitmap>() {
-                @Override
-                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                    File dir = new File(getContext().getFilesDir().getAbsolutePath()
-                            + File.separator + "images");
-                    if (!dir.exists()) {
-                        dir.mkdir();
-                    }
-                    File ff = new File(dir, String.valueOf(id) + ".jpg");
-                    try {
-                        FileOutputStream fileOutputStream = new FileOutputStream(ff);
-                        resource.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
-                        fileOutputStream.flush();
-                        fileOutputStream.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+            if (existing != null && existing.getCount() > 0) {
+                existing.moveToFirst();
+                cursorID = String.valueOf(existing.getInt(existing.getColumnIndex("_id")));
 
 
-            });
-            fav.setImageResource(R.drawable.ic_star_white_24px);
+                File mht = new File(getContext().getFilesDir().getAbsolutePath()
+                        + File.separator, String.valueOf(cursorID) + ".mht");
+                mht.setWritable(true);
+                File jpg = new File(getContext().getFilesDir().getAbsolutePath()
+                        + File.separator + "images", String.valueOf(cursorID) + ".jpg");
 
-            snackbar = Snackbar.make(view, "News Added to Favorites", Snackbar.LENGTH_SHORT);
+                //boolean mhtDel = mht.delete();
+                //boolean jpgDel = jpg.delete();
 
+                editor.putString("delete_image", String.valueOf(jpg));
+                editor.putString("delete_mht", String.valueOf(mht));
+                editor.putBoolean("delete_files",true);
+                editor.commit();
+                Uri delete = NewsContract.NewsFavoritesEntry.FINAL_URI.buildUpon().appendPath("id").build();
+                getContext().getContentResolver().delete(delete, title, null);
+                //Toast.makeText(getContext(), "Deleted", Toast.LENGTH_SHORT).show();
+                fav.setImageResource(R.drawable.ic_star_border_white_24px);
+                snackbar = Snackbar.make(view, "News Deleted", Snackbar.LENGTH_SHORT);
+            } else {
+                Snackbar.make(view, "No Internet Connection. Cannot Save when Offline", Snackbar.LENGTH_SHORT).show();
+            }
         }
-
-        snackbar.show();
 
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
+
     public void onButtonPressed(String uri) {
         if (mListener != null) {
             mListener.onLinkButtonPressed(uri);
         }
     }
-
+    public void onBackDetail(boolean s, File i , File m){
+        if(mListener!=null){
+            mListener.onBackPressedFromDetail(s,i,m);
+        }
+    }
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -441,6 +481,7 @@ public class NewsDescriptionFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onLinkButtonPressed(String url);
+        void onBackPressedFromDetail(boolean status,File image, File mht);
     }
 
     @Override
@@ -461,12 +502,12 @@ public class NewsDescriptionFragment extends Fragment {
             super.onPageFinished(view, url);
             String id_file = String.valueOf(id);
 
-            File dir = new File(customContext.getFilesDir().getAbsolutePath()
+            File dir = new File(getActivity().getFilesDir().getAbsolutePath()
                     + File.separator);
             if (!dir.exists()) {
                 dir.mkdir();
             }
-            w.saveWebArchive(customContext.getFilesDir().getAbsolutePath()
+            w.saveWebArchive(getActivity().getFilesDir().getAbsolutePath()
                     + File.separator + id_file + ".mht");
             view.goBack();
 
