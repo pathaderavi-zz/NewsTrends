@@ -7,7 +7,7 @@
     <string name="settingsMenu">Settings</string>
     <string name="favoritesMenu">Favorites</string>
     <string name="alertsMenu">Alerts</string>
-    <string name="addKeywordsMenu">Manage Keywords for Alert</string>
+    <string name="addKeywordsMenu">Manage Alerts</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
     <string name="topnews">Top News</string>

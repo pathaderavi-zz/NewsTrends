@@ -76,7 +76,7 @@
                 android:layout_height="wrap_content"
                 android:fitsSystemWindows="true"
                 android:padding="10dp"
-                android:text="@string/app_name"
+                android:textIsSelectable="true"
                 android:textSize="20dp"
 
                 />
@@ -109,7 +109,7 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_gravity="bottom|right"
-            android:background="#51c5e5"
+            android:background="#4fc1e9"
             android:elevation="2dp"
             android:fitsSystemWindows="true"
             android:text="Read Full Article"
