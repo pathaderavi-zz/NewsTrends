@@ -121,7 +121,6 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
                 //TODO Add new Fragment
                 pagerAdapter = new adapters.PagerAdapter(fragmentManager, tabLayout.getTabCount());
                 viewPager.setAdapter(pagerAdapter);
-
                 viewPager.setOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
                 break;
             case R.id.settings:

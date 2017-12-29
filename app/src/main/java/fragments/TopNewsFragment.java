@@ -15,6 +15,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.ravikiranpathade.newstrends.R;
 import com.example.ravikiranpathade.newstrends.activities.MainActivity;
@@ -113,9 +115,12 @@ public class TopNewsFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             final Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_top_news, container, false);
+        final LayoutInflater finalInflater = inflater;
+        final ViewGroup finalViewgroup = container;
+
+        final View view = inflater.inflate(R.layout.fragment_top_news, container, false);
         isConnected = new HelperFunctions().getConnectionInfo(getContext());
 
         layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
@@ -127,7 +132,7 @@ public class TopNewsFragment extends Fragment {
         } else {
             topNewsRecycler.setLayoutManager(layoutManager);
         }
-        //TODO Manage Loader
+        //TODO Country Specific Calls
 
 
         //getActivity().getSupportLoaderManager().initLoader(0,null,getActivity());
@@ -156,18 +161,31 @@ public class TopNewsFragment extends Fragment {
         if (String.valueOf(category).equals("null") || String.valueOf(category).equals("0")) {
             category = "";
         }
+        final ProgressBar spinningProgress = view.findViewById(R.id.progressBarTopNews);
+        final TextView showingTopNewsFor = view.findViewById(R.id.showingTopNewsText);
 
+        spinningProgress.setVisibility(View.VISIBLE);
+        topNewsRecycler.setVisibility(View.INVISIBLE);
+        view.findViewById(R.id.textViewEnd).setVisibility(View.INVISIBLE);
+        showingTopNewsFor.setVisibility(View.INVISIBLE);
+        Log.d("Check La",language);
         Call<CompleteResponse> call = service.getTopNewsArticles(KEY, language, country, category);
 
         final List<Articles>[] a1 = new List[]{new ArrayList<>()};
         final String resp = prefs.getString("topnews", "");
         if (!resp.equals("") && !resp.equals("[]")) {
+
             Type type = new TypeToken<List<Articles>>() {
             }.getType();
             a1[0] = gson.fromJson(resp, type);
             adapter = new NewsRecyclerAdapter(a1[0]);
             topNewsRecycler.setAdapter(adapter);
-            Log.d("Check ", String.valueOf(resp.equals("[]")));
+
+            spinningProgress.setVisibility(View.GONE);
+            topNewsRecycler.setVisibility(View.VISIBLE);
+            view.findViewById(R.id.textViewEnd).setVisibility(View.VISIBLE);
+            showingTopNewsFor.setVisibility(View.VISIBLE);
+
         } else {
             if (isConnected) {
                 call.enqueue(new Callback<CompleteResponse>() {
@@ -176,10 +194,15 @@ public class TopNewsFragment extends Fragment {
                         Log.d("Check Response", String.valueOf(call.request().url()));
                         a1[0] = response.body().getArticles();
 
-                        Log.d("Check u", call.request().url().toString());
 
                         adapter = new NewsRecyclerAdapter(a1[0]);
                         topNewsRecycler.setAdapter(adapter);
+
+                        spinningProgress.setVisibility(View.GONE);
+                        topNewsRecycler.setVisibility(View.VISIBLE);
+                        view.findViewById(R.id.textViewEnd).setVisibility(View.VISIBLE);
+                        showingTopNewsFor.setVisibility(View.VISIBLE);
+
                         String json = gson.toJson(a1[0]);
                         editor.putString("topnews", json);
                         editor.commit();
@@ -192,7 +215,7 @@ public class TopNewsFragment extends Fragment {
                                 .setLifetime(Lifetime.FOREVER)
                                 .setRecurring(true)
                                 .setTag(JOB_TAG)
-                                .setTrigger(Trigger.executionWindow(0, 10800)) //Set for 3 Hours //TODO Change to 12/24 hours
+                                .setTrigger(Trigger.executionWindow(0, 600)) //Set for 3 Hours //TODO Change to 12/24 hours
                                 .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
                                 .setReplaceCurrent(false).setConstraints(Constraint.ON_ANY_NETWORK)
                                 .build();
@@ -207,8 +230,19 @@ public class TopNewsFragment extends Fragment {
                     }
                 });
 
-            }else{
-                //TODO Setup an Empty View
+            } else {
+                spinningProgress.setVisibility(View.GONE);
+                topNewsRecycler.setVisibility(View.VISIBLE);
+                TextView viewEnd = view.findViewById(R.id.textViewEnd);
+                viewEnd.setVisibility(View.VISIBLE);
+                viewEnd.setText("Please Connect to Internet and Tap Here to Start Fetching News");
+                viewEnd.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        getActivity().recreate();
+                    }
+                });
+                showingTopNewsFor.setVisibility(View.GONE);
             }
         }
 

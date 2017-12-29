@@ -228,8 +228,6 @@ public class NewsDescriptionFragment extends Fragment {
         }
 
 
-        Log.d("Check Bundle", String.valueOf(savedInstanceState == null));
-        Log.d("Check image", imageUrl);
 
         existing = getContext().getContentResolver().query(
 
@@ -259,7 +257,7 @@ public class NewsDescriptionFragment extends Fragment {
         webLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onButtonPressed(urlArticle);
+                onButtonPressed(urlArticle,title);
             }
         });
         fav = view.findViewById(R.id.favoritFloat);
@@ -441,9 +439,9 @@ public class NewsDescriptionFragment extends Fragment {
     }
 
 
-    public void onButtonPressed(String uri) {
+    public void onButtonPressed(String uri,String t) {
         if (mListener != null) {
-            mListener.onLinkButtonPressed(uri);
+            mListener.onLinkButtonPressed(uri,t);
         }
     }
     public void onBackDetail(boolean s, File i , File m){
@@ -480,7 +478,7 @@ public class NewsDescriptionFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onLinkButtonPressed(String url);
+        void onLinkButtonPressed(String url,String title);
         void onBackPressedFromDetail(boolean status,File image, File mht);
     }
 
@@ -502,12 +500,12 @@ public class NewsDescriptionFragment extends Fragment {
             super.onPageFinished(view, url);
             String id_file = String.valueOf(id);
 
-            File dir = new File(getActivity().getFilesDir().getAbsolutePath()
+            File dir = new File(customContext.getFilesDir().getAbsolutePath()
                     + File.separator);
             if (!dir.exists()) {
                 dir.mkdir();
             }
-            w.saveWebArchive(getActivity().getFilesDir().getAbsolutePath()
+            w.saveWebArchive(customContext  .getFilesDir().getAbsolutePath()
                     + File.separator + id_file + ".mht");
             view.goBack();
 

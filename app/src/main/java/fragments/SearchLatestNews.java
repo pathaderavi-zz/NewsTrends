@@ -5,17 +5,34 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ravikiranpathade.newstrends.R;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import adapters.NewsRecyclerAdapter;
+import models.Articles;
+import models.CompleteResponse;
+import rest.Client;
+import rest.GetTopNewsWorldEnglish;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import utils.HelperFunctions;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,6 +55,13 @@ public class SearchLatestNews extends Fragment {
     android.support.v7.widget.SearchView searchView;
     Spinner spinner;
     TextView textView;
+    boolean isConnected;
+    RecyclerView searchRecycler;
+    RecyclerView.LayoutManager layoutManager;
+    NewsRecyclerAdapter adapter;
+    List<Articles> allArticles;
+    ProgressBar progressBar;
+    public final String KEY = "16a2ce7a435e4acb8482fae088ba6b9e";
 
     private OnFragmentInteractionListener mListener;
 
@@ -85,15 +109,37 @@ public class SearchLatestNews extends Fragment {
         spinner = view.findViewById(R.id.spinnerPriority);
         textView = view.findViewById(R.id.showingLatestSearchText);
         searchView.setMaxWidth(h);
+        progressBar = view.findViewById(R.id.progressBarSearchNews);
+
+        searchRecycler = view.findViewById(R.id.searchLatestRecycler);
+        layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+
+        String[] spinnerItems = {"Popularity", "Published At", "Relevancy"};
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getContext(), R.layout.support_simple_spinner_dropdown_item, spinnerItems);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+        spinner.setAdapter(spinnerAdapter);
 
         searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 String spinnerText = spinner.getItemAtPosition(spinner.getSelectedItemPosition()).toString();
-                //Toast.makeText(getContext(),query+" "+spinnerText,Toast.LENGTH_SHORT).show();
+
                 //searchView.setIconified(true);
+                isConnected = new HelperFunctions().getConnectionInfo(getContext());
                 searchView.onActionViewCollapsed();
-                textView.setText("Showing results for " + query + " by " + spinnerText);
+                if (isConnected) {
+
+                    textView.setText("Showing results for " + query.toUpperCase() + " by " + spinnerText);
+                    if (spinnerText.equals("Published At")) {
+                        spinnerText = "publishedAt";
+                    }
+                    query = query.replaceAll("\\s+","+");
+                    progressBar.setVisibility(View.VISIBLE);
+                    makeSearchCall(query, spinnerText);
+
+                } else {
+                    textView.setText("Please Connect to Internet First");
+                }
 
                 return false;
             }
@@ -104,12 +150,31 @@ public class SearchLatestNews extends Fragment {
             }
         });
 
-        String[] spinnerItems = {"Popularity", "Published At", "Relevancy"};
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getContext(), R.layout.support_simple_spinner_dropdown_item, spinnerItems);
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
-        spinner.setAdapter(spinnerAdapter);
 
         return view;
+    }
+
+    private void makeSearchCall(String query, String spinnerText) {
+
+        allArticles = new ArrayList<>();
+        GetTopNewsWorldEnglish service = Client.getClient().create(GetTopNewsWorldEnglish.class);
+        Call<CompleteResponse> call = service.getSearchEverything(KEY,spinnerText,query);
+
+        call.enqueue(new Callback<CompleteResponse>() {
+            @Override
+            public void onResponse(Call<CompleteResponse> call, Response<CompleteResponse> response) {
+                allArticles = response.body().getArticles();
+                adapter = new NewsRecyclerAdapter(allArticles);
+                searchRecycler.setLayoutManager(layoutManager);
+                searchRecycler.setAdapter(adapter);
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onFailure(Call<CompleteResponse> call, Throwable t) {
+                textView.setText("Sorry, News Could not be searched due to some Error.");
+            }
+        });
     }
 
     // TODO: Rename method, update argument and hook method into UI event

@@ -69,6 +69,7 @@ public class NewsDetailActivity extends AppCompatActivity implements NewsDescrip
         // put ID and delete status
         // and empty the preferences
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
 
         String checkString = "NotSet";
         boolean deleteCheck = preferences.getBoolean("delete_files", false);
@@ -78,10 +79,14 @@ public class NewsDetailActivity extends AppCompatActivity implements NewsDescrip
                 File check2 = new File(preferences.getString("delete_mht", checkString));
                 if (check1.exists()) {
                     check1.delete();
+                    editor.putString("delete_image", checkString);
                 }
                 if (check2.exists()) {
                     check2.delete();
+                    editor.putString("delete_mht", checkString);
                 }
+                editor.putBoolean("delete_files", false);
+                editor.commit();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -99,7 +104,7 @@ public class NewsDetailActivity extends AppCompatActivity implements NewsDescrip
     }
 
     @Override
-    public void onLinkButtonPressed(String url) {
+    public void onLinkButtonPressed(String url, String titleFrom) {
         //String url1 = getIntent().getStringExtra("url");
         Cursor check = getContentResolver().query(
 
@@ -116,6 +121,7 @@ public class NewsDetailActivity extends AppCompatActivity implements NewsDescrip
             Log.d("Cheeck H", "2");
             Bundle b = new Bundle();
             b.putString("urlForWeb", url);
+            b.putString("titleToWeb", titleFrom);
             webFragment = new WebViewNewsFragment();
             webFragment.setArguments(b);
             fragmentManager.beginTransaction().replace(R.id.newsDescriptionFragment, webFragment).addToBackStack(null).commit();
@@ -128,6 +134,7 @@ public class NewsDetailActivity extends AppCompatActivity implements NewsDescrip
             String urls = "file://" + getFilesDir().getAbsolutePath()
                     + File.separator + id_file + ".mht";
             b.putString("urlForWeb", urls);
+            b.putString("titleToWeb", titleFrom);
             webFragment = new WebViewNewsFragment();
             webFragment.setArguments(b);
             fragmentManager.beginTransaction().replace(R.id.newsDescriptionFragment, webFragment).addToBackStack(null).commit();
