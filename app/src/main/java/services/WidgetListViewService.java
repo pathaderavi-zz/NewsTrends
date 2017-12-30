@@ -13,6 +13,7 @@ import android.widget.RemoteViewsService;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.AppWidgetTarget;
 import com.example.ravikiranpathade.newstrends.R;
+import com.example.ravikiranpathade.newstrends.activities.MainActivity;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -74,10 +75,11 @@ public class WidgetListViewService extends RemoteViewsService {
 
         @Override
         public int getCount() {
+            if (articlesList != null) {
+                return Math.min(articlesList.size(), 10);
+            }
 
-            return Math.min(articlesList.size(), 10);
-
-
+            return 1;
         }
 
         @Override
@@ -90,6 +92,8 @@ public class WidgetListViewService extends RemoteViewsService {
                 remtoteView.setTextViewText(R.id.widgetTitleTextView, title);
 
             }
+            Intent checkI = new Intent(getApplicationContext(), MainActivity.class);
+            remtoteView.setOnClickFillInIntent(R.id.linearLayoutWidget,checkI);
             return remtoteView;
         }
 

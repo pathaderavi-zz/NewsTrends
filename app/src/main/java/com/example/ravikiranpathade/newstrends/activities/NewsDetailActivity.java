@@ -74,12 +74,14 @@ public class NewsDetailActivity extends AppCompatActivity implements NewsDescrip
         String checkString = "NotSet";
         boolean deleteCheck = preferences.getBoolean("delete_files", false);
         if (deleteCheck) {
+            editor.putBoolean("favorites_changed",true);
             try {
                 File check1 = new File(preferences.getString("delete_image", checkString));
                 File check2 = new File(preferences.getString("delete_mht", checkString));
                 if (check1.exists()) {
                     check1.delete();
                     editor.putString("delete_image", checkString);
+
                 }
                 if (check2.exists()) {
                     check2.delete();
@@ -114,7 +116,7 @@ public class NewsDetailActivity extends AppCompatActivity implements NewsDescrip
                 null, null, null
         );
         boolean isConnected = new HelperFunctions().getConnectionInfo(this);
-        if (check.getCount() == 0 && !isConnected) {
+        if (check!=null && check.getCount() == 0 && !isConnected) {
             Log.d("Cheeck H", "1");
             Snackbar.make(findViewById(android.R.id.content), "NO INTERNET CONNECTION", Snackbar.LENGTH_SHORT).show();
         } else {

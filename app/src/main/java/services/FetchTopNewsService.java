@@ -37,6 +37,9 @@ public class FetchTopNewsService extends JobService {
     @Override
     public boolean onStartJob(JobParameters jobParameters) {
 
+        Toast.makeText(getApplicationContext(),"Started",Toast.LENGTH_SHORT).show();
+        Log.d("Service Check ","Running");
+
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         editor = preferences.edit();
 
@@ -46,7 +49,8 @@ public class FetchTopNewsService extends JobService {
 
         String category = preferences.getString("categoriesList","");
 
-        if(String.valueOf(language).equals("null")){
+        if (String.valueOf(language).equals("null") || String.valueOf(language).equals("")
+                || String.valueOf(language).equals("0")) {
             language = "en";
         }
         if(String.valueOf(country).equals("null")){
@@ -65,10 +69,12 @@ public class FetchTopNewsService extends JobService {
         call.enqueue(new Callback<CompleteResponse>() {
             @Override
             public void onResponse(Call<CompleteResponse> call, Response<CompleteResponse> response) {
+                Log.d("Check Service",call.request().url().toString());
                 newAlerts = new ArrayList<>();
                 newAlerts = response.body().getArticles();
                 String json = new Gson().toJson(newAlerts);
                 editor.putString("topnews", json);
+                editor.putLong("topNewsFetchedAt",System.currentTimeMillis());
                 editor.commit();
                 //TODO Update Widget
                 WidgetUpdateService updateWidget = new WidgetUpdateService();

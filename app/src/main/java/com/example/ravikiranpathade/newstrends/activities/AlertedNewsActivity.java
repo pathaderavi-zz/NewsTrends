@@ -94,6 +94,7 @@ public class AlertedNewsActivity extends AppCompatActivity implements LoaderMana
     @Override
     protected void onStart() {
         super.onStart();
+        //TODO If swipe delete ,
         getSupportLoaderManager().initLoader(1, null, this);
     }
 }

@@ -1,6 +1,8 @@
 package fragments;
 
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -93,7 +95,7 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Favorite News");
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Favorite News");
 
         Log.d("onCreateView Check", "Here");
         view = inflater.inflate(R.layout.fragment_favorites, container, false);
@@ -102,7 +104,18 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
 
         listView = view.findViewById(R.id.favoriteRecycler);
         listView.setAdapter(cursorAdapter);
+        textView = view.findViewById(R.id.favoritesTextView);
+        listView = view.findViewById(R.id.favoriteRecycler);
+        if (getContext().getContentResolver().query(
+                NewsContract.NewsFavoritesEntry.FINAL_URI,
+                null,
+                null,
+                null,
+                "ID DESC"
+        ).getCount() == 0) {
 
+
+        }
         return view;
     }
 
@@ -134,14 +147,11 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
 
         cursorAdapter.swapCursor(cursor1);
 
-//        if (cursor1 == null || cursor1.getCount() == 0) {
-//            textView = view.findViewById(R.id.favoritesTextView);
-//            listView = view.findViewById(R.id.favoriteRecycler);
-//            //TODO Solve Error movie in createView
-//            textView.setVisibility(View.VISIBLE);
-//            listView.setVisibility(View.GONE);
-//
-//        }
+        if (cursor1 == null || cursor1.getCount() == 0) {
+            textView.setVisibility(View.VISIBLE);
+            listView.setVisibility(View.GONE);
+
+        }
 
     }
 
@@ -153,7 +163,12 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
     @Override
     public void onStart() {
         super.onStart();
-        //TODO Change this for activity Rotations
-        //getActivity().getSupportLoaderManager().initLoader(0, null, this);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences.Editor editor = preferences.edit();
+
+        if (preferences.getBoolean("favorites_changed", false)) {
+            getActivity().getSupportLoaderManager().initLoader(0, null, this).forceLoad();
+            editor.putBoolean("favorites_changed", false);
+        }
     }
 }

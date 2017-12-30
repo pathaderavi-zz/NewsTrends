@@ -247,7 +247,8 @@ public class NewsDescriptionFragment extends Fragment {
         TextView descCard = view.findViewById(R.id.descDetail);
         TextView textView = view.findViewById(R.id.titleDetail);
         textView.setText(title);
-        Glide.with(getContext()).load(imageUrl).override(400, 300).centerCrop().diskCacheStrategy(DiskCacheStrategy.ALL).error(R.drawable.noimageavailable).skipMemoryCache(true).into(imageView);
+        Log.d("Check Image url",imageUrl);
+        Glide.with(getContext()).load(imageUrl).override(400, 300).centerCrop().diskCacheStrategy(DiskCacheStrategy.RESULT).error(R.drawable.noimageavailable).skipMemoryCache(true).into(imageView);
 
         descCard.setText(desc);
 
@@ -378,7 +379,7 @@ public class NewsDescriptionFragment extends Fragment {
                         NewsContract.NewsFavoritesEntry.FINAL_URI, cv
                 );
                 id = ContentUris.parseId(uri);
-
+                Log.d("Local Check Fav",imageUrl);
                 Glide.with(getContext()).load(imageUrl).asBitmap().override(400, 300).centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {

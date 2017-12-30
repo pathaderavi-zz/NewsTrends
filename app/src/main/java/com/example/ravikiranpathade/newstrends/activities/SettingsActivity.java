@@ -280,7 +280,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements and
                                 .setLifetime(Lifetime.FOREVER)
                                 .setRecurring(true)
                                 .setTag(JOB_TAG)
-                                .setTrigger(Trigger.executionWindow(0, 10800)) //Set for 3 Hours //TODO Change to 12/24 hours
+                                .setTrigger(Trigger.executionWindow(0, 43200)) //TODO Set for 12 hours
                                 .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
                                 .setReplaceCurrent(false).
                                         setConstraints(Constraint.ON_ANY_NETWORK)

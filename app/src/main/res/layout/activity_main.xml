@@ -16,21 +16,22 @@
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="?attr/actionBarSize"
 
             android:elevation="4dp"
-            android:minHeight="?attr/actionBarSize"
 
+            android:minHeight="?attr/actionBarSize"
+            android:paddingRight="70dp"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
-            <TextView
+            <ImageView
                 style="@style/Base.TextAppearance.AppCompat.Menu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:gravity="center_horizontal"
-                android:text="@string/app_name"
-                android:textSize="20dp" />
+
+                android:src="@drawable/newslogowidget"
+                 />
         </android.support.v7.widget.Toolbar>
 
         <android.support.design.widget.TabLayout

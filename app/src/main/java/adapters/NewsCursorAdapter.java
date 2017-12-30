@@ -26,7 +26,8 @@ import java.io.File;
 
 public class NewsCursorAdapter extends CursorAdapter {
     String check;
-    public NewsCursorAdapter(Context context, Cursor c,String from) {
+
+    public NewsCursorAdapter(Context context, Cursor c, String from) {
         super(context, c, 0);
         check = from;
     }
@@ -45,9 +46,9 @@ public class NewsCursorAdapter extends CursorAdapter {
 
         final String cursorId = String.valueOf(cursor.getInt(cursor.getColumnIndex("_id")));
         final String title_string = cursor.getString(cursor.getColumnIndex("TITLE"));
-        final String desc_string= cursor.getString(cursor.getColumnIndex("DESCRIPTION"));
+        final String desc_string = cursor.getString(cursor.getColumnIndex("DESCRIPTION"));
         final String imageUrl_string = context.getFilesDir().getAbsolutePath()
-                + File.separator + "images"+File.separator+ String.valueOf(cursorId) + ".jpg";
+                + File.separator + "images" + File.separator + String.valueOf(cursorId) + ".jpg";
         final String urlArticle_string = cursor.getString(cursor.getColumnIndex("URL"));
         final String author_string = cursor.getString(cursor.getColumnIndex("AUTHOR"));
         final String publishedAt_string = cursor.getString(cursor.getColumnIndex("PUBLISHEDAT"));
@@ -56,37 +57,44 @@ public class NewsCursorAdapter extends CursorAdapter {
 
         //TODO Load Images for Alerts and Favorites Separately
 
-        final String imageUrl_string_web = cursor.getString(cursor.getColumnIndex("URL"));
+        final String imageUrl_string_web = cursor.getString(cursor.getColumnIndex("URLTOIMAGE"));
 
 
-        if(author_string!=null){
-            author.setText("by "+author_string+" at "+source_name_string);
+        if (author_string != null) {
+            author.setText("by " + author_string + " at " + source_name_string);
+            Log.d(String.valueOf(imageUrl_string), imageUrl_string_web);
         }
-        if (imageUrl_string != null) {
-            if(check==null) {
-                Glide.with(context).load(imageUrl_string).centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE).into(newsCardImage);
-                Log.d("Check image",String.valueOf(imageUrl_string));
-            }else{
-                Glide.with(context).load(imageUrl_string_web).centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE).into(newsCardImage);
-                Log.d("Check image",String.valueOf(imageUrl_string_web));
+
+            if (check == null) {
+                Glide.with(context).load(imageUrl_string).centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).into(newsCardImage);
+                Log.d("Check image", String.valueOf(imageUrl_string));
+            } else {
+                Glide.with(context).load(imageUrl_string_web).centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).into(newsCardImage);
+                Log.d("Check image", String.valueOf(imageUrl_string_web));
             }
-        }
+
 
         headline.setText(title_string);
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(context,NewsDetailActivity.class);
+                Intent i = new Intent(context, NewsDetailActivity.class);
 
                 i.putExtra("list_id", Integer.parseInt(cursorId));
-                i.putExtra("title",title_string);
-                i.putExtra("description",desc_string);
-                i.putExtra("urlToImage",imageUrl_string);
-                i.putExtra("url",urlArticle_string);
-                i.putExtra("author",author_string);
-                i.putExtra("publishedAt",publishedAt_string);
-                i.putExtra("source_id",source_id_string);
-                i.putExtra("source_name",source_name_string);
+                i.putExtra("title", title_string);
+                i.putExtra("description", desc_string);
+                if (check == null) {
+                    i.putExtra("urlToImage", imageUrl_string);
+
+                } else {
+                    i.putExtra("urlToImage", imageUrl_string_web);
+
+                }
+                i.putExtra("url", urlArticle_string);
+                i.putExtra("author", author_string);
+                i.putExtra("publishedAt", publishedAt_string);
+                i.putExtra("source_id", source_id_string);
+                i.putExtra("source_name", source_name_string);
 
                 context.startActivity(i);
             }

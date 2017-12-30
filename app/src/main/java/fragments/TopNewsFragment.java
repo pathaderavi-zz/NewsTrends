@@ -168,7 +168,7 @@ public class TopNewsFragment extends Fragment {
         topNewsRecycler.setVisibility(View.INVISIBLE);
         view.findViewById(R.id.textViewEnd).setVisibility(View.INVISIBLE);
         showingTopNewsFor.setVisibility(View.INVISIBLE);
-        Log.d("Check La",language);
+        Log.d("Check La", language);
         Call<CompleteResponse> call = service.getTopNewsArticles(KEY, language, country, category);
 
         final List<Articles>[] a1 = new List[]{new ArrayList<>()};
@@ -205,17 +205,18 @@ public class TopNewsFragment extends Fragment {
 
                         String json = gson.toJson(a1[0]);
                         editor.putString("topnews", json);
+                        editor.putLong("topNewsFetchedAt",System.currentTimeMillis());
                         editor.commit();
-                        //TODO Start FirebaseService to schedule the job
+
 
                         dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(getContext()));
-
+                        dispatcher.cancel(JOB_TAG);
                         Job job = dispatcher.newJobBuilder().
                                 setService(FetchTopNewsService.class)
                                 .setLifetime(Lifetime.FOREVER)
                                 .setRecurring(true)
                                 .setTag(JOB_TAG)
-                                .setTrigger(Trigger.executionWindow(0, 600)) //Set for 3 Hours //TODO Change to 12/24 hours
+                                .setTrigger(Trigger.executionWindow(0, 10800))
                                 .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
                                 .setReplaceCurrent(false).setConstraints(Constraint.ON_ANY_NETWORK)
                                 .build();
@@ -245,7 +246,21 @@ public class TopNewsFragment extends Fragment {
                 showingTopNewsFor.setVisibility(View.GONE);
             }
         }
+        if(System.currentTimeMillis()-prefs.getLong("topNewsFetchedAt",0)>10800000){
+            dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(getContext()));
+            dispatcher.cancel(JOB_TAG);
+            Job job = dispatcher.newJobBuilder().
+                    setService(FetchTopNewsService.class)
+                    .setLifetime(Lifetime.FOREVER)
+                    .setRecurring(true)
+                    .setTag(JOB_TAG)
+                    .setTrigger(Trigger.executionWindow(0, 10800))
+                    .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
+                    .setReplaceCurrent(false).setConstraints(Constraint.ON_ANY_NETWORK)
+                    .build();
 
+            dispatcher.mustSchedule(job);
+        }
 
         return view;
     }

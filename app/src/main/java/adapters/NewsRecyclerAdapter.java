@@ -97,7 +97,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
 
             if (article.getUrlToImage() != null) {
 
-                Glide.with(holderContext).load(article.getUrlToImage()).centerCrop().diskCacheStrategy(DiskCacheStrategy.SOURCE).error(R.drawable.noimageavailable).into(newsCardImage);
+                Glide.with(holderContext).load(article.getUrlToImage()).centerCrop().diskCacheStrategy(DiskCacheStrategy.SOURCE).skipMemoryCache(true).error(R.drawable.noimageavailable).into(newsCardImage);
             }
             headline.setText(article.getTitle());
 
