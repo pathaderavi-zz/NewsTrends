@@ -28,11 +28,12 @@ import data.NewsContract;
 import models.Articles;
 import models.Source;
 
-public class AlertedNewsActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class AlertedNewsActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, NewsCursorAdapter.checkEmpty {
 
     ListView listView;
     NewsCursorAdapter adapter;
     TextView text;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +47,7 @@ public class AlertedNewsActivity extends AppCompatActivity implements LoaderMana
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-        adapter = new NewsCursorAdapter(this, null, "CHECK");
+        adapter = new NewsCursorAdapter(this, null, "CHECK", this);
         listView = findViewById(R.id.alertsRecyclerView);
         text = findViewById(R.id.noAlertTextView);
         listView.setAdapter(adapter);
@@ -79,10 +80,11 @@ public class AlertedNewsActivity extends AppCompatActivity implements LoaderMana
                 null,
                 "DATE DESC");
         adapter.swapCursor(cursor1);
-        if (cursor1 == null || cursor1.getCount() == 0) {
+        if (cursor1.getCount() == 0) {
             text.setVisibility(View.VISIBLE);
-            listView.setVisibility(View.GONE);
         }
+
+
     }
 
     @Override
@@ -92,9 +94,10 @@ public class AlertedNewsActivity extends AppCompatActivity implements LoaderMana
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        //TODO If swipe delete ,
-        getSupportLoaderManager().initLoader(1, null, this);
+    public void onCheckEmpty(boolean checkBoolean) {
+        Log.d("Checks Listener", "Working");
+        if (checkBoolean == true) {
+            text.setVisibility(View.VISIBLE);
+        }
     }
 }

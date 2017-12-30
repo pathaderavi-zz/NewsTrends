@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -38,7 +39,7 @@ import models.Source;
  * Use the {@link FavoritesFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FavoritesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class FavoritesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,NewsCursorAdapter.checkEmpty {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -88,7 +89,7 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        cursorAdapter = new NewsCursorAdapter(getContext(), null, null);
+        cursorAdapter = new NewsCursorAdapter(getContext(), null, null,this);
         getActivity().getSupportLoaderManager().initLoader(0, null, this).forceLoad();
     }
 
@@ -170,5 +171,10 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
             getActivity().getSupportLoaderManager().initLoader(0, null, this).forceLoad();
             editor.putBoolean("favorites_changed", false);
         }
+    }
+
+    @Override
+    public void onCheckEmpty(boolean checkBoolean) {
+
     }
 }

@@ -5,27 +5,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.ravikiranpathade.newstrends.activities.AlertedNewsActivity"
-    >
+    tools:context="com.example.ravikiranpathade.newstrends.activities.AlertedNewsActivity">
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/alertsBar"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:minHeight="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:elevation="4dp"
-        />
-<ListView
-    android:id="@+id/alertsRecyclerView"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:visibility="visible"
-    />
+        android:minHeight="?attr/actionBarSize" />
+
+    <ListView
+        android:id="@+id/alertsRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible" />
+
     <TextView
         android:id="@+id/noAlertTextView"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:text="NO ALERTS FOUND"
-        android:visibility="gone"
+        android:layout_height="wrap_content"
         android:gravity="center|center_vertical"
-        android:textSize="20dp"/>
+        android:text="NO ALERTS FOUND"
+        android:textSize="20dp"
+        android:textColor="#000"
+        android:visibility="gone" />
 </LinearLayout>

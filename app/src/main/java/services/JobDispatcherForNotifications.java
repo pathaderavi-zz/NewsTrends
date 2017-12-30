@@ -53,6 +53,7 @@ public class JobDispatcherForNotifications extends JobService {
     List<List<Articles>> newAlerts;
     int newAlertsNumber;
     Cursor mCursor;
+    Cursor checkDeleted;
 
     @Override
     public boolean onStartJob(JobParameters jobParameters) {
@@ -84,6 +85,7 @@ public class JobDispatcherForNotifications extends JobService {
                     final GetTopNewsWorldEnglish service = Client.getClient().create(GetTopNewsWorldEnglish.class);
                     Call<CompleteResponse> call = service.getForAlerts(KEY, keyword);
 
+                    final String finalKeyword = keyword;
                     call.enqueue(new Callback<CompleteResponse>() {
                                      @Override
                                      public void onResponse(Call<CompleteResponse> call, Response<CompleteResponse> response) {
@@ -95,20 +97,27 @@ public class JobDispatcherForNotifications extends JobService {
                                                      null,
                                                      a.getTitle(),
                                                      null, null, null);
+                                             checkDeleted = getApplicationContext().getContentResolver().query(
+                                                     NewsContract.NewsDeletedAlerts.FINAL_URI.buildUpon().appendPath("id")
+                                                             .build(),
+                                                     null,
+                                                     a.getTitle(),
+                                                     null, null, null);
 
+                                             Log.d("Should Insert ", String.valueOf((mCursor != null && mCursor.getCount() == 0 && checkDeleted != null && checkDeleted.getCount() == 0)));
+                                             if (mCursor != null && mCursor.getCount() == 0 && checkDeleted != null && checkDeleted.getCount() == 0) {
 
-                                             if (mCursor != null && mCursor.getCount() == 0) {
                                                  ContentValues values = new ContentValues();
+                                                 values.put(NewsContract.NewsAlertsEntry.COLUMN_NAME_TITLE, a.getTitle());
+                                                 values.put(NewsContract.NewsAlertsEntry.COLUMN_NAME_DESCRIPTION, a.getDescription());
+                                                 values.put(NewsContract.NewsAlertsEntry.COLUMN_NAME_URL, a.getUrl());
+                                                 values.put(NewsContract.NewsAlertsEntry.COLUMN_NAME_URL_TO_IMAGE, a.getUrlToImage());
+                                                 values.put(NewsContract.NewsAlertsEntry.COLUMN_NAME_AUTHOR, a.getAuthor());
+                                                 values.put(NewsContract.NewsAlertsEntry.COLUMN_NAME_PUBLISHED_AT, a.getPublishedAt());
+                                                 values.put(NewsContract.NewsAlertsEntry.COLUMN_NAME_SOURCE_ID, a.getSource().getId());
+                                                 values.put(NewsContract.NewsAlertsEntry.COLUMN_NAME_SOURCE_NAME, a.getSource().getName());
+                                                 values.put(NewsContract.NewsAlertsEntry.COLUMN_NAME_KEYWORD, finalKeyword);
 
-
-                                                 values.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_TITLE, a.getTitle());
-                                                 values.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_DESCRIPTION, a.getDescription());
-                                                 values.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_URL, a.getUrl());
-                                                 values.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_URL_TO_IMAGE, a.getUrlToImage());
-                                                 values.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_AUTHOR, a.getAuthor());
-                                                 values.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_PUBLISHED_AT, a.getPublishedAt());
-                                                 values.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_SOURCE_ID, a.getSource().getId());
-                                                 values.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_SOURCE_NAME, a.getSource().getName());
 
                                                  if (a.getPublishedAt() != "" || !a.getPublishedAt().isEmpty()) {
                                                      Date dateInsert = DateTimeUtils.formatDate(a.getPublishedAt());
@@ -151,7 +160,7 @@ public class JobDispatcherForNotifications extends JobService {
                         setNotification(finalListValues.size());
                     }
                 }
-            }, 60000); //TODO Check if this works now
+            }, 5000); //TODO Check if this works now
 
 
         }

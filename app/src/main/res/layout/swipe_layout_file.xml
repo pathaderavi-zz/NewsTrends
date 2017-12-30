@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.daimajia.swipe.SwipeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipe1"
+    android:layout_width="match_parent"
+    android:layout_height="148dp"
+    >
+    <!-- Bottom View Start-->
+    <LinearLayout
+        android:id="@+id/bottom_wrapper"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="#66ddff00"
+        android:orientation="horizontal"
+        android:weightSum="1">
+        <ImageView android:id="@+id/deleteFromCursorAdater"
+            android:layout_height="match_parent"
+            android:layout_width="80dp"
+            android:layout_weight="0.5"
+            android:background="#ccc"
+            app:srcCompat="@drawable/ic_delete_black_24px"/>
+        <ImageView android:id="@+id/deleteFromCursorAdater2"
+            android:layout_height="match_parent"
+            android:layout_width="80dp"
+            android:layout_weight="0.5"
+            app:srcCompat="@drawable/ic_star_border_white_24px"
+            android:visibility="gone"/>
+
+        <!--What you want to show-->
+    </LinearLayout>
+    <!-- Bottom View End-->
+
+    <!-- Surface View Start -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="148dp"
+        android:background="#ffffff"
+        android:padding="10dp">
+        <!--What you want to show in SurfaceView-->
+        <include
+            layout="@layout/news_item_cardview"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+        <WebView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:id="@+id/adapterWeb"
+            android:visibility="gone" />
+    </LinearLayout>
+    <!-- Surface View End -->
+</com.daimajia.swipe.SwipeLayout>

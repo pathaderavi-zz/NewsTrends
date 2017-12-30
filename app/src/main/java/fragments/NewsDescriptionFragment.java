@@ -508,7 +508,7 @@ public class NewsDescriptionFragment extends Fragment {
             }
             w.saveWebArchive(customContext  .getFilesDir().getAbsolutePath()
                     + File.separator + id_file + ".mht");
-            view.goBack();
+
 
         }
 

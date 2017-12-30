@@ -27,6 +27,10 @@ public class NewsContentProvider extends ContentProvider {
 
     public static final int ALERTS_ID = 201;
 
+    public static final int DELETED_ALERTS = 300;
+
+    public static final int DELETED_ALERTS_ID = 301;
+
 
     public static final UriMatcher uriMatcher = buildUriMatcher();
     private FavoriteNewsDBHelper favoriteNewsDBHelper;
@@ -40,6 +44,9 @@ public class NewsContentProvider extends ContentProvider {
 
         match.addURI(NewsContract.AUTHORITY, NewsContract.PATH_ALERTS, ALERTS);
         match.addURI(NewsContract.AUTHORITY, NewsContract.PATH_ALERTS + "/id", ALERTS_ID);
+
+        match.addURI(NewsContract.AUTHORITY, NewsContract.PATH_DELETED_ALERTS, DELETED_ALERTS);
+        match.addURI(NewsContract.AUTHORITY, NewsContract.PATH_DELETED_ALERTS + "/id", DELETED_ALERTS_ID);
 
         return match;
     }
@@ -125,6 +132,36 @@ public class NewsContentProvider extends ContentProvider {
                     e.printStackTrace();
                 }
                 break;
+            case DELETED_ALERTS:
+                returnCursor = database.query(
+                        NewsContract.NewsDeletedAlerts.TABLE_NAME,
+                        projection,
+                        selection,
+                        null,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+            case DELETED_ALERTS_ID:
+                try {
+                    selection = "TITLE=" + "\"" + selection + "\"";
+
+
+                    returnCursor = database.query(
+                            NewsContract.NewsDeletedAlerts.TABLE_NAME,
+                            null,
+                            selection,
+                            null,
+                            null,
+                            null,
+                            null
+                    );
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
             default:
                 throw new UnsupportedOperationException("Unable to find" + uri);
 
@@ -157,12 +194,12 @@ public class NewsContentProvider extends ContentProvider {
                             null,
                             contentValues
                     );
-                } catch (Exception e) {
+                } catch (SQLException e) {
                     e.printStackTrace();
                 }
                 if (id > 0) {
                     returnUri = ContentUris.withAppendedId(NewsContract.NewsFavoritesEntry.FINAL_URI, id);
-                    Log.d("Check Insert ID", returnUri.toString());
+
                 }
                 break;
 
@@ -179,7 +216,23 @@ public class NewsContentProvider extends ContentProvider {
                 }
                 if (id > 0) {
                     returnUri = ContentUris.withAppendedId(NewsContract.NewsAlertsEntry.FINAL_URI, id);
-                    Log.d("Check Insert ID", returnUri.toString());
+
+                }
+                break;
+            case DELETED_ALERTS:
+                id = 0;
+                try {
+                    id = database.insert(
+                            NewsContract.NewsDeletedAlerts.TABLE_NAME,
+                            null,
+                            contentValues
+                    );
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if (id > 0) {
+                    returnUri = ContentUris.withAppendedId(NewsContract.NewsDeletedAlerts.FINAL_URI, id);
+
                 }
                 break;
             default:
@@ -210,6 +263,12 @@ public class NewsContentProvider extends ContentProvider {
             case ALERTS:
                 id = database.delete(NewsContract.NewsAlertsEntry.TABLE_NAME, null, null);
                 break;
+            case DELETED_ALERTS:
+                id = database.delete(NewsContract.NewsDeletedAlerts.TABLE_NAME, s, null);
+                break;
+            case DELETED_ALERTS_ID:
+                id = database.delete(NewsContract.NewsDeletedAlerts.TABLE_NAME, null, null);
+                break;
             default:
                 throw new UnsupportedOperationException("Unable to find " + uri);
         }
@@ -227,7 +286,7 @@ public class NewsContentProvider extends ContentProvider {
 
         final SQLiteDatabase database = favoriteNewsDBHelper.getWritableDatabase();
         int numInserted = 0;
-        switch (match){
+        switch (match) {
             case ALERTS:
                 database.beginTransaction();
                 try {
@@ -240,9 +299,9 @@ public class NewsContentProvider extends ContentProvider {
                     database.setTransactionSuccessful();
                     getContext().getContentResolver().notifyChange(uri, null);
                     numInserted = values.length;
-                } catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
-                }finally {
+                } finally {
                     database.endTransaction();
                 }
                 break;
