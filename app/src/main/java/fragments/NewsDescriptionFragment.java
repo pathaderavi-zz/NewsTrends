@@ -1,11 +1,14 @@
 package fragments;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -18,12 +21,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.util.Log;
@@ -248,7 +254,7 @@ public class NewsDescriptionFragment extends Fragment {
         TextView textView = view.findViewById(R.id.titleDetail);
         textView.setText(title);
         Log.d("Check Image url",imageUrl);
-        Glide.with(getContext()).load(imageUrl).override(400, 300).centerCrop().diskCacheStrategy(DiskCacheStrategy.RESULT).error(R.drawable.noimageavailable).skipMemoryCache(true).into(imageView);
+        Glide.with(getContext()).load(imageUrl).override(400, 300).centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE).error(R.drawable.noimageavailable).skipMemoryCache(true).into(imageView);
 
         descCard.setText(desc);
 
@@ -269,7 +275,7 @@ public class NewsDescriptionFragment extends Fragment {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        onClickFab(title, desc, imageUrl, urlArticle);
+                        requestPermissions(title, desc, imageUrl, urlArticle);
                     }
                 }
         );
@@ -520,5 +526,63 @@ public class NewsDescriptionFragment extends Fragment {
         Log.d("Frag is", "Visible");
 
     }
+    public void requestPermissions(String titleP, String descP,String imageUrlP,String urlArticleP) {
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
 
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Need Storage Permission");
+                builder.setMessage("You can read NEWS online when NewsTrends saves files for the web archive on your phone. For it , the app needs permissions to store these files on you device.");
+                builder.setPositiveButton("Grant", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 22);
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+
+
+                    }
+                });
+                builder.show();
+            }
+            else if(PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("DENIED",false)){
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Need Storage Permission");
+                builder.setMessage("You can read NEWS online when NewsTrends saves files for the web archive on your phone. For it , the app needs permissions to store these files on you device.");
+                builder.setPositiveButton("Grant", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
+                        intent.setData(uri);
+                        startActivityForResult(intent, 22);
+                        Toast.makeText(getContext(), "Go to Permissions to Grant Storage", Toast.LENGTH_LONG).show();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.show();
+            }else {
+                //just request the permission
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 22);
+            }
+            SharedPreferences r = PreferenceManager.getDefaultSharedPreferences(getContext());
+            SharedPreferences.Editor editor = r.edit();
+
+            editor.putBoolean("DENIED",true);
+            editor.commit();
+        }else{
+           onClickFab(title, desc, imageUrl, urlArticle);
+        }
+    }
 }

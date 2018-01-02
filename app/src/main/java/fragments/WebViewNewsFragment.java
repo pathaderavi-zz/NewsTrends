@@ -11,10 +11,15 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageView;
+import android.widget.ShareActionProvider;
 
 import com.example.ravikiranpathade.newstrends.R;
 
@@ -36,6 +41,10 @@ public class WebViewNewsFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     WebView web;
+    ImageView shareButton;
+    android.support.v7.widget.Toolbar toolbar;
+    String titleTo;
+    Bundle checkBundle;
 
     private OnFragmentInteractionListener mListener;
 
@@ -89,36 +98,24 @@ public class WebViewNewsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_web_view_news, container, false);
 
-        final android.support.v7.widget.Toolbar toolbar = view.findViewById(R.id.webViewToolbar);
+        toolbar = view.findViewById(R.id.webViewToolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         toolbar.setTitle("Loading...");
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         web = view.findViewById(R.id.webViewLink);
-        final Bundle checkBundle = savedInstanceState;
+        checkBundle = savedInstanceState;
         // Log.d("Check SSSS" + String.valueOf(savedInstanceState.getInt("scrollX")), String.valueOf(savedInstanceState.getInt("scrollY")));
         savedInstanceState = getArguments();
-        final String titleTo = savedInstanceState.getString("titleToWeb");
+        titleTo = savedInstanceState.getString("titleToWeb");
         final String checkedUrl = savedInstanceState.getString("urlForWeb");
-        web.setWebViewClient(new WebViewClient() {
-            @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                super.onPageStarted(view, url, favicon);
-
-                if (checkBundle != null) {
-                    scrollXToCustom(checkBundle.getInt("scrollX"));
-                }
-            }
-
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-                toolbar.setTitle(titleTo);
-            }
-        });
-
+        shareButton = view.findViewById(R.id.shareWeb);
+        WebViewClient custom = new CustomWebViewHere();
+        web.setWebViewClient(custom);
 
         web.loadUrl(checkedUrl);
+
+
 
         //web.loadDataWithBaseURL(null, savedInstanceState.getString("urlForWeb"), "application/x-webarchive-xml", "UTF-8", null);
         Log.d("Check Webs1", savedInstanceState.getString("urlForWeb"));
@@ -177,4 +174,25 @@ public class WebViewNewsFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
+    public class CustomWebViewHere extends WebViewClient{
+
+        @Override
+        public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            super.onPageStarted(view, url, favicon);
+                web.clearView();
+             if (checkBundle != null) {
+                scrollXToCustom(checkBundle.getInt("scrollX"));
+            }
+        }
+
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+
+            toolbar.setTitle(titleTo);
+
+        }
+
+
+    }
 }

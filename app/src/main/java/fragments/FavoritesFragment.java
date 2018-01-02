@@ -175,6 +175,8 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public void onCheckEmpty(boolean checkBoolean) {
-
+        if (checkBoolean == true) {
+            textView.setVisibility(View.VISIBLE);
+        }
     }
 }

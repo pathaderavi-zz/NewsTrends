@@ -1,15 +1,24 @@
 package adapters;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.graphics.Bitmap;
 import android.media.Image;
 import android.net.Uri;
+import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +37,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.daimajia.swipe.SwipeLayout;
 import com.example.ravikiranpathade.newstrends.R;
+import com.example.ravikiranpathade.newstrends.activities.AlertedNewsActivity;
 import com.example.ravikiranpathade.newstrends.activities.NewsDetailActivity;
 import com.github.thunder413.datetimeutils.DateTimeUtils;
 
@@ -94,7 +104,7 @@ public class NewsCursorAdapter extends CursorAdapter {
 
         if (author_string != null) {
             author.setText("by " + author_string + " at " + source_name_string);
-            Log.d(String.valueOf(imageUrl_string), imageUrl_string_web);
+
         }
 
         if (check == null) {
@@ -166,34 +176,58 @@ public class NewsCursorAdapter extends CursorAdapter {
                                                try {
                                                    uri = context.getContentResolver().insert(
                                                            NewsContract.NewsDeletedAlerts.FINAL_URI, cv);
-                                                   Log.d("Check Cursor Delete",String.valueOf(uri));
+                                                   Log.d("Check Cursor Delete", String.valueOf(uri));
                                                } catch (SQLException e) {
                                                    e.printStackTrace();
                                                }
-
-                                               Uri delete = NewsContract.NewsAlertsEntry.FINAL_URI.buildUpon().appendPath("id").build();
-
-                                               context.getContentResolver().delete(delete, title_string, null);
-
-
-                                               swapCursor(context.getContentResolver().query(NewsContract.NewsAlertsEntry.FINAL_URI,
-                                                       null,
-                                                       null,
-                                                       null,
-                                                       "DATE DESC"));
-                                               //TODO Move in new table called deletedAlerts
+                                               Uri delete = null;
+                                               if (check != null) {
+                                                   delete = NewsContract.NewsAlertsEntry.FINAL_URI.buildUpon().appendPath("id").build();
+                                                   context.getContentResolver().delete(delete, title_string, null);
 
 
-                                               notifyDataSetChanged();
-                                               if (context.getContentResolver().query(NewsContract.NewsAlertsEntry.FINAL_URI,
-                                                       null,
-                                                       null,
-                                                       null,
-                                                       "DATE DESC").getCount() == 0) {
-                                                   checkListener.onCheckEmpty(true);
+                                                   swapCursor(context.getContentResolver().query(NewsContract.NewsAlertsEntry.FINAL_URI,
+                                                           null,
+                                                           null,
+                                                           null,
+                                                           "DATE DESC"));
+                                                   //TODO Move in new table called deletedAlerts
+
+
+                                                   notifyDataSetChanged();
+                                                   if (context.getContentResolver().query(NewsContract.NewsAlertsEntry.FINAL_URI,
+                                                           null,
+                                                           null,
+                                                           null,
+                                                           "DATE DESC").getCount() == 0) {
+                                                       checkListener.onCheckEmpty(true);
+                                                   }
+                                                   swipeLayout.close();
+                                                   Snackbar.make(view, "News Deleted", Snackbar.LENGTH_SHORT).show();
+                                               } else {
+                                                   delete = NewsContract.NewsFavoritesEntry.FINAL_URI.buildUpon().appendPath("id").build();
+                                                   context.getContentResolver().delete(delete, title_string, null);
+
+
+                                                   swapCursor(context.getContentResolver().query(NewsContract.NewsFavoritesEntry.FINAL_URI,
+                                                           null,
+                                                           null,
+                                                           null,
+                                                           "DATE DESC"));
+                                                   //TODO Move in new table called deletedAlerts
+                                                   notifyDataSetChanged();
+                                                   if (context.getContentResolver().query(NewsContract.NewsFavoritesEntry.FINAL_URI,
+                                                           null,
+                                                           null,
+                                                           null,
+                                                           "DATE DESC").getCount() == 0) {
+                                                       checkListener.onCheckEmpty(true);
+                                                   }
+                                                   swipeLayout.close();
+                                                   Snackbar.make(view, "News Deleted", Snackbar.LENGTH_SHORT).show();
                                                }
-                                               swipeLayout.close();
-                                               Snackbar.make(view, "News Deleted", Snackbar.LENGTH_SHORT).show();
+
+
                                            }
                                        }
         );
@@ -205,87 +239,142 @@ public class NewsCursorAdapter extends CursorAdapter {
             fav.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    if (ActivityCompat.checkSelfPermission((Activity) context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                        if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) context, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
 
-                    //TODO Add to favorites
-                    ContentValues cv = new ContentValues();
-                    cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_TITLE, title_string);
-                    cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_DESCRIPTION, desc_string);
-                    cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_URL, urlArticle_string);
-                    cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_URL_TO_IMAGE, imageUrl_string);
-                    cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_AUTHOR, author_string);
-                    cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_PUBLISHED_AT, publishedAt_string);
-                    cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_SOURCE_ID, source_id_string);
-                    cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_SOURCE_NAME, source_name_string);
-
-                    Date dateInsert = DateTimeUtils.formatDate(publishedAt_string);
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-                    cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_DATE, simpleDateFormat.format(dateInsert));
-                    Uri uri = null;
-                    try {
-                        uri = context.getContentResolver().insert(
-                                NewsContract.NewsFavoritesEntry.FINAL_URI, cv);
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                    if (uri != null) {
-                        cursor_insert = ContentUris.parseId(uri);
-
-                        //TODO remove from alerts
-                        Uri delete = NewsContract.NewsAlertsEntry.FINAL_URI.buildUpon().appendPath("id").build();
-                        context.getContentResolver().delete(delete, title_string, null);
-
-
-                        //TODO Save Image
-                        Glide.with(context).load(imageUrl_string_web).asBitmap().override(400, 300).centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).into(new SimpleTarget<Bitmap>() {
-                            @Override
-                            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                                File dir = new File(context.getFilesDir().getAbsolutePath()
-                                        + File.separator + "images");
-                                if (!dir.exists()) {
-                                    dir.mkdir();
+                            AlertDialog.Builder builder = new AlertDialog.Builder((Activity) context);
+                            builder.setTitle("Need Storage Permission");
+                            builder.setMessage("You can read NEWS online when NewsTrends saves files for the web archive on your phone. For it , the app needs permissions to store these files on you device.");
+                            builder.setPositiveButton("Grant", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                    ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 22);
                                 }
-                                File ff = new File(dir, String.valueOf(cursor_insert) + ".jpg");
-                                try {
-                                    FileOutputStream fileOutputStream = new FileOutputStream(ff);
-                                    resource.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
-                                    fileOutputStream.flush();
-                                    fileOutputStream.close();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
+                            });
+                            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+
+
                                 }
-                            }
+                            });
+                            builder.show();
+                        } else if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("DENIED", false)) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder((Activity) context);
+                            builder.setTitle("Need Storage Permission");
+                            builder.setMessage("You can read NEWS online when NewsTrends saves files for the web archive on your phone. For it , the app needs permissions to store these files on you device.");
+                            builder.setPositiveButton("Grant", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                    Uri uri = Uri.fromParts("package", context.getPackageName(), null);
+                                    intent.setData(uri);
+                                    ((Activity) context).startActivityForResult(intent, 22);
+                                    Toast.makeText(context, "Go to Permissions to Grant Storage", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            });
+                            builder.show();
+                        } else {
+                            //just request the permission
+                            ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 22);
+                        }
+                        SharedPreferences r = PreferenceManager.getDefaultSharedPreferences(context);
+                        SharedPreferences.Editor editor = r.edit();
+
+                        editor.putBoolean("DENIED", true);
+                        editor.commit();
+                        swipeLayout.close();
+                    } else {
+                        //TODO Add to favorites
+                        ContentValues cv = new ContentValues();
+                        cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_TITLE, title_string);
+                        cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_DESCRIPTION, desc_string);
+                        cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_URL, urlArticle_string);
+                        cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_URL_TO_IMAGE, imageUrl_string);
+                        cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_AUTHOR, author_string);
+                        cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_PUBLISHED_AT, publishedAt_string);
+                        cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_SOURCE_ID, source_id_string);
+                        cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_SOURCE_NAME, source_name_string);
+
+                        Date dateInsert = DateTimeUtils.formatDate(publishedAt_string);
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+                        cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_DATE, simpleDateFormat.format(dateInsert));
+                        Uri uri = null;
+                        try {
+                            uri = context.getContentResolver().insert(
+                                    NewsContract.NewsFavoritesEntry.FINAL_URI, cv);
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                        if (uri != null) {
+                            cursor_insert = ContentUris.parseId(uri);
+
+                            //TODO remove from alerts
+                            Uri delete = NewsContract.NewsAlertsEntry.FINAL_URI.buildUpon().appendPath("id").build();
+                            context.getContentResolver().delete(delete, title_string, null);
 
 
-                        });
+                            //TODO Save Image
+                            Glide.with(context).load(imageUrl_string_web).asBitmap().override(400, 300).centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).into(new SimpleTarget<Bitmap>() {
+                                @Override
+                                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                                    File dir = new File(context.getFilesDir().getAbsolutePath()
+                                            + File.separator + "images");
+                                    if (!dir.exists()) {
+                                        dir.mkdir();
+                                    }
+                                    File ff = new File(dir, String.valueOf(cursor_insert) + ".jpg");
+                                    try {
+                                        FileOutputStream fileOutputStream = new FileOutputStream(ff);
+                                        resource.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
+                                        fileOutputStream.flush();
+                                        fileOutputStream.close();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
 
 
-                        //TODO Save webViewarchive
-
-                        WebViewClient wClient = new CustomWebView(context, String.valueOf(cursor_insert));
-                        webViewAdapter.setWebViewClient(wClient);
-                        webViewAdapter.loadUrl(urlArticle_string);
-
-                        //TODO Update Cursor
+                            });
 
 
-                        swapCursor(context.getContentResolver().query(NewsContract.NewsAlertsEntry.FINAL_URI,
+                            //TODO Save webViewarchive
+
+                            WebViewClient wClient = new CustomWebView(context, String.valueOf(cursor_insert));
+                            webViewAdapter.setWebViewClient(wClient);
+                            webViewAdapter.loadUrl(urlArticle_string);
+
+                            //TODO Update Cursor
+
+
+                            swapCursor(context.getContentResolver().query(NewsContract.NewsAlertsEntry.FINAL_URI,
+                                    null,
+                                    null,
+                                    null,
+                                    "DATE DESC"));
+
+
+                            notifyDataSetChanged();
+                        }
+                        if (context.getContentResolver().query(NewsContract.NewsAlertsEntry.FINAL_URI,
                                 null,
                                 null,
                                 null,
-                                "DATE DESC"));
-
-
-                        notifyDataSetChanged();
+                                "DATE DESC").getCount() == 0) {
+                            checkListener.onCheckEmpty(true);
+                        }
+                        swipeLayout.close();
                     }
-                    if (context.getContentResolver().query(NewsContract.NewsAlertsEntry.FINAL_URI,
-                            null,
-                            null,
-                            null,
-                            "DATE DESC").getCount() == 0) {
-                        checkListener.onCheckEmpty(true);
-                    }
-                    swipeLayout.close();
                 }
             });
         }

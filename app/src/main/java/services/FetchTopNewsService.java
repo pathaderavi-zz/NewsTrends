@@ -52,15 +52,18 @@ public class FetchTopNewsService extends JobService {
         if (String.valueOf(language).equals("null") || String.valueOf(language).equals("")
                 || String.valueOf(language).equals("0")) {
             language = "en";
+            editor.putString("languageList", "en");
+            editor.commit();
         }
-        if(String.valueOf(country).equals("null")){
-            country="";
-
+        //TODO Implement Counrty Specific API
+        if (String.valueOf(country).equals("null") || String.valueOf(country).equals("0")) {
+            country = "";
+            editor.putString("countryList", "");
         }
 
-        if(String.valueOf(category).equals("null")){
-            category="";
-
+        if (String.valueOf(category).equals("null") || String.valueOf(category).equals("0")) {
+            category = "";
+            editor.putString("categoriesList", "");
         }
 
         GetTopNewsWorldEnglish service = Client.getClient().create(GetTopNewsWorldEnglish.class);

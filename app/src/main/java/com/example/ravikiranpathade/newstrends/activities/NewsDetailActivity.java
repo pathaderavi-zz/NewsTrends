@@ -65,16 +65,13 @@ public class NewsDetailActivity extends AppCompatActivity implements NewsDescrip
     public void onBackPressed() {
         super.onBackPressed();
 
-        //TODO Implement Delete Files
-        // put ID and delete status
-        // and empty the preferences
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = preferences.edit();
 
         String checkString = "NotSet";
         boolean deleteCheck = preferences.getBoolean("delete_files", false);
         if (deleteCheck) {
-            editor.putBoolean("favorites_changed",true);
+            editor.putBoolean("favorites_changed", true);
             try {
                 File check1 = new File(preferences.getString("delete_image", checkString));
                 File check2 = new File(preferences.getString("delete_mht", checkString));
@@ -92,6 +89,9 @@ public class NewsDetailActivity extends AppCompatActivity implements NewsDescrip
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+        if (fragmentManager.getBackStackEntryCount() > 0) {
+            fragmentManager.popBackStack();
         }
 
         //Log.d("Check Image",String.valueOf());
@@ -116,7 +116,7 @@ public class NewsDetailActivity extends AppCompatActivity implements NewsDescrip
                 null, null, null
         );
         boolean isConnected = new HelperFunctions().getConnectionInfo(this);
-        if (check!=null && check.getCount() == 0 && !isConnected) {
+        if (check != null && check.getCount() == 0 && !isConnected) {
             Log.d("Cheeck H", "1");
             Snackbar.make(findViewById(android.R.id.content), "NO INTERNET CONNECTION", Snackbar.LENGTH_SHORT).show();
         } else {

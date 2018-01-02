@@ -153,14 +153,21 @@ public class TopNewsFragment extends Fragment {
         if (String.valueOf(language).equals("null") || String.valueOf(language).equals("")
                 || String.valueOf(language).equals("0")) {
             language = "en";
+            editor.putString("languageList", "en");
+            editor.commit();
         }
         if (String.valueOf(country).equals("null") || String.valueOf(country).equals("0")) {
             country = "";
+            editor.putString("countryList", "");
         }
         //TODO Implement Counrty Specific API
         if (String.valueOf(category).equals("null") || String.valueOf(category).equals("0")) {
             category = "";
+            editor.putString("categoriesList", "");
         }
+
+        Log.d("Language = " + language + " Country = " + country, "Category = " + category);
+
         final ProgressBar spinningProgress = view.findViewById(R.id.progressBarTopNews);
         final TextView showingTopNewsFor = view.findViewById(R.id.showingTopNewsText);
 
@@ -173,7 +180,7 @@ public class TopNewsFragment extends Fragment {
 
         final List<Articles>[] a1 = new List[]{new ArrayList<>()};
         final String resp = prefs.getString("topnews", "");
-        if (!resp.equals("") && !resp.equals("[]")) {
+        if ((!resp.equals("") && !resp.equals("[]")) || (System.currentTimeMillis() - prefs.getLong("topNewsFetchedAt", 0) < 10800000)) {
 
             Type type = new TypeToken<List<Articles>>() {
             }.getType();
@@ -205,12 +212,16 @@ public class TopNewsFragment extends Fragment {
 
                         String json = gson.toJson(a1[0]);
                         editor.putString("topnews", json);
-                        editor.putLong("topNewsFetchedAt",System.currentTimeMillis());
+                        editor.putLong("topNewsFetchedAt", System.currentTimeMillis());
                         editor.commit();
 
 
                         dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(getContext()));
-                        dispatcher.cancel(JOB_TAG);
+                        try {
+                            dispatcher.cancel(JOB_TAG);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         Job job = dispatcher.newJobBuilder().
                                 setService(FetchTopNewsService.class)
                                 .setLifetime(Lifetime.FOREVER)
@@ -246,21 +257,7 @@ public class TopNewsFragment extends Fragment {
                 showingTopNewsFor.setVisibility(View.GONE);
             }
         }
-        if(System.currentTimeMillis()-prefs.getLong("topNewsFetchedAt",0)>10800000){
-            dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(getContext()));
-            dispatcher.cancel(JOB_TAG);
-            Job job = dispatcher.newJobBuilder().
-                    setService(FetchTopNewsService.class)
-                    .setLifetime(Lifetime.FOREVER)
-                    .setRecurring(true)
-                    .setTag(JOB_TAG)
-                    .setTrigger(Trigger.executionWindow(0, 10800))
-                    .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
-                    .setReplaceCurrent(false).setConstraints(Constraint.ON_ANY_NETWORK)
-                    .build();
 
-            dispatcher.mustSchedule(job);
-        }
 
         return view;
     }
