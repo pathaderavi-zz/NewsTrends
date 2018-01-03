@@ -1,11 +1,14 @@
 package services;
 
 import android.annotation.SuppressLint;
+
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
+
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -35,19 +38,19 @@ public class FetchTopNewsService extends JobService {
     List<Articles> newAlerts;
 
     @Override
-    public boolean onStartJob(JobParameters jobParameters) {
+    public boolean onStartJob(final JobParameters jobParameters) {
 
-        Toast.makeText(getApplicationContext(),"Started",Toast.LENGTH_SHORT).show();
-        Log.d("Service Check ","Running");
+        Toast.makeText(getApplicationContext(), "Started", Toast.LENGTH_SHORT).show();
+        Log.d("Service Check ", "Running");
 
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         editor = preferences.edit();
 
-        String country = preferences.getString("countryList","");
+        String country = preferences.getString("countryList", "");
 
-        String language = preferences.getString("languageList","");
+        String language = preferences.getString("languageList", "");
 
-        String category = preferences.getString("categoriesList","");
+        String category = preferences.getString("categoriesList", "");
 
         if (String.valueOf(language).equals("null") || String.valueOf(language).equals("")
                 || String.valueOf(language).equals("0")) {
@@ -67,19 +70,25 @@ public class FetchTopNewsService extends JobService {
         }
 
         GetTopNewsWorldEnglish service = Client.getClient().create(GetTopNewsWorldEnglish.class);
-        Call<CompleteResponse> call = service.getTopNewsArticles(KEY,language,country,category);
+        Call<CompleteResponse> call = service.getTopNewsArticles(KEY, language, country, category);
 
         call.enqueue(new Callback<CompleteResponse>() {
             @Override
             public void onResponse(Call<CompleteResponse> call, Response<CompleteResponse> response) {
-                Log.d("Check Service",call.request().url().toString());
+                Log.d("Check Service", call.request().url().toString());
                 newAlerts = new ArrayList<>();
                 newAlerts = response.body().getArticles();
+
                 String json = new Gson().toJson(newAlerts);
                 editor.putString("topnews", json);
-                editor.putLong("topNewsFetchedAt",System.currentTimeMillis());
+                editor.putLong("topNewsFetchedAt", System.currentTimeMillis());
                 editor.commit();
                 //TODO Update Widget
+                if(newAlerts.size()==0){
+                    editor.putString("topnews", "");
+                    editor.putLong("topNewsFetchedAt", 1080000000);
+                    editor.commit();
+                }   
                 WidgetUpdateService updateWidget = new WidgetUpdateService();
                 updateWidget.updateWidget(getApplicationContext());
 

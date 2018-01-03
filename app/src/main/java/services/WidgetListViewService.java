@@ -85,15 +85,16 @@ public class WidgetListViewService extends RemoteViewsService {
         @Override
         public RemoteViews getViewAt(int i) {
             RemoteViews remtoteView = new RemoteViews(context.getPackageName(), R.layout.widget_list_item);
+            if (articlesList != null) {
+                if (articlesList.size() > 0) {
+                    String title = articlesList.get(i).getTitle();
 
-            if (articlesList.size() > 0) {
-                String title = articlesList.get(i).getTitle();
+                    remtoteView.setTextViewText(R.id.widgetTitleTextView, title);
 
-                remtoteView.setTextViewText(R.id.widgetTitleTextView, title);
-
+                }
+                Intent checkI = new Intent(getApplicationContext(), MainActivity.class);
+                remtoteView.setOnClickFillInIntent(R.id.linearLayoutWidget, checkI);
             }
-            Intent checkI = new Intent(getApplicationContext(), MainActivity.class);
-            remtoteView.setOnClickFillInIntent(R.id.linearLayoutWidget,checkI);
             return remtoteView;
         }
 

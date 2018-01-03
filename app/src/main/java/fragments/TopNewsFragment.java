@@ -6,6 +6,7 @@ import android.content.Loader;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -18,6 +19,9 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.androidfung.geoip.IpApiService;
+import com.androidfung.geoip.ServicesManager;
+import com.androidfung.geoip.model.GeoIpResponseModel;
 import com.example.ravikiranpathade.newstrends.R;
 import com.example.ravikiranpathade.newstrends.activities.MainActivity;
 import com.firebase.jobdispatcher.Constraint;
@@ -80,6 +84,17 @@ public class TopNewsFragment extends Fragment {
     private String JOB_TAG = "fetch_top_news";
     FirebaseJobDispatcher dispatcher;
     boolean isConnected;
+    ProgressBar spinningProgress;
+    TextView showingTopNewsFor;
+    Gson gson;
+    GetTopNewsWorldEnglish service;
+    List<Articles>[] a1;
+    String resp;
+    TextView viewEnd;
+    View view;
+    String country;
+    String language;
+    String category;
 
     public TopNewsFragment() {
         // Required empty public constructor
@@ -120,35 +135,39 @@ public class TopNewsFragment extends Fragment {
         final LayoutInflater finalInflater = inflater;
         final ViewGroup finalViewgroup = container;
 
-        final View view = inflater.inflate(R.layout.fragment_top_news, container, false);
-        isConnected = new HelperFunctions().getConnectionInfo(getContext());
 
+        view = inflater.inflate(R.layout.fragment_top_news, container, false);
+
+
+        isConnected = new HelperFunctions().getConnectionInfo(getContext());
+        viewEnd = view.findViewById(R.id.textViewEnd);
         layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         topNewsRecycler = view.findViewById(R.id.topNewsRecycler);
         boolean isTablet = getActivity().getResources().getBoolean(R.bool.isTablet);
-        boolean isTabletLandscape = getActivity().getResources().getBoolean(R.bool.isTabletLandscape);
+
         if (isTablet) {
             topNewsRecycler.setLayoutManager(new GridLayoutManager(view.getContext(), 2));
         } else {
             topNewsRecycler.setLayoutManager(layoutManager);
         }
-        //TODO Country Specific Calls
+
+        spinningProgress = view.findViewById(R.id.progressBarTopNews);
+        showingTopNewsFor = view.findViewById(R.id.showingTopNewsText);
+
+        spinningProgress.setVisibility(View.VISIBLE);
+        topNewsRecycler.setVisibility(View.INVISIBLE);
+        view.findViewById(R.id.textViewEnd).setVisibility(View.INVISIBLE);
+        showingTopNewsFor.setVisibility(View.INVISIBLE);
 
 
-        //getActivity().getSupportLoaderManager().initLoader(0,null,getActivity());
-
-        //--------------------------
         prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         editor = prefs.edit();
-        final Gson gson = new Gson();
 
-        final GetTopNewsWorldEnglish service = Client.getClient().create(GetTopNewsWorldEnglish.class);
+        country = prefs.getString("countryList", "");
 
-        String country = prefs.getString("countryList", "");
+        language = prefs.getString("languageList", "");
 
-        String language = prefs.getString("languageList", "");
-
-        String category = prefs.getString("categoriesList", "");
+        category = prefs.getString("categoriesList", "");
 
         if (String.valueOf(language).equals("null") || String.valueOf(language).equals("")
                 || String.valueOf(language).equals("0")) {
@@ -156,35 +175,102 @@ public class TopNewsFragment extends Fragment {
             editor.putString("languageList", "en");
             editor.commit();
         }
-        if (String.valueOf(country).equals("null") || String.valueOf(country).equals("0")) {
-            country = "";
-            editor.putString("countryList", "");
-        }
-        //TODO Implement Counrty Specific API
-        if (String.valueOf(category).equals("null") || String.valueOf(category).equals("0")) {
+        if (String.valueOf(category).equals("null") || String.valueOf(category).equals("0") || category.equals("")) {
             category = "";
             editor.putString("categoriesList", "");
         }
+        final String[] countryList = getActivity().getResources().getStringArray(R.array.preferenceCountryValues);
+        if (isConnected) {
+            if (String.valueOf(country).equals("null") || String.valueOf(country).equals("0") || country.equals("")) { // Code Not Set
+                IpApiService ipApiService = ServicesManager.getGeoIpService();
+                ipApiService.getGeoIp().enqueue(new Callback<GeoIpResponseModel>() {
+                    @Override
+                    public void onResponse(Call<GeoIpResponseModel> call, Response<GeoIpResponseModel> response) {
+                        country = response.body().getCountryCode();
+                        boolean checkCountryMatch = false;
+                        for (String c : countryList) {
+                            if (c.equals(country.toLowerCase())) {
+                                checkCountryMatch = true;
+                            }
+                        }
+                        if (checkCountryMatch) {
+                            responseCall(language, country, category);
+                        } else {
+                            responseCall(language, "", category);
+                        }
+                    }
 
-        Log.d("Language = " + language + " Country = " + country, "Category = " + category);
+                    @Override
+                    public void onFailure(Call<GeoIpResponseModel> call, Throwable t) {
 
-        final ProgressBar spinningProgress = view.findViewById(R.id.progressBarTopNews);
-        final TextView showingTopNewsFor = view.findViewById(R.id.showingTopNewsText);
+                    }
+                });
 
-        spinningProgress.setVisibility(View.VISIBLE);
-        topNewsRecycler.setVisibility(View.INVISIBLE);
-        view.findViewById(R.id.textViewEnd).setVisibility(View.INVISIBLE);
-        showingTopNewsFor.setVisibility(View.INVISIBLE);
-        Log.d("Check La", language);
-        Call<CompleteResponse> call = service.getTopNewsArticles(KEY, language, country, category);
 
-        final List<Articles>[] a1 = new List[]{new ArrayList<>()};
-        final String resp = prefs.getString("topnews", "");
-        if ((!resp.equals("") && !resp.equals("[]")) || (System.currentTimeMillis() - prefs.getLong("topNewsFetchedAt", 0) < 10800000)) {
+            } else { // Code is Set
+                responseCall(language, country, category);
+            }
+        } else {
+            String resp = prefs.getString("topnews", "");
+            if ((!resp.equals("") && !resp.equals("[]"))) {
+                Type type = new TypeToken<List<Articles>>() {
+                }.getType();
+
+                a1[0] = gson.fromJson(resp, type);
+
+                adapter = new NewsRecyclerAdapter(a1[0]);
+                topNewsRecycler.setAdapter(adapter);
+
+                spinningProgress.setVisibility(View.GONE);
+                topNewsRecycler.setVisibility(View.VISIBLE);
+                view.findViewById(R.id.textViewEnd).setVisibility(View.VISIBLE);
+                showingTopNewsFor.setVisibility(View.VISIBLE);
+            } else {
+                spinningProgress.setVisibility(View.GONE);
+                topNewsRecycler.setVisibility(View.VISIBLE);
+
+                viewEnd.setVisibility(View.VISIBLE);
+                viewEnd.setText("Please Connect to Internet and Tap Here to Start Fetching News");
+                viewEnd.setTextSize(16);
+                viewEnd.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        getActivity().recreate();
+                    }
+                });
+                showingTopNewsFor.setVisibility(View.GONE);
+
+            }
+
+        }
+
+        return view;
+    }
+
+    public void responseCall(String lan, String cou, String cate) {
+        //TODO Implement if changed URL over last time
+
+        gson = new Gson();
+        service = Client.getClient().create(GetTopNewsWorldEnglish.class);
+        Call<CompleteResponse> call = service.getTopNewsArticles(KEY, lan, cou, cate);
+        String requestUrl = call.request().url().toString();
+        boolean matchesUrl = requestUrl.equals(prefs.getString("previousUrl", ""));
+        String resp = prefs.getString("topnews", "");
+        boolean tCheck = (System.currentTimeMillis() - prefs.getLong("topNewsFetchedAt", 0) < 10800000);
+
+        if (!matchesUrl) {
+            resp = "";
+            tCheck = false;
+        }
+        a1 = new List[]{new ArrayList<>()};
+
+        if ((!resp.equals("") && !resp.equals("[]")) || (tCheck)) {
 
             Type type = new TypeToken<List<Articles>>() {
             }.getType();
+
             a1[0] = gson.fromJson(resp, type);
+
             adapter = new NewsRecyclerAdapter(a1[0]);
             topNewsRecycler.setAdapter(adapter);
 
@@ -194,21 +280,36 @@ public class TopNewsFragment extends Fragment {
             showingTopNewsFor.setVisibility(View.VISIBLE);
 
         } else {
-            if (isConnected) {
-                call.enqueue(new Callback<CompleteResponse>() {
-                    @Override
-                    public void onResponse(Call<CompleteResponse> call, Response<CompleteResponse> response) {
-                        Log.d("Check Response", String.valueOf(call.request().url()));
-                        a1[0] = response.body().getArticles();
 
+            call.enqueue(new Callback<CompleteResponse>() {
+                @Override
+                public void onResponse(Call<CompleteResponse> call, Response<CompleteResponse> response) {
+                    Log.d("Check Response", String.valueOf(call.request().url()));
+                    editor.putString("previousUrl", call.request().url().toString());
+                    editor.commit();
 
+                    a1[0] = response.body().getArticles();
+                    dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(getContext()));
+
+                    spinningProgress.setVisibility(View.GONE);
+                    topNewsRecycler.setVisibility(View.VISIBLE);
+                    view.findViewById(R.id.textViewEnd).setVisibility(View.VISIBLE);
+                    showingTopNewsFor.setVisibility(View.VISIBLE);
+
+                    if (a1[0].size() == 0) {
+                        viewEnd.setText("Settings for Top News might be fetching 0 results. Please try changing Top News settings");
+                        viewEnd.setVisibility(View.VISIBLE);
+                        dispatcher.cancel(JOB_TAG);
+                        editor.putString("topnews", "");
+                        editor.putLong("topNewsFetchedAt", 108000000);
+                        editor.commit();
+
+                    } else {
+                        editor.putBoolean("noNews", false);
+                        editor.commit();
                         adapter = new NewsRecyclerAdapter(a1[0]);
                         topNewsRecycler.setAdapter(adapter);
 
-                        spinningProgress.setVisibility(View.GONE);
-                        topNewsRecycler.setVisibility(View.VISIBLE);
-                        view.findViewById(R.id.textViewEnd).setVisibility(View.VISIBLE);
-                        showingTopNewsFor.setVisibility(View.VISIBLE);
 
                         String json = gson.toJson(a1[0]);
                         editor.putString("topnews", json);
@@ -216,9 +317,8 @@ public class TopNewsFragment extends Fragment {
                         editor.commit();
 
 
-                        dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(getContext()));
                         try {
-                            dispatcher.cancel(JOB_TAG);
+                            dispatcher.cancel(JOB_TAG);  // TODO if articles are zero
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -235,31 +335,15 @@ public class TopNewsFragment extends Fragment {
                         dispatcher.mustSchedule(job);
 
                     }
+                }
 
-                    @Override
-                    public void onFailure(Call<CompleteResponse> call, Throwable t) {
-                        t.printStackTrace();
-                    }
-                });
+                @Override
+                public void onFailure(Call<CompleteResponse> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
 
-            } else {
-                spinningProgress.setVisibility(View.GONE);
-                topNewsRecycler.setVisibility(View.VISIBLE);
-                TextView viewEnd = view.findViewById(R.id.textViewEnd);
-                viewEnd.setVisibility(View.VISIBLE);
-                viewEnd.setText("Please Connect to Internet and Tap Here to Start Fetching News");
-                viewEnd.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        getActivity().recreate();
-                    }
-                });
-                showingTopNewsFor.setVisibility(View.GONE);
-            }
         }
-
-
-        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
