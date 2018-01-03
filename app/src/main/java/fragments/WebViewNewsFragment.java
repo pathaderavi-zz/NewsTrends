@@ -1,6 +1,7 @@
 package fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -109,16 +110,25 @@ public class WebViewNewsFragment extends Fragment {
         savedInstanceState = getArguments();
         titleTo = savedInstanceState.getString("titleToWeb");
         final String checkedUrl = savedInstanceState.getString("urlForWeb");
-        shareButton = view.findViewById(R.id.shareWeb);
+        final String webU = savedInstanceState.getString("realWebUrl");
         WebViewClient custom = new CustomWebViewHere();
         web.setWebViewClient(custom);
 
         web.loadUrl(checkedUrl);
 
 
+        shareButton = view.findViewById(R.id.shareWeb);
 
-        //web.loadDataWithBaseURL(null, savedInstanceState.getString("urlForWeb"), "application/x-webarchive-xml", "UTF-8", null);
-        Log.d("Check Webs1", savedInstanceState.getString("urlForWeb"));
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.setType("text/plain");
+                sendIntent.putExtra(Intent.EXTRA_TEXT, webU);
+                startActivity(sendIntent);
+            }
+        });
 
 
         return view;
@@ -174,13 +184,13 @@ public class WebViewNewsFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    public class CustomWebViewHere extends WebViewClient{
+    public class CustomWebViewHere extends WebViewClient {
 
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
-                web.clearView();
-             if (checkBundle != null) {
+            web.clearView();
+            if (checkBundle != null) {
                 scrollXToCustom(checkBundle.getInt("scrollX"));
             }
         }
@@ -190,6 +200,7 @@ public class WebViewNewsFragment extends Fragment {
             super.onPageFinished(view, url);
 
             toolbar.setTitle(titleTo);
+            shareButton.setVisibility(View.VISIBLE);
 
         }
 

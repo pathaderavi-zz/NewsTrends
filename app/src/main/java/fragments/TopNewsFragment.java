@@ -51,6 +51,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import services.FetchTopNewsService;
+import services.WidgetUpdateService;
 import utils.HelperFunctions;
 
 import static android.provider.Contacts.SettingsColumns.KEY;
@@ -135,7 +136,7 @@ public class TopNewsFragment extends Fragment {
         final LayoutInflater finalInflater = inflater;
         final ViewGroup finalViewgroup = container;
 
-
+        a1 = new List[]{new ArrayList<>()};
         view = inflater.inflate(R.layout.fragment_top_news, container, false);
 
 
@@ -180,6 +181,8 @@ public class TopNewsFragment extends Fragment {
             editor.putString("categoriesList", "");
         }
         final String[] countryList = getActivity().getResources().getStringArray(R.array.preferenceCountryValues);
+        gson = new Gson();
+        a1[0] = new ArrayList<>();
         if (isConnected) {
             if (String.valueOf(country).equals("null") || String.valueOf(country).equals("0") || country.equals("")) { // Code Not Set
                 IpApiService ipApiService = ServicesManager.getGeoIpService();
@@ -249,7 +252,7 @@ public class TopNewsFragment extends Fragment {
 
     public void responseCall(String lan, String cou, String cate) {
         //TODO Implement if changed URL over last time
-
+        a1[0] = new ArrayList<>();
         gson = new Gson();
         service = Client.getClient().create(GetTopNewsWorldEnglish.class);
         Call<CompleteResponse> call = service.getTopNewsArticles(KEY, lan, cou, cate);
@@ -322,6 +325,8 @@ public class TopNewsFragment extends Fragment {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+
+
                         Job job = dispatcher.newJobBuilder().
                                 setService(FetchTopNewsService.class)
                                 .setLifetime(Lifetime.FOREVER)
@@ -335,6 +340,8 @@ public class TopNewsFragment extends Fragment {
                         dispatcher.mustSchedule(job);
 
                     }
+                    WidgetUpdateService updateWidget = new WidgetUpdateService();
+                    updateWidget.updateWidget(getActivity());
                 }
 
                 @Override

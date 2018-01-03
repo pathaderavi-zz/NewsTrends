@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 
@@ -28,23 +29,26 @@ public class NewsAppWidget extends AppWidgetProvider {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.news_app_widget);
 
         Intent intent = new Intent(context, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context,0,intent,0);
-            views.setOnClickPendingIntent(R.id.appwidget_text,pendingIntent);
-           // views.setOnClickFillInIntent(R.id.widgetTitleTextView,pendingIntent);
-        String check = PreferenceManager.getDefaultSharedPreferences(context).getString("topnews","");
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        views.setOnClickPendingIntent(R.id.appwidget_text, pendingIntent);
+        // views.setOnClickFillInIntent(R.id.widgetTitleTextView,pendingIntent);
+        String check = PreferenceManager.getDefaultSharedPreferences(context).getString("topnews", "");
+
+        Log.d("Check Widget","Update");
+        if (check == "" || check.isEmpty() || check == null) {
 
 
-        if(check=="" || check.isEmpty() || check==null){
-            views.setTextViewText(R.id.appwidget_text, widgetText);
+            views.setViewVisibility(R.id.noNewsWidgetText, View.VISIBLE);
+            views.setViewVisibility(R.id.listViewWidget, View.GONE);
+
+        } else {
+
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.listViewWidget);
+
         }
-        else{
-           // views.setTextViewText(R.id.appwidget_text,"");
-            //TODO
-            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId,R.id.listViewWidget);
-        }
+
         Intent listIntent = new Intent(context, WidgetListViewService.class);
-        views.setRemoteAdapter(R.id.listViewWidget,listIntent);
-
+        views.setRemoteAdapter(R.id.listViewWidget, listIntent);
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
 
@@ -59,8 +63,9 @@ public class NewsAppWidget extends AppWidgetProvider {
             updateAppWidget(context, appWidgetManager, appWidgetId);
         }
     }
+
     public static void updateNewsWidget(Context context, AppWidgetManager appWidgetManager,
-                                        int[] appWidgetIds){
+                                        int[] appWidgetIds) {
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);
         }

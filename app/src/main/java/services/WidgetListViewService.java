@@ -7,8 +7,10 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.AppWidgetTarget;
@@ -53,7 +55,9 @@ public class WidgetListViewService extends RemoteViewsService {
             Gson gson = new Gson();
             Type type = new TypeToken<List<Articles>>() {
             }.getType();
+
             articlesList = gson.fromJson(news, type);
+
             return articlesList;
         }
 
@@ -90,6 +94,7 @@ public class WidgetListViewService extends RemoteViewsService {
                     String title = articlesList.get(i).getTitle();
 
                     remtoteView.setTextViewText(R.id.widgetTitleTextView, title);
+                    remtoteView.setViewVisibility(R.id.noNewsWidgetText, View.GONE);
 
                 }
                 Intent checkI = new Intent(getApplicationContext(), MainActivity.class);

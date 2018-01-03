@@ -124,6 +124,7 @@ public class NewsDetailActivity extends AppCompatActivity implements NewsDescrip
             Bundle b = new Bundle();
             b.putString("urlForWeb", url);
             b.putString("titleToWeb", titleFrom);
+            b.putString("realWebUrl",url);
             webFragment = new WebViewNewsFragment();
             webFragment.setArguments(b);
             fragmentManager.beginTransaction().replace(R.id.newsDescriptionFragment, webFragment).addToBackStack(null).commit();
@@ -137,6 +138,7 @@ public class NewsDetailActivity extends AppCompatActivity implements NewsDescrip
                     + File.separator + id_file + ".mht";
             b.putString("urlForWeb", urls);
             b.putString("titleToWeb", titleFrom);
+            b.putString("realWebUrl",url);
             webFragment = new WebViewNewsFragment();
             webFragment.setArguments(b);
             fragmentManager.beginTransaction().replace(R.id.newsDescriptionFragment, webFragment).addToBackStack(null).commit();

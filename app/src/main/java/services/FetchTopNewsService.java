@@ -84,11 +84,11 @@ public class FetchTopNewsService extends JobService {
                 editor.putLong("topNewsFetchedAt", System.currentTimeMillis());
                 editor.commit();
                 //TODO Update Widget
-                if(newAlerts.size()==0){
+                if (newAlerts.size() == 0) {
                     editor.putString("topnews", "");
                     editor.putLong("topNewsFetchedAt", 1080000000);
                     editor.commit();
-                }   
+                }
                 WidgetUpdateService updateWidget = new WidgetUpdateService();
                 updateWidget.updateWidget(getApplicationContext());
 
