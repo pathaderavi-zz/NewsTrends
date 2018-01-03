@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ravikiranpathade.newstrends.R;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +65,7 @@ public class SearchLatestNews extends Fragment {
     public final String KEY = "16a2ce7a435e4acb8482fae088ba6b9e";
 
     private OnFragmentInteractionListener mListener;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     public SearchLatestNews() {
         // Required empty public constructor
@@ -105,6 +107,7 @@ public class SearchLatestNews extends Fragment {
         View view = inflater.inflate(R.layout.fragment_search_latest_news, container, false);
         int h = view.getWidth();
 
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getContext());
         searchView = view.findViewById(R.id.searchViewLatest);
         spinner = view.findViewById(R.id.spinnerPriority);
         textView = view.findViewById(R.id.showingLatestSearchText);
@@ -133,6 +136,15 @@ public class SearchLatestNews extends Fragment {
                     if (spinnerText.equals("Published At")) {
                         spinnerText = "publishedAt";
                     }
+
+                    Bundle bundle = new Bundle();
+
+                    bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Search");
+                    bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, query);
+
+                    mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+
+
                     query = query.replaceAll("\\s+","+");
                     progressBar.setVisibility(View.VISIBLE);
                     makeSearchCall(query, spinnerText);

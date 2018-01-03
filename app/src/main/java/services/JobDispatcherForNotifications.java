@@ -190,7 +190,8 @@ public class JobDispatcherForNotifications extends JobService {
         ;
         Uri u = Uri.parse(preferences.getString("notifications_new_message_ringtone", "DEFAULT_SOUND"));
         notification.setSound(u);
-        if (true) {
+        boolean isVibrate = preferences.getBoolean("notifications_new_message_vibrate",false);
+        if (isVibrate) {
             notification.setVibrate(new long[]{1000, 1000});
         }
         Intent intent = new Intent(getApplicationContext(), AlertedNewsActivity.class);

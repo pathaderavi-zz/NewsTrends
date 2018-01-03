@@ -32,6 +32,7 @@ import com.firebase.jobdispatcher.Lifetime;
 import com.firebase.jobdispatcher.RetryStrategy;
 import com.firebase.jobdispatcher.Trigger;
 import com.github.thunder413.datetimeutils.DateTimeUtils;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -97,6 +98,7 @@ public class TopNewsFragment extends Fragment {
     String country;
     String language;
     String category;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     public TopNewsFragment() {
         // Required empty public constructor
@@ -140,7 +142,7 @@ public class TopNewsFragment extends Fragment {
         a1 = new List[]{new ArrayList<>()};
         view = inflater.inflate(R.layout.fragment_top_news, container, false);
 
-
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getContext());
         isConnected = new HelperFunctions().getConnectionInfo(getContext());
         viewEnd = view.findViewById(R.id.textViewEnd);
         layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
@@ -173,8 +175,12 @@ public class TopNewsFragment extends Fragment {
 
         if (String.valueOf(language).equals("null") || String.valueOf(language).equals("")
                 || String.valueOf(language).equals("0")) {
-            language = "en";
-            editor.putString("languageList", "en");
+            if (String.valueOf(language).equals("null")) {
+                language = "";
+            } else {
+                language = "en";
+            }
+            editor.putString("languageList", language);
             editor.commit();
         }
         if (String.valueOf(category).equals("null") || String.valueOf(category).equals("0") || category.equals("")) {
@@ -191,6 +197,18 @@ public class TopNewsFragment extends Fragment {
                     @Override
                     public void onResponse(Call<GeoIpResponseModel> call, Response<GeoIpResponseModel> response) {
                         country = response.body().getCountryCode();
+
+                        Bundle bundle = new Bundle();
+
+                        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Country");
+                        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, response.body().getCountry());
+
+                        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "City");
+                        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, response.body().getCity());
+
+                        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+
+
                         boolean checkCountryMatch = false;
                         for (String c : countryList) {
                             if (c.equals(country.toLowerCase())) {
@@ -232,7 +250,7 @@ public class TopNewsFragment extends Fragment {
                 if (country.equals("") || country.equals("null") || country.equals("0")) {
                     country = "World";
                 } else {
-                    showingTopNewsFor.setText("Showing News For " + new Locale("",country).getDisplayCountry().toUpperCase());
+                    showingTopNewsFor.setText("Showing News For " + new Locale("", country).getDisplayCountry().toUpperCase());
                 }
             } else {
                 spinningProgress.setVisibility(View.GONE);
@@ -291,7 +309,7 @@ public class TopNewsFragment extends Fragment {
             if (cou.equals("") || cou.equals("null") || cou.equals("0")) {
                 showingTopNewsFor.setText("Showing News For World");
             } else {
-                showingTopNewsFor.setText("Showing News For " + new Locale("",cou).getDisplayCountry().toUpperCase());
+                showingTopNewsFor.setText("Showing News For " + new Locale("", cou).getDisplayCountry().toUpperCase());
             }
 
         } else {
@@ -354,7 +372,7 @@ public class TopNewsFragment extends Fragment {
                         if (countryCheckString.equals("") || countryCheckString.equals("null") || countryCheckString.equals("0")) {
                             showingTopNewsFor.setText("Showing News For World");
                         } else {
-                            showingTopNewsFor.setText("Showing News For " + new Locale("",countryCheckString).getDisplayCountry().toUpperCase());
+                            showingTopNewsFor.setText("Showing News For " + new Locale("", countryCheckString).getDisplayCountry().toUpperCase());
                         }
 
                     }

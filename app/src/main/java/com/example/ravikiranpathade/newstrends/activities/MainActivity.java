@@ -23,6 +23,7 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.crashlytics.android.Crashlytics;
 import com.example.ravikiranpathade.newstrends.R;
 
 import org.json.JSONArray;
@@ -59,10 +60,12 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
     android.support.v4.app.FragmentManager fragmentManager;
     boolean onCreateCheck = true;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         onCreateCheck = false;
         android.support.v7.widget.Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
