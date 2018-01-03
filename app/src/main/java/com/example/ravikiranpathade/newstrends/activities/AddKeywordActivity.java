@@ -1,8 +1,13 @@
 package com.example.ravikiranpathade.newstrends.activities;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -37,7 +42,10 @@ public class AddKeywordActivity extends AppCompatActivity {
     JSONArray jArray;
     android.support.v7.widget.SearchView ed;
 
-    //TODO Implement Delete All
+    NavigationView navigation;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle toggle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +58,12 @@ public class AddKeywordActivity extends AppCompatActivity {
         ed = findViewById(R.id.addword);
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         editor = preferences.edit();
+
+        drawerLayout = findViewById(R.id.drawerLayoutAlertAddKeyword);
+        navigation = findViewById(R.id.navigationViewAlertAddKeyword);
+        toggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
 
 
         try {
@@ -64,7 +78,7 @@ public class AddKeywordActivity extends AppCompatActivity {
             public boolean onQueryTextSubmit(String query) {
 
                 setAdapter(query);
-                //TODO Change Adapter
+
                 ed.onActionViewCollapsed();
 
                 return false;
@@ -80,15 +94,56 @@ public class AddKeywordActivity extends AppCompatActivity {
         }
         adapterInput(jArray);
 
+        setupDrawer(navigation);
+    }
+    private void setupDrawer(NavigationView navigation) {
+        navigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                selectNavigationDrawerItem(item);
+                return true;
+            }
+        });
+    }
+    private void selectNavigationDrawerItem(MenuItem menuItem) {
+
+
+        switch (menuItem.getItemId()) {
+            case R.id.home:
+
+                Intent intentMain = new Intent(this,MainActivity.class);
+                startActivity(intentMain);
+                break;
+            case R.id.settings:
+                Intent i = new Intent(this, SettingsActivity.class);
+                startActivity(i);
+                break;
+            case R.id.favorites:
+                Intent intentFav = new Intent(this,FavoritesActivity.class);
+                startActivity(intentFav);
+                break;
+            case R.id.alerts:
+                Intent intentAlert = new Intent(this, AlertedNewsActivity.class);
+                startActivity(intentAlert);
+                break;
+            case R.id.addKeywords:
+                Intent intentAdd = new Intent(this, AddKeywordActivity.class);
+                startActivity(intentAdd);
+                break;
+            default:
+
+        }
+        drawerLayout.closeDrawers();
+
 
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        if (item.getItemId() == android.R.id.home) {
-
-            onBackPressed();
+        if (toggle.onOptionsItemSelected(item)) {
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -110,7 +165,7 @@ public class AddKeywordActivity extends AppCompatActivity {
 
                 }
             }
-           
+
             if (!dupCheck) {
                 Snackbar.make(findViewById(android.R.id.content), "Already Exists", Snackbar.LENGTH_SHORT).show();
 

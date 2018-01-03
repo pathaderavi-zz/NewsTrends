@@ -1,9 +1,14 @@
 package com.example.ravikiranpathade.newstrends.activities;
 
+import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.database.Cursor;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -34,6 +39,9 @@ public class AlertedNewsActivity extends AppCompatActivity implements LoaderMana
     NewsCursorAdapter adapter;
     TextView text;
 
+    NavigationView navigation;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle toggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,19 +54,69 @@ public class AlertedNewsActivity extends AppCompatActivity implements LoaderMana
         getSupportActionBar().setTitle("News Alerts");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        drawerLayout = findViewById(R.id.drawerLayoutAlert);
+        navigation = findViewById(R.id.navigationViewAlert);
+        toggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
 
         adapter = new NewsCursorAdapter(this, null, "CHECK", this);
         listView = findViewById(R.id.alertsRecyclerView);
         text = findViewById(R.id.noAlertTextView);
         listView.setAdapter(adapter);
 
+        setupDrawer(navigation);
+
+    }
+
+    private void setupDrawer(NavigationView navigation) {
+        navigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                selectNavigationDrawerItem(item);
+                return true;
+            }
+        });
+    }
+    private void selectNavigationDrawerItem(MenuItem menuItem) {
+
+
+        switch (menuItem.getItemId()) {
+            case R.id.home:
+
+                Intent intentMain = new Intent(this,MainActivity.class);
+                startActivity(intentMain);
+                break;
+            case R.id.settings:
+                Intent i = new Intent(this, SettingsActivity.class);
+                startActivity(i);
+                break;
+            case R.id.favorites:
+                Intent intentFav = new Intent(this,FavoritesActivity.class);
+                startActivity(intentFav);
+                break;
+            case R.id.alerts:
+                Intent intentAlert = new Intent(this, AlertedNewsActivity.class);
+                startActivity(intentAlert);
+                break;
+            case R.id.addKeywords:
+                Intent intentAdd = new Intent(this, AddKeywordActivity.class);
+                startActivity(intentAdd);
+                break;
+            default:
+
+        }
+        drawerLayout.closeDrawers();
+
 
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
+        if (toggle.onOptionsItemSelected(item)) {
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

@@ -48,20 +48,22 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
     SharedPreferences prefs;
     SharedPreferences.Editor editor;
 
+    NavigationView navigation;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle toggle;
     TabLayout tabLayout;
     ViewPager viewPager;
     FrameLayout frame;
-    NavigationView navigation;
+
     PagerAdapter pagerAdapter;
     android.support.v4.app.FragmentManager fragmentManager;
+    boolean onCreateCheck = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        onCreateCheck = false;
         android.support.v7.widget.Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(null);
@@ -184,10 +186,22 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        onCreateCheck = true;
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(onCreateCheck){
+            pagerAdapter = new adapters.PagerAdapter(fragmentManager, tabLayout.getTabCount());
+            viewPager.setAdapter(pagerAdapter);
+            viewPager.setOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        }
+    }
+
 }

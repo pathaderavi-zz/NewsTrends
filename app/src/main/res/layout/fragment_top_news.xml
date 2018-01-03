@@ -27,7 +27,7 @@
             android:layout_marginLeft="10dp"
             android:text="Showing Results for "
             android:textColor="#000"
-            android:textSize="20dp" />
+            android:textSize="14dp" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/topNewsRecycler"
