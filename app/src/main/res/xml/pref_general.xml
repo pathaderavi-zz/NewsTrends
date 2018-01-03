@@ -16,8 +16,8 @@
         android:key="categoriesList"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
-        android:title="News Category"
-        android:summary="%s"/>
+        android:summary="%s"
+        android:title="News Category" />
 
     <ListPreference
         android:defaultValue="2"
@@ -26,8 +26,8 @@
         android:key="languageList"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
-        android:title="Language"
-        android:summary="%s"/>
+        android:summary="%s"
+        android:title="Language" />
 
     <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
          dismiss it. -->
@@ -39,9 +39,14 @@
         android:key="countryList"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
-        android:title="Country"
-        android:summary="%s"/>
-    <EditTextPreference
-        android:title="something"/>
+        android:summary="%s"
+        android:title="Country" />
+    <Preference
+
+        android:selectable="false"
+        android:enabled="true"
+        android:key="example_key"
+        android:title="PLEASE NOTE"
+        android:summary="Changing to categories and languages can result to very less amount of News Results" />
 
 </PreferenceScreen>

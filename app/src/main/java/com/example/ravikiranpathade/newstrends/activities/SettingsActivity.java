@@ -3,6 +3,7 @@ package com.example.ravikiranpathade.newstrends.activities;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -223,6 +224,10 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements and
             // guidelines.
 //            bindPreferenceSummaryToValue(findPreference("example_text"));
 //            bindPreferenceSummaryToValue(findPreference("example_list"));
+
+
+
+
         }
 
         @Override
@@ -280,7 +285,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements and
                                 .setLifetime(Lifetime.FOREVER)
                                 .setRecurring(true)
                                 .setTag(JOB_TAG)
-                                .setTrigger(Trigger.executionWindow(0,43200 )) //TODO Set for 12 hours - 43200
+                                .setTrigger(Trigger.executionWindow(0,10 )) //TODO Set for 12 hours - 43200
                                 .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
                                 .setReplaceCurrent(false).
                                         setConstraints(Constraint.ON_ANY_NETWORK)

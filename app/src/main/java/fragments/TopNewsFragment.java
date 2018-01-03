@@ -41,6 +41,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import adapters.NewsRecyclerAdapter;
 import models.Articles;
@@ -228,6 +229,11 @@ public class TopNewsFragment extends Fragment {
                 topNewsRecycler.setVisibility(View.VISIBLE);
                 view.findViewById(R.id.textViewEnd).setVisibility(View.VISIBLE);
                 showingTopNewsFor.setVisibility(View.VISIBLE);
+                if (country.equals("") || country.equals("null") || country.equals("0")) {
+                    country = "World";
+                } else {
+                    showingTopNewsFor.setText("Showing News For " + new Locale("",country).getDisplayCountry().toUpperCase());
+                }
             } else {
                 spinningProgress.setVisibility(View.GONE);
                 topNewsRecycler.setVisibility(View.VISIBLE);
@@ -282,8 +288,14 @@ public class TopNewsFragment extends Fragment {
             view.findViewById(R.id.textViewEnd).setVisibility(View.VISIBLE);
             showingTopNewsFor.setVisibility(View.VISIBLE);
 
-        } else {
+            if (cou.equals("") || cou.equals("null") || cou.equals("0")) {
+                showingTopNewsFor.setText("Showing News For World");
+            } else {
+                showingTopNewsFor.setText("Showing News For " + new Locale("",cou).getDisplayCountry().toUpperCase());
+            }
 
+        } else {
+            final String countryCheckString = cou;
             call.enqueue(new Callback<CompleteResponse>() {
                 @Override
                 public void onResponse(Call<CompleteResponse> call, Response<CompleteResponse> response) {
@@ -306,6 +318,7 @@ public class TopNewsFragment extends Fragment {
                         editor.putString("topnews", "");
                         editor.putLong("topNewsFetchedAt", 108000000);
                         editor.commit();
+                        showingTopNewsFor.setVisibility(View.GONE);
 
                     } else {
                         editor.putBoolean("noNews", false);
@@ -338,6 +351,11 @@ public class TopNewsFragment extends Fragment {
                                 .build();
 
                         dispatcher.mustSchedule(job);
+                        if (countryCheckString.equals("") || countryCheckString.equals("null") || countryCheckString.equals("0")) {
+                            showingTopNewsFor.setText("Showing News For World");
+                        } else {
+                            showingTopNewsFor.setText("Showing News For " + new Locale("",countryCheckString).getDisplayCountry().toUpperCase());
+                        }
 
                     }
                     WidgetUpdateService updateWidget = new WidgetUpdateService();
