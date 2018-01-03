@@ -2,6 +2,7 @@ package com.example.ravikiranpathade.newstrends.activities;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -34,6 +35,8 @@ public class AddKeywordActivity extends AppCompatActivity {
     ListAdapter adapter;
     ListView listView;
     JSONArray jArray;
+    android.support.v7.widget.SearchView ed;
+
     //TODO Implement Delete All
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +47,7 @@ public class AddKeywordActivity extends AppCompatActivity {
         setSupportActionBar(t);
         getSupportActionBar().setTitle("Manage Alert Keywords");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        final android.support.v7.widget.SearchView ed = findViewById(R.id.addword);
+        ed = findViewById(R.id.addword);
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         editor = preferences.edit();
 
@@ -77,6 +80,7 @@ public class AddKeywordActivity extends AppCompatActivity {
         }
         adapterInput(jArray);
 
+
     }
 
     @Override
@@ -90,20 +94,42 @@ public class AddKeywordActivity extends AppCompatActivity {
     }
 
     private void setAdapter(String query) {
+        if (jArray != null && jArray.length() == 4) {
+            Snackbar.make(findViewById(android.R.id.content), "Max 4 Words Can be Added", Snackbar.LENGTH_SHORT).show();
+        } else {
+            boolean dupCheck = true;
+            if (jArray != null) {
+                for (int i = 0; i < jArray.length(); i++) {
+                    try {
+                        if (jArray.get(i).equals(query)) {
+                            dupCheck = false;
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
-        try {
-            jArray = new JSONArray(preferences.getString("jArrayWords", ""));
-            Log.d("Check setAdapter", jArray.toString());
-        } catch (JSONException e) {
-            jArray = new JSONArray();
-            e.printStackTrace();
+                }
+            }
+           
+            if (!dupCheck) {
+                Snackbar.make(findViewById(android.R.id.content), "Already Exists", Snackbar.LENGTH_SHORT).show();
+
+            } else {
+                try {
+                    jArray = new JSONArray(preferences.getString("jArrayWords", ""));
+                    Log.d("Check setAdapter", jArray.toString());
+                } catch (JSONException e) {
+                    jArray = new JSONArray();
+                    e.printStackTrace();
+                }
+                jArray.put(query);
+                String rep = jArray.toString();
+                Log.d("Check", rep);
+                editor.putString("jArrayWords", rep);
+                editor.commit();
+                adapterInput(jArray);
+            }
         }
-        jArray.put(query);
-        String rep = jArray.toString();
-        Log.d("Check", rep);
-        editor.putString("jArrayWords", rep);
-        editor.commit();
-        adapterInput(jArray);
 
     }
 
@@ -113,10 +139,14 @@ public class AddKeywordActivity extends AppCompatActivity {
             for (int i = 0; i < j.length(); i++) {
                 try {
                     adapterList.add(j.getString(i));
-                    Log.d("Check String", j.getString(i));
+
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+            }
+            if (j.length() == 4) {
+
             }
             adapter = new KeywordsAdapter(this, adapterList);
             listView = findViewById(R.id.listViewKeywords);
