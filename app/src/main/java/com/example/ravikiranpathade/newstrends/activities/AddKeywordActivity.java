@@ -148,7 +148,7 @@ public class AddKeywordActivity extends AppCompatActivity {
 
     private void setAdapter(String query) {
         if (jArray != null && jArray.length() == 4) {
-            Snackbar.make(findViewById(android.R.id.content), "Max 4 Words Can be Added", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(findViewById(android.R.id.content), getResources().getString(R.string.snackbar_4_words_max), Snackbar.LENGTH_SHORT).show();
         } else {
             boolean dupCheck = true;
             if (jArray != null) {

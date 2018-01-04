@@ -11,7 +11,8 @@
         android:src="@drawable/newsheaderlogo"
         android:scaleType="fitCenter"
         android:gravity="left"
-        android:layout_marginRight="30dp"/>
+        android:layout_marginRight="30dp"
+        android:contentDescription="@string/logoString"/>
     <TextView
         android:layout_height="wrap_content"
         android:layout_width="match_parent"

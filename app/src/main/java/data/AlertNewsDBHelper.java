@@ -21,7 +21,7 @@ public class AlertNewsDBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
 
-        Log.d("Favorite Table","Create");
+
 
         final String CREATE_TABLE = "CREATE TABLE "+ NewsContract.NewsAlertsEntry.TABLE_NAME+" ( "+
                 NewsContract.NewsFavoritesEntry.COLUMN_ID+" INTEGER PRIMARY KEY, "+

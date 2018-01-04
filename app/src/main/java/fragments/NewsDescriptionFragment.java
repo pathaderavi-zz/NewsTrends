@@ -256,6 +256,11 @@ public class NewsDescriptionFragment extends Fragment {
         Glide.with(getContext()).load(imageUrl).override(400, 300).centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE).error(R.drawable.noimageavailable).skipMemoryCache(true).into(imageView);
 
         descCard.setText(desc);
+        if(!desc.equals(getContext().getResources().getString(R.string.empty_string))){
+            imageView.setContentDescription(desc);
+        }else{
+            imageView.setContentDescription(title);
+        }
 
 
         Button webLink = view.findViewById(R.id.webLinkButton);
@@ -405,6 +410,7 @@ public class NewsDescriptionFragment extends Fragment {
 
                 });
                 fav.setImageResource(R.drawable.ic_star_white_24px);
+                fav.setContentDescription(context.getResources().getString(R.string.deleteNewsContentDescription));
 
                 snackbar = Snackbar.make(view, getContext().getResources().getString(R.string.news_added_to_favorites), Snackbar.LENGTH_SHORT);
 
@@ -433,6 +439,7 @@ public class NewsDescriptionFragment extends Fragment {
                 getContext().getContentResolver().delete(delete, title, null);
 
                 fav.setImageResource(R.drawable.ic_star_border_white_24px);
+                fav.setContentDescription(context.getResources().getString(R.string.addFavoritesContentDescription));
                 snackbar = Snackbar.make(view, getContext().getResources().getString(R.string.snackbar_delete_messsege), Snackbar.LENGTH_SHORT);
             } else {
                 Snackbar.make(view, getContext().getResources().getString(R.string.no_internet_snackbar), Snackbar.LENGTH_SHORT).show();

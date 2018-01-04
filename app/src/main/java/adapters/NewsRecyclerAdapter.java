@@ -95,10 +95,10 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
         public void bind(final int position) {
             final Articles article = articles.get(position);
 
-            if (article.getUrlToImage() != null) {
 
-                Glide.with(holderContext).load(article.getUrlToImage()).centerCrop().diskCacheStrategy(DiskCacheStrategy.SOURCE).skipMemoryCache(true).error(R.drawable.noimageavailable).into(newsCardImage);
-            }
+            Glide.with(holderContext).load(article.getUrlToImage()).centerCrop().diskCacheStrategy(DiskCacheStrategy.SOURCE).skipMemoryCache(true).error(R.drawable.noimageavailable).into(newsCardImage);
+
+
             headline.setText(article.getTitle());
 
             //String dateString = article.getPublishedAt();
@@ -122,6 +122,11 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
                 author.setText(holderContext.getResources().getString(R.string.by) + author_string + holderContext.getResources().getString(R.string.at) + source_name_string);
             }
 
+            if (!desc_string.equals(holderContext.getResources().getString(R.string.empty_string))) {
+                newsCardImage.setContentDescription(desc_string);
+            } else {
+                newsCardImage.setContentDescription(title_string);
+            }
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

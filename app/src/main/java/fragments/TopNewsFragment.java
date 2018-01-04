@@ -285,6 +285,7 @@ public class TopNewsFragment extends Fragment {
         gson = new Gson();
         service = Client.getClient().create(GetTopNewsWorldEnglish.class);
         Call<CompleteResponse> call = service.getTopNewsArticles(KEY, lan, cou, cate);
+
         String requestUrl = call.request().url().toString();
         boolean matchesUrl = requestUrl.equals(prefs.getString(getContext().getResources().getString(R.string.previousUrl), getContext().getResources().getString(R.string.empty_string)));
         String resp = prefs.getString(getContext().getResources().getString(R.string.topnews_key), getContext().getResources().getString(R.string.empty_string));

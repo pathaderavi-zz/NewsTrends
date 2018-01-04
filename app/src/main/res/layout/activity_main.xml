@@ -27,7 +27,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:src="@drawable/newslogowidget" />
+                android:src="@drawable/newslogowidget"
+                android:contentDescription="@string/logoString"
+                />
         </android.support.v7.widget.Toolbar>
 
         <!--TODO Check If Change is required for elevation-->

@@ -115,7 +115,11 @@ public class NewsCursorAdapter extends CursorAdapter {
 
         }
 
-
+        if(!desc_string.equals(context.getResources().getString(R.string.empty_string))){
+            newsCardImage.setContentDescription(desc_string);
+        }else {
+            newsCardImage.setContentDescription(title_string);
+        }
         headline.setText(title_string);
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override

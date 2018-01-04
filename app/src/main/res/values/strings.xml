@@ -17,6 +17,13 @@
     <string name="notification">notification</string>
     <string name="currentArchive">currentArchive.mht</string>
 
+    <!--Accessibility-->
+    <string name="logoString">NewsTrends Logo</string>
+    <string name="deleteKeyword">Delete this keyword</string>
+    <string name="newsDescriptionFragmentContentDescription">Image for News</string>
+    <string name="shareWebLinkContentDescription">Share this news</string>
+    <string name="addFavoritesContentDescription">Add this news to Favorites</string>
+    <string name="deleteNewsContentDescription">Delete this news</string>
 
     <!--Notifications-->
     <string name="notification_ticker">You have got latest NEWS ALERTS</string>
@@ -65,7 +72,7 @@
     <string name="popularity_search">Popularity</string>
     <string name="published_at_search">Published At</string>
     <string name="relevancy_search">Relevancy</string>
-    <string name="showing_results_for">Showing results for </string>
+    <string name="showing_results_for">Showing results for \u0020 </string>
     <string name="publishedAtSpinned">publishedAt</string>
     <string name="firebase_search">Search</string>
     <string name="no_internet_search_frag">Please Connect to Internet First</string>
@@ -93,8 +100,8 @@
 
     <!--Extras-->
 
-    <string name="by">by </string>
-    <string name="at"> at </string>
+    <string name="by">\u0020 by \u0020</string>
+    <string name="at"> at \u0020</string>
     <string name="dateFormatToInsert">yyyy-MM-dd HH:mm:ss</string>
     <string name="id_append_string">id</string>
     <string name="DATE_DESC">DATE DESC</string>
@@ -103,6 +110,9 @@
     <string name="english">en</string>
     <string name="firebase_country">Country</string>
     <string name="firebase_city">City</string>
+    <string name="rotated">rotated</string>
+    <string name="r">r</string>
+    <string name="text_plain">text/plain</string>
 
     <!--TO CursorAdapter-->
     <string name="list_id">list_id</string>
@@ -119,6 +129,7 @@
     <string name="snackbar_delete_messsege">News Deleted</string>
     <string name="news_added_to_favorites">News Added to Favorites</string>
     <string name="no_internet_snackbar">No Internet Connection. Cannot Save when Offline</string>
+    <string name="snackbar_4_words_max">Max 4 Words Can be Added</string>
 
     <!--AddKeyWordActivity-->
     <string name="toolbar_alert_keywords_activity">Manage Alert Keywords"</string>
@@ -172,7 +183,7 @@
     <string name="open">Open</string>
     <string name="close">Close</string>
     <string name="topnews">Top News</string>
-    <string name="searchlatest">Search Latest News</string>
+    <string name="searchlatest">Search Latest</string>
     <string name="loremIpsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Beatus sibi videtur esse moriens. Ita fit cum gravior, tum etiam splendidior oratio. Tollenda est atque extrahenda radicitus. Quid ad utilitatem tantae pecuniae? Iam id ipsum absurdum, maximum malum neglegi. Quae sequuntur igitur? Hoc dixerit potius Ennius: Nimium boni est, cui nihil est mali. Duo Reges: constructio interrete. Atqui iste locus est, Piso, tibi etiam atque etiam confirmandus, inquam; Videamus igitur sententias eorum, tum ad verba redeamus.
 
 Tum ille timide vel potius verecunde: Facio, inquit. Quae similitudo in genere etiam humano apparet. Ne discipulum abducam, times. Satis est ad hoc responsum. Quam si explicavisset, non tam haesitaret. Quodsi vultum tibi, si incessum fingeres, quo gravior viderere, non esses tui similis; Bonum incolumis acies: misera caecitas. Quasi ego id curem, quid ille aiat aut neget. An est aliquid per se ipsum flagitiosum, etiamsi nulla comitetur infamia? Itaque hic ipse iam pridem est reiectus; Ut necesse sit omnium rerum, quae natura vigeant, similem esse finem, non eundem. Bona autem corporis huic sunt, quod posterius posui, similiora.

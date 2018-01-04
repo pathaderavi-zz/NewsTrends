@@ -63,6 +63,7 @@ public class SearchLatestNews extends Fragment {
     List<Articles> allArticles;
     ProgressBar progressBar;
     public String KEY ;
+    String emptyString;
 
     private OnFragmentInteractionListener mListener;
     private FirebaseAnalytics mFirebaseAnalytics;

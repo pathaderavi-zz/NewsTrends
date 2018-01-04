@@ -33,6 +33,7 @@
                     android:scaleType="centerCrop"
                     app:layout_collapseMode="parallax"
                     android:transitionName="mainListImage"
+                    android:contentDescription="@string/newsDescriptionFragmentContentDescription"
                     />
 
 
@@ -75,7 +76,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fitsSystemWindows="true"
-                android:padding="10dp"
+                android:padding="30dp"
                 android:textIsSelectable="true"
                 android:textSize="20dp"
 

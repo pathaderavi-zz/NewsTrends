@@ -10,7 +10,7 @@
         android:id="@+id/appwidget_text"
         android:layout_width="match_parent"
         android:layout_height="75dp"
-
+        android:contentDescription="@string/logoString"
         android:layout_margin="8dp"
         android:src="@drawable/newslogowidget"
 

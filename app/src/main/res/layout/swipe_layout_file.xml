@@ -18,13 +18,15 @@
             android:layout_width="80dp"
             android:layout_weight="0.5"
             android:background="#ccc"
-            app:srcCompat="@drawable/ic_delete_black_24px"/>
+            app:srcCompat="@drawable/ic_delete_black_24px"
+            android:contentDescription="@string/deleteNewsContentDescription"/>
         <ImageView android:id="@+id/deleteFromCursorAdater2"
             android:layout_height="match_parent"
             android:layout_width="80dp"
             android:layout_weight="0.5"
             app:srcCompat="@drawable/ic_star_border_white_24px"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            android:contentDescription="@string/addFavoritesContentDescription"/>
 
         <!--What you want to show-->
     </LinearLayout>

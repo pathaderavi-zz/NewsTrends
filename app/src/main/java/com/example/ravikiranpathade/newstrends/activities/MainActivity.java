@@ -23,8 +23,9 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
-import com.crashlytics.android.Crashlytics;
+
 import com.example.ravikiranpathade.newstrends.R;
+import com.google.firebase.crash.FirebaseCrash;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -71,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(null);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        
 
         frame = findViewById(R.id.mainActivityFramelayout);
         drawerLayout = findViewById(R.id.drawerLayout);
@@ -129,7 +131,6 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
                 viewPager.setOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
                 break;
             case R.id.settings:
-                Log.d(String.valueOf(viewPager.getVisibility() == View.VISIBLE), String.valueOf(tabLayout.getVisibility() == View.VISIBLE));
                 Intent i = new Intent(this, SettingsActivity.class);
                 startActivity(i);
                 break;

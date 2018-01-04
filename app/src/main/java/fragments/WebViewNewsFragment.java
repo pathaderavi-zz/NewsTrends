@@ -17,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
@@ -48,7 +49,10 @@ public class WebViewNewsFragment extends Fragment {
     android.support.v7.widget.Toolbar toolbar;
     String titleTo;
     Bundle checkBundle;
-
+    String rotated;
+    String r;
+    String scrollX;
+    String scrollY;
     private OnFragmentInteractionListener mListener;
 
     public WebViewNewsFragment() {
@@ -87,7 +91,7 @@ public class WebViewNewsFragment extends Fragment {
         super.onSaveInstanceState(outState);
         outState.putInt(getContext().getResources().getString(R.string.scrollX), web.getScrollX());
         outState.putInt(getContext().getResources().getString(R.string.scrollY), web.getScrollY());
-        outState.putString("rotated","r");
+        outState.putString(rotated,r);
     }
 
     @Override
@@ -99,7 +103,14 @@ public class WebViewNewsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
+
+        rotated = getContext().getResources().getString(R.string.rotated);
+        r = getContext().getResources().getString(R.string.r);
+        scrollX = getContext().getResources().getString(R.string.scrollX);
+        scrollY = getContext().getResources().getString(R.string.scrollY);
+
+
         View view = inflater.inflate(R.layout.fragment_web_view_news, container, false);
 
         toolbar = view.findViewById(R.id.webViewToolbar);
@@ -116,10 +127,11 @@ public class WebViewNewsFragment extends Fragment {
         WebViewClient custom = new CustomWebViewHere();
         web.setWebViewClient(custom);
         web.getSettings().setJavaScriptEnabled(true);
-        if (savedInstanceState.getString("rotated") == null) {
+        web.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
+        if (savedInstanceState.getString(rotated) == null) {
             web.loadUrl(checkedUrl);
         }else{
-            scrollXToCustom(checkBundle.getInt("scrollX"));
+            scrollXToCustom(checkBundle.getInt(scrollX));
         }
 
 
@@ -130,7 +142,7 @@ public class WebViewNewsFragment extends Fragment {
             public void onClick(View view) {
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.setType("text/plain");
+                sendIntent.setType(getContext().getResources().getString(R.string.text_plain));
                 sendIntent.putExtra(Intent.EXTRA_TEXT, webU);
                 startActivity(sendIntent);
             }
@@ -197,7 +209,7 @@ public class WebViewNewsFragment extends Fragment {
             super.onPageStarted(view, url, favicon);
 
             if (checkBundle != null) {
-                scrollXToCustom(checkBundle.getInt("scrollY"));
+                scrollXToCustom(checkBundle.getInt(scrollY));
             }
         }
 

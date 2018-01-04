@@ -10,8 +10,7 @@
         android:id="@+id/webViewToolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:elevation="4dp"
-        >
+        android:elevation="4dp">
 
 
         <ImageView
@@ -21,7 +20,7 @@
             android:layout_marginRight="5dp"
             android:visibility="gone"
             app:srcCompat="@drawable/ic_share_black_24px"
-
+            android:contentDescription="@string/shareWebLinkContentDescription"
             />
 
     </android.support.v7.widget.Toolbar>
