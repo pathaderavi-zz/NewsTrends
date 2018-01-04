@@ -116,6 +116,7 @@ public class NewsDescriptionFragment extends Fragment {
     int j;
     CoordinatorLayout coordinatorLayout;
     Context context;
+    TextView sourceNameTextView;
 
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
@@ -205,6 +206,7 @@ public class NewsDescriptionFragment extends Fragment {
         android.support.v7.widget.Toolbar toolbar = view.findViewById(R.id.toolbarDetail);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
+
         setHasOptionsMenu(true);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -251,12 +253,17 @@ public class NewsDescriptionFragment extends Fragment {
         ImageView imageView = view.findViewById(R.id.detailImage);
         TextView descCard = view.findViewById(R.id.descDetail);
         TextView textView = view.findViewById(R.id.titleDetail);
+        sourceNameTextView = view.findViewById(R.id.newsSource);
         textView.setText(title);
 
         Glide.with(getContext()).load(imageUrl).override(400, 300).centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE).error(R.drawable.noimageavailable).skipMemoryCache(true).into(imageView);
 
         descCard.setText(desc);
-
+       if(sourceName!=null && !sourceName.equals(getContext().getResources().getString(R.string.empty_string))){
+           sourceNameTextView.setText(getContext().getResources().getString(R.string.by)+sourceName);
+       }else{
+           sourceNameTextView.setText(getContext().getResources().getString(R.string.sourceNotAvailable));
+       }
 
 
         Button webLink = view.findViewById(R.id.webLinkButton);

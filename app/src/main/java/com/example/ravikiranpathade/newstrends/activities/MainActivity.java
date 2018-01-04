@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
     ViewPager viewPager;
     FrameLayout frame;
 
+
     PagerAdapter pagerAdapter;
     android.support.v4.app.FragmentManager fragmentManager;
     boolean onCreateCheck = true;

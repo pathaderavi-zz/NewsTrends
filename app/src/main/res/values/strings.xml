@@ -32,6 +32,7 @@
     <string name="notification_title">Your picked NEWS Alerts</string>
     <string name="notification_text_1">You have new \u0020 </string>
     <string name="notification_text_2"> \u0020 NEWS Alerts</string>
+    <string name="descriptionNotAvailable">Description Not Available</string>
     <string name="default_sound">DEFAULT_SOUND</string>
     <string name="vibrate_setting">notifications_new_message_vibrate</string>
 
@@ -387,4 +388,5 @@ Quis non odit sordidos, vanos, leves, futtiles? Sed venio ad inconstantiae crime
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
     <string name="snackbar_moved_messege">News Moved to Favorites</string>
+    <string name="sourceNotAvailable">Source Not Availble</string>
 </resources>
