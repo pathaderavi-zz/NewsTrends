@@ -41,6 +41,7 @@ public class AddKeywordActivity extends AppCompatActivity {
     ListView listView;
     JSONArray jArray;
     android.support.v7.widget.SearchView ed;
+    TextView notificationStatus;
 
     NavigationView navigation;
     private DrawerLayout drawerLayout;
@@ -61,10 +62,19 @@ public class AddKeywordActivity extends AppCompatActivity {
 
         drawerLayout = findViewById(R.id.drawerLayoutAlertAddKeyword);
         navigation = findViewById(R.id.navigationViewAlertAddKeyword);
+        notificationStatus = findViewById(R.id.alertsStatus);
         toggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
+        boolean alertStatusBoolean = preferences.getBoolean(getResources().getString(R.string.notifications_new_message),false);
+        if(alertStatusBoolean){
+            notificationStatus.setText(getResources().getString(R.string.alertsAreTurnedOn));
+            notificationStatus.setBackgroundColor(getResources().getColor(R.color.alertsTurnedOn));
+        }else{
+            notificationStatus.setText(getResources().getString(R.string.alertsAreTurnedOff));
+            notificationStatus.setBackgroundColor(getResources().getColor(R.color.alertsTurnedOff));
+        }
 
         try {
             jArray = new JSONArray(preferences.getString(getResources().getString(R.string.jArrayWords), getResources().getString(R.string.empty_string)));

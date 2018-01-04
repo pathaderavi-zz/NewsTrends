@@ -28,8 +28,8 @@
     <!--Notifications-->
     <string name="notification_ticker">You have got latest NEWS ALERTS</string>
     <string name="notification_title">Your picked NEWS Alerts</string>
-    <string name="notification_text_1">You have new </string>
-    <string name="notification_text_2"> NEWS Alerts</string>
+    <string name="notification_text_1">You have new \u0020 </string>
+    <string name="notification_text_2"> \u0020 NEWS Alerts</string>
     <string name="default_sound">DEFAULT_SOUND</string>
     <string name="vibrate_setting">notifications_new_message_vibrate</string>
 
@@ -138,6 +138,8 @@
     <!--AlertedNewsActivity-->
     <string name="news_alerts_toolbar">News Alerts</string>
     <string name="check_string_for_adapter">CHECK</string>
+    <string name="alertsAreTurnedOff">Alerts are Turned Off. Go to Settings to turn them On.</string>
+    <string name="alertsAreTurnedOn">Alerts are On.</string>
 
     <!--FavoritesNewsActivity-->
     <string name="toolbar_favorite_activity">Favorite News</string>
