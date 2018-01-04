@@ -43,7 +43,7 @@
                 android:id="@+id/toolbarDetail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
+                android:layout_gravity="start"
                 android:background="#000"
                 android:theme="@style/ToolbarColoredBackArrow"
                 android:fitsSystemWindows="true"
@@ -58,9 +58,9 @@
                     android:background="#000"
                     android:textSize="20dp"
                     android:fitsSystemWindows="true"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:textColor="#FFF"
-                    android:paddingRight="30dp"/>
+                    android:paddingEnd="30dp"/>
             </android.support.v7.widget.Toolbar>
 
         </android.support.design.widget.AppBarLayout>
@@ -92,10 +92,11 @@
             android:fitsSystemWindows="true"
             app:layout_anchor="@id/appBarLayoutDetail"
             app:layout_anchorGravity="bottom|right|end"
-            android:layout_marginRight="15dp"
+            android:layout_marginEnd="15dp"
             app:elevation="6dp"
             app:pressedTranslationZ="6dp"
             app:backgroundTint="#FFA500"
+            android:contentDescription="@string/manageFavoritesContentDescription"
             />
     </android.support.design.widget.CoordinatorLayout>
 
@@ -112,12 +113,13 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_gravity="bottom|right"
+            android:layout_gravity="bottom|end"
             android:background="#4fc3f7"
             android:textColor="#000"
             android:fitsSystemWindows="true"
             android:text="@string/read_article"
             android:id="@+id/webLinkButton"
+            android:contentDescription="@string/webLinkContentDescription"
             />
     </LinearLayout>
     <WebView

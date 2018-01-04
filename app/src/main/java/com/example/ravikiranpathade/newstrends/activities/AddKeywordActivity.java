@@ -2,6 +2,7 @@ package com.example.ravikiranpathade.newstrends.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -14,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -46,6 +48,22 @@ public class AddKeywordActivity extends AppCompatActivity {
     NavigationView navigation;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle toggle;
+    boolean alertStatusBoolean;
+
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        alertStatusBoolean = preferences.getBoolean(getResources().getString(R.string.notifications_new_message),false);
+        if(alertStatusBoolean){
+            notificationStatus.setText(getResources().getString(R.string.alertsAreTurnedOn));
+            notificationStatus.setBackgroundColor(getResources().getColor(R.color.alertsTurnedOn));
+        }else{
+            notificationStatus.setText(getResources().getString(R.string.alertsAreTurnedOff));
+            notificationStatus.setBackgroundColor(getResources().getColor(R.color.alertsTurnedOff));
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +85,7 @@ public class AddKeywordActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        boolean alertStatusBoolean = preferences.getBoolean(getResources().getString(R.string.notifications_new_message),false);
+        alertStatusBoolean = preferences.getBoolean(getResources().getString(R.string.notifications_new_message),false);
         if(alertStatusBoolean){
             notificationStatus.setText(getResources().getString(R.string.alertsAreTurnedOn));
             notificationStatus.setBackgroundColor(getResources().getColor(R.color.alertsTurnedOn));
@@ -75,6 +93,16 @@ public class AddKeywordActivity extends AppCompatActivity {
             notificationStatus.setText(getResources().getString(R.string.alertsAreTurnedOff));
             notificationStatus.setBackgroundColor(getResources().getColor(R.color.alertsTurnedOff));
         }
+        final Intent settingsIntent = new Intent(this, SettingsActivity.class);
+        settingsIntent.putExtra( PreferenceActivity.EXTRA_SHOW_FRAGMENT, SettingsActivity.NotificationPreferenceFragment.class.getName() );
+        settingsIntent.putExtra( PreferenceActivity.EXTRA_NO_HEADERS, true );
+        notificationStatus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                startActivity(settingsIntent);
+            }
+        });
 
         try {
             jArray = new JSONArray(preferences.getString(getResources().getString(R.string.jArrayWords), getResources().getString(R.string.empty_string)));

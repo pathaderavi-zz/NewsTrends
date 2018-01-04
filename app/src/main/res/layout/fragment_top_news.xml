@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="5dp"
-            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:text="@string/showing_results_for"
             android:textColor="#000"
             android:textSize="14dp"

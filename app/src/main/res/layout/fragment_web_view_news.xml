@@ -17,7 +17,7 @@
             android:id="@+id/shareWeb"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginRight="5dp"
+            android:layout_marginEnd="5dp"
             android:visibility="gone"
             app:srcCompat="@drawable/ic_share_black_24px"
             android:contentDescription="@string/shareWebLinkContentDescription"

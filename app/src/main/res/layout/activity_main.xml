@@ -19,8 +19,9 @@
             android:layout_height="?attr/actionBarSize"
             android:elevation="4dp"
             android:minHeight="?attr/actionBarSize"
-            android:paddingRight="70dp"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+            android:paddingEnd="70dp"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            tools:ignore="RtlCompat">
 
             <ImageView
                 style="@style/Base.TextAppearance.AppCompat.Menu"

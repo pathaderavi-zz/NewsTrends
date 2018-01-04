@@ -24,6 +24,8 @@
     <string name="shareWebLinkContentDescription">Share this news</string>
     <string name="addFavoritesContentDescription">Add this news to Favorites</string>
     <string name="deleteNewsContentDescription">Delete this news</string>
+    <string name="manageFavoritesContentDescription">Manage for Favorites</string>
+    <string name="webLinkContentDescription">Open News Link</string>
 
     <!--Notifications-->
     <string name="notification_ticker">You have got latest NEWS ALERTS</string>

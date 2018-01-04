@@ -256,11 +256,7 @@ public class NewsDescriptionFragment extends Fragment {
         Glide.with(getContext()).load(imageUrl).override(400, 300).centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE).error(R.drawable.noimageavailable).skipMemoryCache(true).into(imageView);
 
         descCard.setText(desc);
-        if(!desc.equals(getContext().getResources().getString(R.string.empty_string))){
-            imageView.setContentDescription(desc);
-        }else{
-            imageView.setContentDescription(title);
-        }
+
 
 
         Button webLink = view.findViewById(R.id.webLinkButton);
@@ -273,6 +269,10 @@ public class NewsDescriptionFragment extends Fragment {
         fav = view.findViewById(R.id.favoritFloat);
         if (existing != null && existing.getCount() > 0) {
             fav.setImageResource(R.drawable.ic_star_white_24px);
+            fav.setContentDescription(getContext().getResources().getString(R.string.deleteNewsContentDescription));
+        }else{
+            fav.setImageResource(R.drawable.ic_star_border_white_24px);
+            fav.setContentDescription(getContext().getResources().getString(R.string.addFavoritesContentDescription));
         }
         fav.setOnClickListener(
                 new View.OnClickListener() {
