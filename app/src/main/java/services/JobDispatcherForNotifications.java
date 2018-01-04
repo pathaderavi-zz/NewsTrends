@@ -50,7 +50,7 @@ public class JobDispatcherForNotifications extends JobService {
     NotificationCompat.Builder notification;
     private static final int NOTIFICATION_ID = 80878085;
     private static final String CHANNEL_ID = "NEWSTRENDS";
-    public final String KEY = "16a2ce7a435e4acb8482fae088ba6b9e";
+    String KEY;
     SharedPreferences preferences;
     List<List<Articles>> newAlerts;
     int newAlertsNumber;
@@ -59,14 +59,15 @@ public class JobDispatcherForNotifications extends JobService {
 
     @Override
     public boolean onStartJob(JobParameters jobParameters) {
-        Toast.makeText(getApplicationContext(), "Started", Toast.LENGTH_SHORT).show();
+        KEY  = getApplicationContext().getResources().getString(R.string.API_KEY);
         List<ContentValues> listValues = null;
         newAlertsNumber = 0;
         newAlerts = new ArrayList<>();
+        final String checkNull = getApplicationContext().getResources().getString(R.string.empty_string);
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String words = preferences.getString("jArrayWords", "");
+        String words = preferences.getString(getApplicationContext().getResources().getString(R.string.jArrayWords), checkNull);
         listValues = new ArrayList<>();
-        if (words != null || words != "" || !words.isEmpty()) {
+        if (words != null || words != checkNull || !words.isEmpty()) {
             JSONArray wordsJsonArray = null;
             try {
                 wordsJsonArray = new JSONArray(words);
@@ -82,7 +83,8 @@ public class JobDispatcherForNotifications extends JobService {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                if (keyword != null || keyword != "" || !keyword.isEmpty()) {
+                final String id_append = getApplicationContext().getResources().getString(R.string.id_append_string);
+                if (keyword != null || keyword != checkNull || !keyword.isEmpty()) {
 
                     final GetTopNewsWorldEnglish service = Client.getClient().create(GetTopNewsWorldEnglish.class);
                     Call<CompleteResponse> call = service.getForAlerts(KEY, keyword);
@@ -94,19 +96,18 @@ public class JobDispatcherForNotifications extends JobService {
                                          List<Articles> articles = response.body().getArticles();
                                          for (Articles a : articles) {
                                              mCursor = getApplicationContext().getContentResolver().query(
-                                                     NewsContract.NewsAlertsEntry.FINAL_URI.buildUpon().appendPath("id")
+                                                     NewsContract.NewsAlertsEntry.FINAL_URI.buildUpon().appendPath(id_append)
                                                              .build(),
                                                      null,
                                                      a.getTitle(),
                                                      null, null, null);
                                              checkDeleted = getApplicationContext().getContentResolver().query(
-                                                     NewsContract.NewsDeletedAlerts.FINAL_URI.buildUpon().appendPath("id")
+                                                     NewsContract.NewsDeletedAlerts.FINAL_URI.buildUpon().appendPath(id_append)
                                                              .build(),
                                                      null,
                                                      a.getTitle(),
                                                      null, null, null);
 
-                                             Log.d("Should Insert ", String.valueOf((mCursor != null && mCursor.getCount() == 0 && checkDeleted != null && checkDeleted.getCount() == 0)));
                                              if (mCursor != null && mCursor.getCount() == 0 && checkDeleted != null && checkDeleted.getCount() == 0) {
 
                                                  ContentValues values = new ContentValues();
@@ -121,14 +122,14 @@ public class JobDispatcherForNotifications extends JobService {
                                                  values.put(NewsContract.NewsAlertsEntry.COLUMN_NAME_KEYWORD, finalKeyword);
 
 
-                                                 if (a.getPublishedAt() != "" || !a.getPublishedAt().isEmpty()) {
+                                                 if (a.getPublishedAt() != checkNull || !a.getPublishedAt().isEmpty()) {
                                                      Date dateInsert = DateTimeUtils.formatDate(a.getPublishedAt());
-                                                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getApplicationContext().getResources().getString(R.string.dateFormatToInsert));
                                                      values.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_DATE, simpleDateFormat.format(dateInsert));
                                                  }
 
                                                  finalListValues.add(values);
-                                                 Log.d("Check Final", String.valueOf(finalListValues.size()));
+
                                              }
                                          }
 
@@ -153,7 +154,7 @@ public class JobDispatcherForNotifications extends JobService {
                     if (finalListValues.size() > 0) {
                         ContentValues[] cv = new ContentValues[finalListValues.size()];
                         finalListValues.toArray(cv);
-                        Log.d("Insertion Started", "Here ");
+
                         newAlertsNumber = getApplicationContext().getContentResolver().bulkInsert(
                                 NewsContract.NewsAlertsEntry.FINAL_URI, cv
                         );
@@ -183,14 +184,16 @@ public class JobDispatcherForNotifications extends JobService {
         notification = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID);
         notification.setAutoCancel(true);
         notification.setSmallIcon(R.drawable.ic_favorite_black_24px) //TODO Change Notification Logo
-                .setTicker("You have got latest NEWS ALERTS")
+                .setTicker(getApplicationContext().getResources().getString(R.string.notification_ticker))
                 .setWhen(System.currentTimeMillis())
-                .setContentTitle("Your picked NEWS Alerts")
-                .setContentText("You have new " + String.valueOf(n) + " NEWS Alerts")
+                .setContentTitle(getApplicationContext().getResources().getString(R.string.notification_title))
+                .setContentText( getApplicationContext().getResources().getString(R.string.notification_text_1)+String.valueOf(n) + getApplicationContext().getResources().getString(R.string.notification_text_2))
         ;
-        Uri u = Uri.parse(preferences.getString("notifications_new_message_ringtone", "DEFAULT_SOUND"));
+
+        Uri u = Uri.parse(preferences.getString(getApplicationContext().getResources().getString(R.string.notifications_new_message_ringtone), getApplicationContext().getResources().getString(R.string.default_sound)));
         notification.setSound(u);
-        boolean isVibrate = preferences.getBoolean("notifications_new_message_vibrate",false);
+
+        boolean isVibrate = preferences.getBoolean(getApplicationContext().getResources().getString(R.string.vibrate_setting),false);
         if (isVibrate) {
             notification.setVibrate(new long[]{1000, 1000});
         }

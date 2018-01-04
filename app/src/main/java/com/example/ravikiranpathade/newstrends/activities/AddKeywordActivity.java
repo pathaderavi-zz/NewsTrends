@@ -53,7 +53,7 @@ public class AddKeywordActivity extends AppCompatActivity {
 
         Toolbar t = findViewById(R.id.keywordBar);
         setSupportActionBar(t);
-        getSupportActionBar().setTitle("Manage Alert Keywords");
+        getSupportActionBar().setTitle(getResources().getString(R.string.toolbar_alert_keywords_activity));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ed = findViewById(R.id.addword);
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -67,7 +67,7 @@ public class AddKeywordActivity extends AppCompatActivity {
 
 
         try {
-            jArray = new JSONArray(preferences.getString("jArrayWords", ""));
+            jArray = new JSONArray(preferences.getString(getResources().getString(R.string.jArrayWords), getResources().getString(R.string.empty_string)));
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -89,9 +89,7 @@ public class AddKeywordActivity extends AppCompatActivity {
                 return false;
             }
         });
-        if (jArray != null) {
-            Log.d("Check Array 1", jArray.toString());
-        }
+
         adapterInput(jArray);
 
         setupDrawer(navigation);
@@ -167,20 +165,20 @@ public class AddKeywordActivity extends AppCompatActivity {
             }
 
             if (!dupCheck) {
-                Snackbar.make(findViewById(android.R.id.content), "Already Exists", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(findViewById(android.R.id.content), getResources().getString(R.string.already_exists), Snackbar.LENGTH_SHORT).show();
 
             } else {
                 try {
-                    jArray = new JSONArray(preferences.getString("jArrayWords", ""));
-                    Log.d("Check setAdapter", jArray.toString());
+                    jArray = new JSONArray(preferences.getString(getResources().getString(R.string.jArrayWords), getResources().getString(R.string.empty_string)));
+
                 } catch (JSONException e) {
                     jArray = new JSONArray();
                     e.printStackTrace();
                 }
                 jArray.put(query);
                 String rep = jArray.toString();
-                Log.d("Check", rep);
-                editor.putString("jArrayWords", rep);
+
+                editor.putString(getResources().getString(R.string.jArrayWords), rep);
                 editor.commit();
                 adapterInput(jArray);
             }

@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:textSize="16sp"
-        android:text="Powered by NewsAPI.org"
+        android:text="@string/powered_by"
         android:textColor="#000"
         android:gravity="center"
         />

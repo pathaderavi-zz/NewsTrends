@@ -271,9 +271,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements and
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
+            bindPreferenceSummaryToValue(findPreference(getResources().getString(R.string.notifications_new_message_ringtone)));
 
-            Preference switchPref = findPreference("notifications_new_message");
+            Preference switchPref = findPreference(getResources().getString(R.string.notifications_new_message));
             switchPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object o) {

@@ -92,6 +92,9 @@
             app:layout_anchor="@id/appBarLayoutDetail"
             app:layout_anchorGravity="bottom|right|end"
             android:layout_marginRight="15dp"
+            app:elevation="6dp"
+            app:pressedTranslationZ="6dp"
+            app:backgroundTint="#FFA500"
             />
     </android.support.design.widget.CoordinatorLayout>
 
@@ -109,10 +112,10 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_gravity="bottom|right"
-            android:background="#4fc1e9"
-            android:elevation="2dp"
+            android:background="#4fc3f7"
+            android:textColor="#000"
             android:fitsSystemWindows="true"
-            android:text="Read Full Article"
+            android:text="@string/read_article"
             android:id="@+id/webLinkButton"
             />
     </LinearLayout>

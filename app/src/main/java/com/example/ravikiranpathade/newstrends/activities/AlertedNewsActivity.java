@@ -51,7 +51,7 @@ public class AlertedNewsActivity extends AppCompatActivity implements LoaderMana
         setContentView(R.layout.activity_alerted_news);
         Toolbar t = findViewById(R.id.alertsBar);
         setSupportActionBar(t);
-        getSupportActionBar().setTitle("News Alerts");
+        getSupportActionBar().setTitle(getResources().getString(R.string.news_alerts_toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         drawerLayout = findViewById(R.id.drawerLayoutAlert);
@@ -61,7 +61,7 @@ public class AlertedNewsActivity extends AppCompatActivity implements LoaderMana
         toggle.syncState();
 
 
-        adapter = new NewsCursorAdapter(this, null, "CHECK", this);
+        adapter = new NewsCursorAdapter(this, null, getResources().getString(R.string.check_string_for_adapter), this);
         listView = findViewById(R.id.alertsRecyclerView);
         text = findViewById(R.id.noAlertTextView);
         listView.setAdapter(adapter);
@@ -136,7 +136,7 @@ public class AlertedNewsActivity extends AppCompatActivity implements LoaderMana
                 null,
                 null,
                 null,
-                "DATE DESC");
+                getResources().getString(R.string.DATE_DESC));
         adapter.swapCursor(cursor1);
         if (cursor1.getCount() == 0) {
             text.setVisibility(View.VISIBLE);
@@ -153,7 +153,7 @@ public class AlertedNewsActivity extends AppCompatActivity implements LoaderMana
 
     @Override
     public void onCheckEmpty(boolean checkBoolean) {
-        Log.d("Checks Listener", "Working");
+
         if (checkBoolean == true) {
             text.setVisibility(View.VISIBLE);
         }

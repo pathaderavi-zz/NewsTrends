@@ -1,6 +1,7 @@
 package fragments;
 
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v4.app.LoaderManager;
@@ -58,6 +59,7 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
     ListView listView;
     Cursor cursor1;
     NewsCursorAdapter cursorAdapter;
+    Context context;
 
     public FavoritesFragment() {
         // Required empty public constructor
@@ -96,9 +98,11 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Favorite News");
+        context = getContext();
 
-        Log.d("onCreateView Check", "Here");
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(context.getResources().getString(R.string.favorite_fragment_toolbar));
+
+
         view = inflater.inflate(R.layout.fragment_favorites, container, false);
         textView = view.findViewById(R.id.favoritesTextView);
 
@@ -112,7 +116,7 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
                 null,
                 null,
                 null,
-                "ID DESC"
+                context.getResources().getString(R.string.ID_DESC)
         ).getCount() == 0) {
 
 
@@ -128,7 +132,7 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
                 null,
                 null,
                 null,
-                "ID DESC");
+                getContext().getResources().getString(R.string.ID_DESC));
 
     }
 
@@ -142,7 +146,7 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
                 null,
                 null,
                 null,
-                "ID DESC"
+                getContext().getResources().getString(R.string.ID_DESC)
         );
 
 
@@ -167,9 +171,9 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         SharedPreferences.Editor editor = preferences.edit();
 
-        if (preferences.getBoolean("favorites_changed", false)) {
+        if (preferences.getBoolean(getContext().getResources().getString(R.string.favorites_changed), false)) {
             getActivity().getSupportLoaderManager().initLoader(0, null, this).forceLoad();
-            editor.putBoolean("favorites_changed", false);
+            editor.putBoolean(getContext().getResources().getString(R.string.favorites_changed), false);
         }
     }
 

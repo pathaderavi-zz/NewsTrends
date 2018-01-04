@@ -2,6 +2,7 @@ package services;
 
 import android.annotation.SuppressLint;
 
+import com.example.ravikiranpathade.newstrends.R;
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
 
@@ -32,41 +33,43 @@ import static android.icu.text.UnicodeSet.CASE;
 
 @SuppressLint("NewApi")
 public class FetchTopNewsService extends JobService {
-    public final String KEY = "16a2ce7a435e4acb8482fae088ba6b9e";
+    String KEY;
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
     List<Articles> newAlerts;
 
     @Override
     public boolean onStartJob(final JobParameters jobParameters) {
-
-        Toast.makeText(getApplicationContext(), "Started", Toast.LENGTH_SHORT).show();
-        Log.d("Service Check ", "Running");
+        KEY = getApplicationContext().getResources().getString(R.string.API_KEY);
 
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         editor = preferences.edit();
 
-        String country = preferences.getString("countryList", "");
+        String country = preferences.getString(getApplicationContext().getResources().getString(R.string.pref_country_key), getApplicationContext().getResources().getString(R.string.empty_string));
 
-        String language = preferences.getString("languageList", "");
+        String language = preferences.getString(getApplicationContext().getResources().getString(R.string.pref_language_key), getApplicationContext().getResources().getString(R.string.empty_string));
 
-        String category = preferences.getString("categoriesList", "");
+        String category = preferences.getString(getApplicationContext().getResources().getString(R.string.pref_category_key), getApplicationContext().getResources().getString(R.string.empty_string));
 
-        if (String.valueOf(language).equals("null") || String.valueOf(language).equals("")
-                || String.valueOf(language).equals("0")) {
-            language = "en";
-            editor.putString("languageList", "en");
+        final String checkNull  = getApplicationContext().getResources().getString(R.string.null_value_string);
+        String checkEmpty = getApplicationContext().getResources().getString(R.string.empty_string);
+        String checkZero = getApplicationContext().getResources().getString(R.string.zero);
+
+        if (String.valueOf(language).equals(checkNull) || String.valueOf(language).equals(checkEmpty)
+                || String.valueOf(language).equals(checkZero)) {
+            language = getApplicationContext().getResources().getString(R.string.english);
+            editor.putString(getApplicationContext().getResources().getString(R.string.pref_language_key), getApplicationContext().getResources().getString(R.string.english));
             editor.commit();
         }
         //TODO Implement Counrty Specific API
-        if (String.valueOf(country).equals("null") || String.valueOf(country).equals("0")) {
-            country = "";
-            editor.putString("countryList", "");
+        if (String.valueOf(country).equals(checkNull) || String.valueOf(country).equals(checkZero)) {
+            country = checkEmpty;
+            editor.putString(getApplicationContext().getResources().getString(R.string.pref_country_key), checkNull);
         }
 
-        if (String.valueOf(category).equals("null") || String.valueOf(category).equals("0")) {
-            category = "";
-            editor.putString("categoriesList", "");
+        if (String.valueOf(category).equals(checkNull) || String.valueOf(category).equals(checkZero)) {
+            category = checkEmpty;
+            editor.putString(getApplicationContext().getResources().getString(R.string.pref_category_key), checkNull);
         }
 
         GetTopNewsWorldEnglish service = Client.getClient().create(GetTopNewsWorldEnglish.class);
@@ -75,18 +78,18 @@ public class FetchTopNewsService extends JobService {
         call.enqueue(new Callback<CompleteResponse>() {
             @Override
             public void onResponse(Call<CompleteResponse> call, Response<CompleteResponse> response) {
-                Log.d("Check Service", call.request().url().toString());
+
                 newAlerts = new ArrayList<>();
                 newAlerts = response.body().getArticles();
 
                 String json = new Gson().toJson(newAlerts);
-                editor.putString("topnews", json);
-                editor.putLong("topNewsFetchedAt", System.currentTimeMillis());
+                editor.putString(getApplicationContext().getResources().getString(R.string.topnews_key), json);
+                editor.putLong(getApplicationContext().getResources().getString(R.string.topNewsFetchedAt), System.currentTimeMillis());
                 editor.commit();
                 //TODO Update Widget
                 if (newAlerts.size() == 0) {
-                    editor.putString("topnews", "");
-                    editor.putLong("topNewsFetchedAt", 1080000000);
+                    editor.putString(getApplicationContext().getResources().getString(R.string.topnews_key), checkNull);
+                    editor.putLong(getApplicationContext().getResources().getString(R.string.topNewsFetchedAt), 1080000000);
                     editor.commit();
                 }
                 WidgetUpdateService updateWidget = new WidgetUpdateService();

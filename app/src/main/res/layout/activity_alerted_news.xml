@@ -29,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center|center_vertical"
-            android:text="NO ALERTS FOUND"
+            android:text="@string/no_alerts_found"
             android:textColor="#000"
             android:textSize="20dp"
             android:visibility="gone" />

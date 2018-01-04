@@ -45,7 +45,7 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements TopNewsFragment.OnFragmentInteractionListener, SearchLatestNews.OnFragmentInteractionListener {
 
-    public final String KEY = "16a2ce7a435e4acb8482fae088ba6b9e";
+    String KEY;
     SharedPreferences prefs;
     SharedPreferences.Editor editor;
 
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        KEY = getResources().getString(R.string.API_KEY);
         onCreateCheck = false;
         android.support.v7.widget.Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
                 startActivity(i);
                 break;
             case R.id.favorites:
-                Intent intentFav = new Intent(this,FavoritesActivity.class);
+                Intent intentFav = new Intent(this, FavoritesActivity.class);
                 startActivity(intentFav);
                 break;
             case R.id.alerts:
@@ -154,11 +154,11 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
     }
 
     private void setupDrawer(NavigationView navigationView) {
-        Log.d("Selected", "Item");
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Log.d("Selected", "Item");
+
                 selectNavigationDrawerItem(item);
                 return true;
             }
@@ -200,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
     @Override
     protected void onStart() {
         super.onStart();
-        if(onCreateCheck){
+        if (onCreateCheck) {
             pagerAdapter = new adapters.PagerAdapter(fragmentManager, tabLayout.getTabCount());
             viewPager.setAdapter(pagerAdapter);
             viewPager.setOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));

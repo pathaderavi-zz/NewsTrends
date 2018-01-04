@@ -73,5 +73,6 @@ public class NewsContract {
         public static final String COLUMN_NAME_DATE = "DATE";
         public static final String COLUMN_NAME_KEYWORD = "KEYWORD";
 
+
     }
 }

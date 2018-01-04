@@ -115,6 +115,7 @@ public class NewsDescriptionFragment extends Fragment {
     String urlArticle;
     int j;
     CoordinatorLayout coordinatorLayout;
+    Context context;
 
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
@@ -158,36 +159,36 @@ public class NewsDescriptionFragment extends Fragment {
         //TODO Optimize this with Parcelabel later
 
         if (title != null) {
-            outState.putString("title_pref", title);
-            Log.d("Check1" + outState.get("title_pref"), String.valueOf(title == null));
+            outState.putString(getContext().getResources().getString(R.string.title_pref), title);
+
         }
         if (desc != null) {
-            outState.putString("desc_pref", desc);
+            outState.putString(getContext().getResources().getString(R.string.desc_pref), desc);
         }
         if (imageUrl != null) {
-            outState.putString("imageUrl_pref", imageUrl);
+            outState.putString(getContext().getResources().getString(R.string.imageUrl_pref), imageUrl);
         }
         if (urlArticle != null) {
-            outState.putString("urlArticle_pref", urlArticle);
+            outState.putString(getContext().getResources().getString(R.string.urlArticle_pref), urlArticle);
         }
         if (authorName != null) {
-            outState.putString("authorName_pref", authorName);
+            outState.putString(getContext().getResources().getString(R.string.authorName_pref), authorName);
         }
         if (sourceId != null) {
-            outState.putString("sourceId_pref", sourceId);
+            outState.putString(getContext().getResources().getString(R.string.sourceId_pref), sourceId);
         }
         if (sourceName != null) {
-            outState.putString("sourceName_pref", sourceName);
+            outState.putString(getContext().getResources().getString(R.string.sourceName_pref), sourceName);
         }
         if (publishedAt != null) {
-            outState.putString("publishedAt_pref", publishedAt);
+            outState.putString(getContext().getResources().getString(R.string.publishedAt_pref), publishedAt);
         }
         if (j != 0) {
-            outState.putInt("id_pref", j);
+            outState.putInt(getContext().getResources().getString(R.string.id_pref), j);
         }
-        outState.putInt("scrollXRelative", coordinatorLayout.getScrollX());
-        outState.putInt("scrollYRelative", coordinatorLayout.getScrollY());
-        Log.d("Check Scroll " + String.valueOf(coordinatorLayout.getScrollX()), String.valueOf(coordinatorLayout.getScrollY()));
+        outState.putInt(getContext().getResources().getString(R.string.scrollXRelative), coordinatorLayout.getScrollX());
+        outState.putInt(getContext().getResources().getString(R.string.scrollYRelative), coordinatorLayout.getScrollY());
+
 
     }
 
@@ -198,53 +199,51 @@ public class NewsDescriptionFragment extends Fragment {
 
         preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         editor = preferences.edit();
-        // Inflate the layout for this fragment
+
         view = inflater.inflate(R.layout.fragment_news_description, container, false);
         coordinatorLayout = view.findViewById(R.id.coordinatorDetail);
         android.support.v7.widget.Toolbar toolbar = view.findViewById(R.id.toolbarDetail);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-//        final Drawable upArrow = getResources().getDrawable(R.drawable.);
-//        upArrow.setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
+
         setHasOptionsMenu(true);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
         if (savedInstanceState == null) {
-            j = getActivity().getIntent().getIntExtra("list_id", 0);
-            title = getActivity().getIntent().getStringExtra("title");
-            imageUrl = getActivity().getIntent().getStringExtra("urlToImage");
+            j = getActivity().getIntent().getIntExtra(getContext().getResources().getString(R.string.list_id), 0);
+            title = getActivity().getIntent().getStringExtra(getContext().getResources().getString(R.string.title_cursor_adapter));
+            imageUrl = getActivity().getIntent().getStringExtra(getContext().getResources().getString(R.string.urlToImage_cursor_adapter));
             //TODO Check Internet Connectivity and set image accordingly
-            desc = getActivity().getIntent().getStringExtra("description");
-            urlArticle = getActivity().getIntent().getStringExtra("url");
-            authorName = getActivity().getIntent().getStringExtra("author");
-            publishedAt = getActivity().getIntent().getStringExtra("publishedAt");
-            sourceId = getActivity().getIntent().getStringExtra("source_id");
-            sourceName = getActivity().getIntent().getStringExtra("source_name");
+            desc = getActivity().getIntent().getStringExtra(getContext().getResources().getString(R.string.description_cursor_adapter));
+            urlArticle = getActivity().getIntent().getStringExtra(getContext().getResources().getString(R.string.url_cursor_adapter));
+            authorName = getActivity().getIntent().getStringExtra(getContext().getResources().getString(R.string.author_cursor_adapter));
+            publishedAt = getActivity().getIntent().getStringExtra(getContext().getResources().getString(R.string.publishedAt_cursor_adapter));
+            sourceId = getActivity().getIntent().getStringExtra(getContext().getResources().getString(R.string.source_id_cursor_adapter));
+            sourceName = getActivity().getIntent().getStringExtra(getContext().getResources().getString(R.string.source_name_cursor_adapter));
         } else {
-            j = savedInstanceState.getInt("id_pref");
-            title = savedInstanceState.getString("title_pref");
-            imageUrl = savedInstanceState.getString("imageUrl_pref");
+            j = savedInstanceState.getInt(getContext().getResources().getString(R.string.id_pref));
+            title = savedInstanceState.getString(getContext().getResources().getString(R.string.title_pref));
+            imageUrl = savedInstanceState.getString(getContext().getResources().getString(R.string.imageUrl_pref));
             //TODO Check Internet Connectivity and set image accordingly
-            desc = savedInstanceState.getString("desc_pref");
-            urlArticle = savedInstanceState.getString("urlArticle_pref");
-            authorName = savedInstanceState.getString("authorName_pref");
-            publishedAt = savedInstanceState.getString("publishedAt_pref");
-            sourceId = savedInstanceState.getString("sourceId_pref");
-            sourceName = savedInstanceState.getString("sourceName_pref");
+            desc = savedInstanceState.getString(getContext().getResources().getString(R.string.desc_pref));
+            urlArticle = savedInstanceState.getString(getContext().getResources().getString(R.string.urlArticle_pref));
+            authorName = savedInstanceState.getString(getContext().getResources().getString(R.string.authorName_pref));
+            publishedAt = savedInstanceState.getString(getContext().getResources().getString(R.string.publishedAt_pref));
+            sourceId = savedInstanceState.getString(getContext().getResources().getString(R.string.sourceId_pref));
+            sourceName = savedInstanceState.getString(getContext().getResources().getString(R.string.sourceName_pref));
         }
-
 
 
         existing = getContext().getContentResolver().query(
 
-                NewsContract.NewsFavoritesEntry.FINAL_URI.buildUpon().appendPath("id").build(),
+                NewsContract.NewsFavoritesEntry.FINAL_URI.buildUpon().appendPath(getContext().getResources().getString(R.string.id_append_string)).build(),
                 null,
                 title,
                 null, null, null
         );
         if (existing != null && existing.getCount() > 0) {
             existing.moveToFirst();
-            cursorID = String.valueOf(existing.getInt(existing.getColumnIndex("_id")));
+            cursorID = String.valueOf(existing.getInt(existing.getColumnIndex(getContext().getResources().getString(R.string._id))));
         }
 
         //TODO Change Fab Button Background based on Cursor Result
@@ -253,18 +252,17 @@ public class NewsDescriptionFragment extends Fragment {
         TextView descCard = view.findViewById(R.id.descDetail);
         TextView textView = view.findViewById(R.id.titleDetail);
         textView.setText(title);
-        Log.d("Check Image url",imageUrl);
+
         Glide.with(getContext()).load(imageUrl).override(400, 300).centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE).error(R.drawable.noimageavailable).skipMemoryCache(true).into(imageView);
 
         descCard.setText(desc);
 
-        Log.d("Check Exists", String.valueOf(new File(getContext().getFilesDir().getAbsolutePath()
-                + File.separator + "images" + File.separator + "1.jpg").exists()));
+
         Button webLink = view.findViewById(R.id.webLinkButton);
         webLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onButtonPressed(urlArticle,title);
+                onButtonPressed(urlArticle, title);
             }
         });
         fav = view.findViewById(R.id.favoritFloat);
@@ -280,8 +278,7 @@ public class NewsDescriptionFragment extends Fragment {
                 }
         );
         if (savedInstanceState != null) {
-            Log.d("Check Scroll " + String.valueOf(savedInstanceState.getInt("scrollXRelative")), String.valueOf(savedInstanceState.getInt("scrollYRelative")));
-            coordinatorLayout.scrollTo(savedInstanceState.getInt("scrollXRelative"), savedInstanceState.getInt("scrollYRelative"));
+            coordinatorLayout.scrollTo(savedInstanceState.getInt(getContext().getResources().getString(R.string.scrollXRelative)), savedInstanceState.getInt(getContext().getResources().getString(R.string.scrollYRelative)));
         }
         ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) descCard
                 .getLayoutParams();
@@ -329,7 +326,7 @@ public class NewsDescriptionFragment extends Fragment {
 
         existing = getContext().getContentResolver().query(
 
-                NewsContract.NewsFavoritesEntry.FINAL_URI.buildUpon().appendPath("id").build(),
+                NewsContract.NewsFavoritesEntry.FINAL_URI.buildUpon().appendPath(getContext().getResources().getString(R.string.id_append_string)).build(),
                 null,
                 title,
                 null, null, null
@@ -338,28 +335,28 @@ public class NewsDescriptionFragment extends Fragment {
         if (isConnected) {
             if (existing != null && existing.getCount() > 0) {
                 existing.moveToFirst();
-                cursorID = String.valueOf(existing.getInt(existing.getColumnIndex("_id")));
+                cursorID = String.valueOf(existing.getInt(existing.getColumnIndex(getContext().getResources().getString(R.string._id))));
 
 
                 File mht = new File(getContext().getFilesDir().getAbsolutePath()
-                        + File.separator, String.valueOf(cursorID) + ".mht");
+                        + File.separator, String.valueOf(cursorID) + getContext().getResources().getString(R.string.MHT));
                 mht.setWritable(true);
                 File jpg = new File(getContext().getFilesDir().getAbsolutePath()
-                        + File.separator + "images", String.valueOf(cursorID) + ".jpg");
+                        + File.separator + getContext().getResources().getString(R.string.images), String.valueOf(cursorID) + getContext().getResources().getString(R.string.JPG));
 
                 //boolean mhtDel = mht.delete();
                 //boolean jpgDel = jpg.delete();
 
-                editor.putString("delete_image", String.valueOf(jpg));
-                editor.putString("delete_mht", String.valueOf(mht));
-                editor.putBoolean("delete_files",true);
+                editor.putString(getContext().getResources().getString(R.string.delete_image_boolean_key), String.valueOf(jpg));
+                editor.putString(getContext().getResources().getString(R.string.delete_mht_boolean_key), String.valueOf(mht));
+                editor.putBoolean(getContext().getResources().getString(R.string.delete_files), true);
                 editor.commit();
 
-                Uri delete = NewsContract.NewsFavoritesEntry.FINAL_URI.buildUpon().appendPath("id").build();
+                Uri delete = NewsContract.NewsFavoritesEntry.FINAL_URI.buildUpon().appendPath(getContext().getResources().getString(R.string.id_append_string)).build();
                 getContext().getContentResolver().delete(delete, title, null);
                 //Toast.makeText(getContext(), "Deleted", Toast.LENGTH_SHORT).show();
                 fav.setImageResource(R.drawable.ic_star_border_white_24px);
-                snackbar = Snackbar.make(view, "News Deleted", Snackbar.LENGTH_SHORT);
+                snackbar = Snackbar.make(view, getContext().getResources().getString(R.string.snackbar_delete_messsege), Snackbar.LENGTH_SHORT);
 
 
             } else {
@@ -369,7 +366,7 @@ public class NewsDescriptionFragment extends Fragment {
                 w.loadUrl(urlArticle);
                 Date dateInsert = DateTimeUtils.formatDate(publishedAt);
 
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getContext().getResources().getString(R.string.dateFormatToInsert));
 
                 ContentValues cv = new ContentValues();
                 cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_TITLE, title);
@@ -385,16 +382,16 @@ public class NewsDescriptionFragment extends Fragment {
                         NewsContract.NewsFavoritesEntry.FINAL_URI, cv
                 );
                 id = ContentUris.parseId(uri);
-                Log.d("Local Check Fav",imageUrl);
+
                 Glide.with(getContext()).load(imageUrl).asBitmap().override(400, 300).centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                         File dir = new File(getContext().getFilesDir().getAbsolutePath()
-                                + File.separator + "images");
+                                + File.separator + getContext().getResources().getString(R.string.images));
                         if (!dir.exists()) {
                             dir.mkdir();
                         }
-                        File ff = new File(dir, String.valueOf(id) + ".jpg");
+                        File ff = new File(dir, String.valueOf(id) + getContext().getResources().getString(R.string.JPG));
                         try {
                             FileOutputStream fileOutputStream = new FileOutputStream(ff);
                             resource.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
@@ -409,7 +406,7 @@ public class NewsDescriptionFragment extends Fragment {
                 });
                 fav.setImageResource(R.drawable.ic_star_white_24px);
 
-                snackbar = Snackbar.make(view, "News Added to Favorites", Snackbar.LENGTH_SHORT);
+                snackbar = Snackbar.make(view, getContext().getResources().getString(R.string.news_added_to_favorites), Snackbar.LENGTH_SHORT);
 
             }
 
@@ -417,45 +414,46 @@ public class NewsDescriptionFragment extends Fragment {
         } else {
             if (existing != null && existing.getCount() > 0) {
                 existing.moveToFirst();
-                cursorID = String.valueOf(existing.getInt(existing.getColumnIndex("_id")));
+                cursorID = String.valueOf(existing.getInt(existing.getColumnIndex(getContext().getResources().getString(R.string._id))));
 
 
                 File mht = new File(getContext().getFilesDir().getAbsolutePath()
-                        + File.separator, String.valueOf(cursorID) + ".mht");
+                        + File.separator, String.valueOf(cursorID) + getContext().getResources().getString(R.string.MHT));
                 mht.setWritable(true);
                 File jpg = new File(getContext().getFilesDir().getAbsolutePath()
-                        + File.separator + "images", String.valueOf(cursorID) + ".jpg");
+                        + File.separator + getContext().getResources().getString(R.string.images), String.valueOf(cursorID) + getContext().getResources().getString(R.string.JPG));
 
-                //boolean mhtDel = mht.delete();
-                //boolean jpgDel = jpg.delete();
 
-                editor.putString("delete_image", String.valueOf(jpg));
-                editor.putString("delete_mht", String.valueOf(mht));
-                editor.putBoolean("delete_files",true);
+
+                editor.putString(getContext().getResources().getString(R.string.delete_image_boolean_key), String.valueOf(jpg));
+                editor.putString(getContext().getResources().getString(R.string.delete_mht_boolean_key), String.valueOf(mht));
+                editor.putBoolean(getContext().getResources().getString(R.string.delete_files), true);
                 editor.commit();
-                Uri delete = NewsContract.NewsFavoritesEntry.FINAL_URI.buildUpon().appendPath("id").build();
+                Uri delete = NewsContract.NewsFavoritesEntry.FINAL_URI.buildUpon().appendPath(getContext().getResources().getString(R.string.id_append_string)).build();
                 getContext().getContentResolver().delete(delete, title, null);
-                //Toast.makeText(getContext(), "Deleted", Toast.LENGTH_SHORT).show();
+
                 fav.setImageResource(R.drawable.ic_star_border_white_24px);
-                snackbar = Snackbar.make(view, "News Deleted", Snackbar.LENGTH_SHORT);
+                snackbar = Snackbar.make(view, getContext().getResources().getString(R.string.snackbar_delete_messsege), Snackbar.LENGTH_SHORT);
             } else {
-                Snackbar.make(view, "No Internet Connection. Cannot Save when Offline", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(view, getContext().getResources().getString(R.string.no_internet_snackbar), Snackbar.LENGTH_SHORT).show();
             }
         }
 
     }
 
 
-    public void onButtonPressed(String uri,String t) {
+    public void onButtonPressed(String uri, String t) {
         if (mListener != null) {
-            mListener.onLinkButtonPressed(uri,t);
+            mListener.onLinkButtonPressed(uri, t);
         }
     }
-    public void onBackDetail(boolean s, File i , File m){
-        if(mListener!=null){
-            mListener.onBackPressedFromDetail(s,i,m);
+
+    public void onBackDetail(boolean s, File i, File m) {
+        if (mListener != null) {
+            mListener.onBackPressedFromDetail(s, i, m);
         }
     }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -485,8 +483,9 @@ public class NewsDescriptionFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onLinkButtonPressed(String url,String title);
-        void onBackPressedFromDetail(boolean status,File image, File mht);
+        void onLinkButtonPressed(String url, String title);
+
+        void onBackPressedFromDetail(boolean status, File image, File mht);
     }
 
     @Override
@@ -512,8 +511,8 @@ public class NewsDescriptionFragment extends Fragment {
             if (!dir.exists()) {
                 dir.mkdir();
             }
-            w.saveWebArchive(customContext  .getFilesDir().getAbsolutePath()
-                    + File.separator + id_file + ".mht");
+            w.saveWebArchive(customContext.getFilesDir().getAbsolutePath()
+                    + File.separator + id_file + customContext.getResources().getString(R.string.MHT));
 
 
         }
@@ -523,24 +522,25 @@ public class NewsDescriptionFragment extends Fragment {
     @Override
     public void setMenuVisibility(boolean menuVisible) {
         super.setMenuVisibility(menuVisible);
-        Log.d("Frag is", "Visible");
+
 
     }
-    public void requestPermissions(String titleP, String descP,String imageUrlP,String urlArticleP) {
+
+    public void requestPermissions(String titleP, String descP, String imageUrlP, String urlArticleP) {
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Need Storage Permission");
-                builder.setMessage("You can read NEWS online when NewsTrends saves files for the web archive on your phone. For it , the app needs permissions to store these files on you device.");
-                builder.setPositiveButton("Grant", new DialogInterface.OnClickListener() {
+                builder.setTitle(getContext().getResources().getString(R.string.need_storage_permission));
+                builder.setMessage(getContext().getResources().getString(R.string.permission_rationale));
+                builder.setPositiveButton(getContext().getResources().getString(R.string.grant), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
                         ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 22);
                     }
                 });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton(getContext().getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
@@ -549,40 +549,39 @@ public class NewsDescriptionFragment extends Fragment {
                     }
                 });
                 builder.show();
-            }
-            else if(PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("DENIED",false)){
+            } else if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(getContext().getResources().getString(R.string.denied), false)) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Need Storage Permission");
-                builder.setMessage("You can read NEWS online when NewsTrends saves files for the web archive on your phone. For it , the app needs permissions to store these files on you device.");
-                builder.setPositiveButton("Grant", new DialogInterface.OnClickListener() {
+                builder.setTitle(getContext().getResources().getString(R.string.need_storage_permission));
+                builder.setMessage(getContext().getResources().getString(R.string.permission_rationale));
+                builder.setPositiveButton(getContext().getResources().getString(R.string.grant), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
                         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                        Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
+                        Uri uri = Uri.fromParts(getContext().getResources().getString(R.string.package_permission), getActivity().getPackageName(), null);
                         intent.setData(uri);
                         startActivityForResult(intent, 22);
-                        Toast.makeText(getContext(), "Go to Permissions to Grant Storage", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), getContext().getResources().getString(R.string.toast_permissions), Toast.LENGTH_LONG).show();
                     }
                 });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton(getContext().getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
                     }
                 });
                 builder.show();
-            }else {
+            } else {
                 //just request the permission
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 22);
             }
             SharedPreferences r = PreferenceManager.getDefaultSharedPreferences(getContext());
             SharedPreferences.Editor editor = r.edit();
 
-            editor.putBoolean("DENIED",true);
+            editor.putBoolean(getContext().getResources().getString(R.string.denied), true);
             editor.commit();
-        }else{
-           onClickFab(title, desc, imageUrl, urlArticle);
+        } else {
+            onClickFab(title, desc, imageUrl, urlArticle);
         }
     }
 }

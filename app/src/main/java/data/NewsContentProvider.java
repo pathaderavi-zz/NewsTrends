@@ -39,6 +39,7 @@ public class NewsContentProvider extends ContentProvider {
     private static UriMatcher buildUriMatcher() {
         UriMatcher match = new UriMatcher(UriMatcher.NO_MATCH);
 
+
         match.addURI(NewsContract.AUTHORITY, NewsContract.PATH_FAVORITES, FAVORITES);
         match.addURI(NewsContract.AUTHORITY, NewsContract.PATH_FAVORITES + "/id", FAVORITES_ID);
 

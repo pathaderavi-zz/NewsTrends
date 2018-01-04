@@ -30,6 +30,8 @@
                 android:src="@drawable/newslogowidget" />
         </android.support.v7.widget.Toolbar>
 
+        <!--TODO Check If Change is required for elevation-->
+
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"
             android:layout_width="match_parent"

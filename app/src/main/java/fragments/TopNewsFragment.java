@@ -78,7 +78,7 @@ public class TopNewsFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public final String KEY = "16a2ce7a435e4acb8482fae088ba6b9e";
+    public String KEY;
     RecyclerView.LayoutManager layoutManager;
     RecyclerView topNewsRecycler;
     NewsRecyclerAdapter adapter;
@@ -138,7 +138,7 @@ public class TopNewsFragment extends Fragment {
         // Inflate the layout for this fragment
         final LayoutInflater finalInflater = inflater;
         final ViewGroup finalViewgroup = container;
-
+        KEY = getActivity().getResources().getString(R.string.API_KEY);
         a1 = new List[]{new ArrayList<>()};
         view = inflater.inflate(R.layout.fragment_top_news, container, false);
 
@@ -167,74 +167,79 @@ public class TopNewsFragment extends Fragment {
         prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         editor = prefs.edit();
 
-        country = prefs.getString("countryList", "");
+        country = prefs.getString(getContext().getResources().getString(R.string.pref_country_key), getContext().getResources().getString(R.string.empty_string));
 
-        language = prefs.getString("languageList", "");
+        language = prefs.getString(getContext().getResources().getString(R.string.pref_language_key), getContext().getResources().getString(R.string.empty_string));
 
-        category = prefs.getString("categoriesList", "");
+        category = prefs.getString(getContext().getResources().getString(R.string.pref_category_key), getContext().getResources().getString(R.string.empty_string));
 
-        if (String.valueOf(language).equals("null") || String.valueOf(language).equals("")
-                || String.valueOf(language).equals("0")) {
-            if (String.valueOf(language).equals("null")) {
-                language = "";
+        if (String.valueOf(language).equals(getContext().getResources().getString(R.string.null_value_string)) || String.valueOf(language).equals(getContext().getResources().getString(R.string.empty_string))
+                || String.valueOf(language).equals(getContext().getResources().getString(R.string.zero))) {
+            if (String.valueOf(language).equals(getContext().getResources().getString(R.string.null_value_string))) {
+                language = getContext().getResources().getString(R.string.empty_string);
             } else {
-                language = "en";
+                language = getContext().getResources().getString(R.string.english);
             }
-            editor.putString("languageList", language);
+            editor.putString(getContext().getResources().getString(R.string.pref_language_key), language);
             editor.commit();
         }
-        if (String.valueOf(category).equals("null") || String.valueOf(category).equals("0") || category.equals("")) {
-            category = "";
-            editor.putString("categoriesList", "");
+        if (String.valueOf(category).equals(getContext().getResources().getString(R.string.null_value_string)) || String.valueOf(category).equals(getContext().getResources().getString(R.string.zero)) || category.equals(getContext().getResources().getString(R.string.empty_string))) {
+            category = getContext().getResources().getString(R.string.empty_string);
+            editor.putString(getContext().getResources().getString(R.string.pref_category_key), getContext().getResources().getString(R.string.empty_string));
         }
         final String[] countryList = getActivity().getResources().getStringArray(R.array.preferenceCountryValues);
         gson = new Gson();
+        final Context contextCheck = getContext();
         a1[0] = new ArrayList<>();
         if (isConnected) {
-            if (String.valueOf(country).equals("null") || String.valueOf(country).equals("0") || country.equals("")) { // Code Not Set
-                IpApiService ipApiService = ServicesManager.getGeoIpService();
-                ipApiService.getGeoIp().enqueue(new Callback<GeoIpResponseModel>() {
-                    @Override
-                    public void onResponse(Call<GeoIpResponseModel> call, Response<GeoIpResponseModel> response) {
-                        country = response.body().getCountryCode();
+            if (String.valueOf(country).equals(getContext().getResources().getString(R.string.null_value_string)) || String.valueOf(country).equals(getContext().getResources().getString(R.string.zero)) || country.equals(getContext().getResources().getString(R.string.empty_string))) { // Code Not Set
+                if (country.equals(getContext().getResources().getString(R.string.null_value_string))) {
+                    country = getContext().getResources().getString(R.string.empty_string);
+                    responseCall(language, country, category);
+                } else {
+                    IpApiService ipApiService = ServicesManager.getGeoIpService();
+                    ipApiService.getGeoIp().enqueue(new Callback<GeoIpResponseModel>() {
+                        @Override
+                        public void onResponse(Call<GeoIpResponseModel> call, Response<GeoIpResponseModel> response) {
+                            country = response.body().getCountryCode();
 
-                        Bundle bundle = new Bundle();
+                            Bundle bundle = new Bundle();
 
-                        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Country");
-                        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, response.body().getCountry());
+                            bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, contextCheck.getResources().getString(R.string.firebase_country));
+                            bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, response.body().getCountry());
 
-                        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "City");
-                        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, response.body().getCity());
+                            bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, contextCheck.getResources().getString(R.string.firebase_city));
+                            bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, response.body().getCity());
 
-                        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+                            mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
 
 
-                        boolean checkCountryMatch = false;
-                        for (String c : countryList) {
-                            if (c.equals(country.toLowerCase())) {
-                                checkCountryMatch = true;
+                            boolean checkCountryMatch = false;
+                            for (String c : countryList) {
+                                if (c.equals(country.toLowerCase())) {
+                                    checkCountryMatch = true;
+                                }
+                            }
+                            if (checkCountryMatch) {
+                                responseCall(language, country, category);
+                            } else {
+                                responseCall(language, contextCheck.getResources().getString(R.string.empty_string), category);
                             }
                         }
-                        if (checkCountryMatch) {
-                            responseCall(language, country, category);
-                        } else {
-                            responseCall(language, "", category);
+
+                        @Override
+                        public void onFailure(Call<GeoIpResponseModel> call, Throwable t) {
+
                         }
-                    }
+                    });
 
-                    @Override
-                    public void onFailure(Call<GeoIpResponseModel> call, Throwable t) {
-
-                    }
-                });
-
-
+                }
             } else { // Code is Set
                 responseCall(language, country, category);
             }
         } else {
-            String resp = prefs.getString("topnews", "");
-            if ((!resp.equals("") && !resp.equals("[]"))) {
+            String resp = prefs.getString(getContext().getResources().getString(R.string.topnews_key), getContext().getResources().getString(R.string.empty_string));
+            if ((!resp.equals(getContext().getResources().getString(R.string.empty_string)) && !resp.equals(getContext().getResources().getString(R.string.empty_array)))) {
                 Type type = new TypeToken<List<Articles>>() {
                 }.getType();
 
@@ -247,17 +252,17 @@ public class TopNewsFragment extends Fragment {
                 topNewsRecycler.setVisibility(View.VISIBLE);
                 view.findViewById(R.id.textViewEnd).setVisibility(View.VISIBLE);
                 showingTopNewsFor.setVisibility(View.VISIBLE);
-                if (country.equals("") || country.equals("null") || country.equals("0")) {
-                    country = "World";
+                if (country.equals(getContext().getResources().getString(R.string.empty_string)) || country.equals(getContext().getResources().getString(R.string.null_value_string)) || country.equals(getContext().getResources().getString(R.string.zero))) {
+                    country = getContext().getResources().getString(R.string.World);
                 } else {
-                    showingTopNewsFor.setText("Showing News For " + new Locale("", country).getDisplayCountry().toUpperCase());
+                    showingTopNewsFor.setText(getContext().getResources().getString(R.string.showing_results_for) + new Locale(getContext().getResources().getString(R.string.empty_string), country).getDisplayCountry().toUpperCase());
                 }
             } else {
                 spinningProgress.setVisibility(View.GONE);
                 topNewsRecycler.setVisibility(View.VISIBLE);
 
                 viewEnd.setVisibility(View.VISIBLE);
-                viewEnd.setText("Please Connect to Internet and Tap Here to Start Fetching News");
+                viewEnd.setText(getContext().getResources().getString(R.string.no_internet_topnews));
                 viewEnd.setTextSize(16);
                 viewEnd.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -275,23 +280,23 @@ public class TopNewsFragment extends Fragment {
     }
 
     public void responseCall(String lan, String cou, String cate) {
-        //TODO Implement if changed URL over last time
+
         a1[0] = new ArrayList<>();
         gson = new Gson();
         service = Client.getClient().create(GetTopNewsWorldEnglish.class);
         Call<CompleteResponse> call = service.getTopNewsArticles(KEY, lan, cou, cate);
         String requestUrl = call.request().url().toString();
-        boolean matchesUrl = requestUrl.equals(prefs.getString("previousUrl", ""));
-        String resp = prefs.getString("topnews", "");
-        boolean tCheck = (System.currentTimeMillis() - prefs.getLong("topNewsFetchedAt", 0) < 10800000);
+        boolean matchesUrl = requestUrl.equals(prefs.getString(getContext().getResources().getString(R.string.previousUrl), getContext().getResources().getString(R.string.empty_string)));
+        String resp = prefs.getString(getContext().getResources().getString(R.string.topnews_key), getContext().getResources().getString(R.string.empty_string));
+        boolean tCheck = (System.currentTimeMillis() - prefs.getLong(getContext().getResources().getString(R.string.topNewsFetchedAt), 0) < 10800000);
 
         if (!matchesUrl) {
-            resp = "";
+            resp = getContext().getResources().getString(R.string.empty_string);
             tCheck = false;
         }
         a1 = new List[]{new ArrayList<>()};
 
-        if ((!resp.equals("") && !resp.equals("[]")) || (tCheck)) {
+        if ((!resp.equals(getContext().getResources().getString(R.string.empty_string)) && !resp.equals(getContext().getResources().getString(R.string.empty_array))) || (tCheck)) {
 
             Type type = new TypeToken<List<Articles>>() {
             }.getType();
@@ -306,10 +311,10 @@ public class TopNewsFragment extends Fragment {
             view.findViewById(R.id.textViewEnd).setVisibility(View.VISIBLE);
             showingTopNewsFor.setVisibility(View.VISIBLE);
 
-            if (cou.equals("") || cou.equals("null") || cou.equals("0")) {
-                showingTopNewsFor.setText("Showing News For World");
+            if (cou.equals(getContext().getResources().getString(R.string.empty_string)) || cou.equals(getContext().getResources().getString(R.string.empty_array)) || cou.equals(getContext().getResources().getString(R.string.zero))) {
+                showingTopNewsFor.setText(getContext().getResources().getString(R.string.showing_news_for_world));
             } else {
-                showingTopNewsFor.setText("Showing News For " + new Locale("", cou).getDisplayCountry().toUpperCase());
+                showingTopNewsFor.setText(getContext().getResources().getString(R.string.showing_results_for) + new Locale(getContext().getResources().getString(R.string.empty_string), cou).getDisplayCountry().toUpperCase());
             }
 
         } else {
@@ -317,8 +322,8 @@ public class TopNewsFragment extends Fragment {
             call.enqueue(new Callback<CompleteResponse>() {
                 @Override
                 public void onResponse(Call<CompleteResponse> call, Response<CompleteResponse> response) {
-                    Log.d("Check Response", String.valueOf(call.request().url()));
-                    editor.putString("previousUrl", call.request().url().toString());
+
+                    editor.putString(getContext().getResources().getString(R.string.previousUrl), call.request().url().toString());
                     editor.commit();
 
                     a1[0] = response.body().getArticles();
@@ -329,25 +334,26 @@ public class TopNewsFragment extends Fragment {
                     view.findViewById(R.id.textViewEnd).setVisibility(View.VISIBLE);
                     showingTopNewsFor.setVisibility(View.VISIBLE);
 
+
                     if (a1[0].size() == 0) {
-                        viewEnd.setText("Settings for Top News might be fetching 0 results. Please try changing Top News settings");
+                        viewEnd.setText(getContext().getResources().getString(R.string.settings_0_results));
                         viewEnd.setVisibility(View.VISIBLE);
                         dispatcher.cancel(JOB_TAG);
-                        editor.putString("topnews", "");
-                        editor.putLong("topNewsFetchedAt", 108000000);
+                        editor.putString(getContext().getResources().getString(R.string.topnews_key), getContext().getResources().getString(R.string.empty_string));
+                        editor.putLong(getContext().getResources().getString(R.string.topNewsFetchedAt), 108000000);
                         editor.commit();
                         showingTopNewsFor.setVisibility(View.GONE);
 
                     } else {
-                        editor.putBoolean("noNews", false);
+                        editor.putBoolean(getContext().getResources().getString(R.string.no_news_key), false);
                         editor.commit();
                         adapter = new NewsRecyclerAdapter(a1[0]);
                         topNewsRecycler.setAdapter(adapter);
 
 
                         String json = gson.toJson(a1[0]);
-                        editor.putString("topnews", json);
-                        editor.putLong("topNewsFetchedAt", System.currentTimeMillis());
+                        editor.putString(getContext().getResources().getString(R.string.topnews_key), json);
+                        editor.putLong(getContext().getResources().getString(R.string.topNewsFetchedAt), System.currentTimeMillis());
                         editor.commit();
 
 
@@ -369,10 +375,10 @@ public class TopNewsFragment extends Fragment {
                                 .build();
 
                         dispatcher.mustSchedule(job);
-                        if (countryCheckString.equals("") || countryCheckString.equals("null") || countryCheckString.equals("0")) {
-                            showingTopNewsFor.setText("Showing News For World");
+                        if (countryCheckString.equals(getContext().getResources().getString(R.string.empty_string)) || countryCheckString.equals(getContext().getResources().getString(R.string.null_value_string)) || countryCheckString.equals(getContext().getResources().getString(R.string.zero))) {
+                            showingTopNewsFor.setText(getContext().getResources().getString(R.string.showing_news_for_world));
                         } else {
-                            showingTopNewsFor.setText("Showing News For " + new Locale("", countryCheckString).getDisplayCountry().toUpperCase());
+                            showingTopNewsFor.setText(getContext().getResources().getString(R.string.showing_results_for) + new Locale(getContext().getResources().getString(R.string.empty_string), countryCheckString).getDisplayCountry().toUpperCase());
                         }
 
                     }
@@ -416,14 +422,14 @@ public class TopNewsFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        Log.d("onStart Check", "Here");
+
         //TODO Try to implement to load data while Settings Changed and Service Runs
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d("onStop Check", "Here");
+
     }
 
     /**

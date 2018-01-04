@@ -32,7 +32,7 @@ public class FavoritesActivity extends AppCompatActivity {
 
         Toolbar t = findViewById(R.id.favoritesBar);
         setSupportActionBar(t);
-        t.setTitle("Favorite News");
+        t.setTitle(getResources().getString(R.string.toolbar_favorite_activity));
 
         drawerLayout = findViewById(R.id.drawerLayoutFav);
         navigation = findViewById(R.id.navigationViewFav);
@@ -49,7 +49,7 @@ public class FavoritesActivity extends AppCompatActivity {
             favoritesFragment = new FavoritesFragment();
             fragmentManager.beginTransaction().add(R.id.favoritesFrame, favoritesFragment).commit();
         } else {
-            fragmentManager.getFragment(savedInstanceState, "favorite_fragment");
+            fragmentManager.getFragment(savedInstanceState, getResources().getString(R.string.favorite_fragment_key));
         }
         setupDrawer(navigation);
     }
@@ -100,7 +100,7 @@ public class FavoritesActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        fragmentManager.putFragment(outState,"favorite_fragment",fragmentManager.findFragmentById(R.id.favoritesFrame));
+        fragmentManager.putFragment(outState,getResources().getString(R.string.favorite_fragment_key),fragmentManager.findFragmentById(R.id.favoritesFrame));
     }
 
     @Override

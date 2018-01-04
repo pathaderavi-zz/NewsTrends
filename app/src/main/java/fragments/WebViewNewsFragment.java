@@ -24,6 +24,8 @@ import android.widget.ShareActionProvider;
 
 import com.example.ravikiranpathade.newstrends.R;
 
+import java.io.File;
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -83,8 +85,9 @@ public class WebViewNewsFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt("scrollX", web.getScrollX());
-        outState.putInt("scrollX", web.getScrollY());
+        outState.putInt(getContext().getResources().getString(R.string.scrollX), web.getScrollX());
+        outState.putInt(getContext().getResources().getString(R.string.scrollY), web.getScrollY());
+        outState.putString("rotated","r");
     }
 
     @Override
@@ -101,20 +104,23 @@ public class WebViewNewsFragment extends Fragment {
 
         toolbar = view.findViewById(R.id.webViewToolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        toolbar.setTitle("Loading...");
+        toolbar.setTitle(getContext().getResources().getString(R.string.loading));
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         web = view.findViewById(R.id.webViewLink);
         checkBundle = savedInstanceState;
-        // Log.d("Check SSSS" + String.valueOf(savedInstanceState.getInt("scrollX")), String.valueOf(savedInstanceState.getInt("scrollY")));
         savedInstanceState = getArguments();
-        titleTo = savedInstanceState.getString("titleToWeb");
-        final String checkedUrl = savedInstanceState.getString("urlForWeb");
-        final String webU = savedInstanceState.getString("realWebUrl");
+        titleTo = savedInstanceState.getString(getContext().getResources().getString(R.string.bundle_key_titleToWeb));
+        final String checkedUrl = savedInstanceState.getString(getContext().getResources().getString(R.string.bundle_key_urlForWeb));
+        final String webU = savedInstanceState.getString(getContext().getResources().getString(R.string.bundle_key_realWebUrl));
         WebViewClient custom = new CustomWebViewHere();
         web.setWebViewClient(custom);
-
-        web.loadUrl(checkedUrl);
+        web.getSettings().setJavaScriptEnabled(true);
+        if (savedInstanceState.getString("rotated") == null) {
+            web.loadUrl(checkedUrl);
+        }else{
+            scrollXToCustom(checkBundle.getInt("scrollX"));
+        }
 
 
         shareButton = view.findViewById(R.id.shareWeb);
@@ -189,9 +195,9 @@ public class WebViewNewsFragment extends Fragment {
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
-            web.clearView();
+
             if (checkBundle != null) {
-                scrollXToCustom(checkBundle.getInt("scrollX"));
+                scrollXToCustom(checkBundle.getInt("scrollY"));
             }
         }
 
@@ -201,6 +207,7 @@ public class WebViewNewsFragment extends Fragment {
 
             toolbar.setTitle(titleTo);
             shareButton.setVisibility(View.VISIBLE);
+
 
         }
 

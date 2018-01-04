@@ -13,7 +13,7 @@
         android:defaultValue="0"
         android:entries="@array/preferenceCategories"
         android:entryValues="@array/preferenceCategoriesValues"
-        android:key="categoriesList"
+        android:key="@string/pref_category_key"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
         android:summary="%s"
@@ -23,7 +23,7 @@
         android:defaultValue="2"
         android:entries="@array/preferenceLanguage"
         android:entryValues="@array/preferenceLanguageValues"
-        android:key="languageList"
+        android:key="@string/pref_language_key"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
         android:summary="%s"
@@ -36,13 +36,12 @@
         android:defaultValue="0"
         android:entries="@array/preferenceCountry"
         android:entryValues="@array/preferenceCountryValues"
-        android:key="countryList"
+        android:key="@string/pref_country_key"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
         android:summary="%s"
         android:title="Country" />
     <Preference
-
         android:selectable="false"
         android:enabled="true"
         android:key="example_key"

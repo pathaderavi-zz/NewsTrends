@@ -40,22 +40,16 @@ public class NewsDetailActivity extends AppCompatActivity implements NewsDescrip
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_detail);
         fragmentManager = getSupportFragmentManager();
-//        Fragment f = new NewsDescriptionFragment();
-//        f.getView().setOnKeyListener(new View.OnKeyListener() {
-//            @Override
-//            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-//                return false;
-//            }
-//        });
+
         if (savedInstanceState == null) {
             fragmentManager.beginTransaction().add(R.id.newsDescriptionFragment, new NewsDescriptionFragment()).commit();
         } else {
-            fragmentManager.getFragment(savedInstanceState, "fragment_news_detail");
+            fragmentManager.getFragment(savedInstanceState, getResources().getString(R.string.fragment_news_detail_key));
         }
         if (savedInstanceState == null) {
-            title = getIntent().getStringExtra("title");
+            title = getIntent().getStringExtra(getResources().getString(R.string.title_cursor_adapter));
         } else {
-            title = savedInstanceState.getString("title_act_news_detail");
+            title = savedInstanceState.getString(getResources().getString(R.string.title_act_news_detail));
         }
 
     }
@@ -68,23 +62,23 @@ public class NewsDetailActivity extends AppCompatActivity implements NewsDescrip
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = preferences.edit();
 
-        String checkString = "NotSet";
-        boolean deleteCheck = preferences.getBoolean("delete_files", false);
+        String checkString = getResources().getString(R.string.checkString_setCheck);
+        boolean deleteCheck = preferences.getBoolean(getResources().getString(R.string.delete_files), false);
         if (deleteCheck) {
-            editor.putBoolean("favorites_changed", true);
+            editor.putBoolean(getResources().getString(R.string.favorites_changed), true);
             try {
-                File check1 = new File(preferences.getString("delete_image", checkString));
-                File check2 = new File(preferences.getString("delete_mht", checkString));
+                File check1 = new File(preferences.getString(getResources().getString(R.string.delete_image_boolean_key), checkString));
+                File check2 = new File(preferences.getString(getResources().getString(R.string.delete_mht_boolean_key), checkString));
                 if (check1.exists()) {
                     check1.delete();
-                    editor.putString("delete_image", checkString);
+                    editor.putString(getResources().getString(R.string.delete_image_boolean_key), checkString);
 
                 }
                 if (check2.exists()) {
                     check2.delete();
-                    editor.putString("delete_mht", checkString);
+                    editor.putString(getResources().getString(R.string.delete_mht_boolean_key), checkString);
                 }
-                editor.putBoolean("delete_files", false);
+                editor.putBoolean(getResources().getString(R.string.delete_files), false);
                 editor.commit();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -110,21 +104,21 @@ public class NewsDetailActivity extends AppCompatActivity implements NewsDescrip
         //String url1 = getIntent().getStringExtra("url");
         Cursor check = getContentResolver().query(
 
-                NewsContract.NewsFavoritesEntry.FINAL_URI.buildUpon().appendPath("id").build(),
+                NewsContract.NewsFavoritesEntry.FINAL_URI.buildUpon().appendPath(getResources().getString(R.string.id_append_string)).build(),
                 null,
                 title,
                 null, null, null
         );
         boolean isConnected = new HelperFunctions().getConnectionInfo(this);
         if (check != null && check.getCount() == 0 && !isConnected) {
-            Log.d("Cheeck H", "1");
-            Snackbar.make(findViewById(android.R.id.content), "NO INTERNET CONNECTION", Snackbar.LENGTH_SHORT).show();
+
+            Snackbar.make(findViewById(android.R.id.content), getResources().getString(R.string.no_internet_connection), Snackbar.LENGTH_SHORT).show();
         } else {
-            Log.d("Cheeck H", "2");
+
             Bundle b = new Bundle();
-            b.putString("urlForWeb", url);
-            b.putString("titleToWeb", titleFrom);
-            b.putString("realWebUrl",url);
+            b.putString(getResources().getString(R.string.bundle_key_urlForWeb), url);
+            b.putString(getResources().getString(R.string.bundle_key_titleToWeb), titleFrom);
+            b.putString(getResources().getString(R.string.bundle_key_realWebUrl),url);
             webFragment = new WebViewNewsFragment();
             webFragment.setArguments(b);
             fragmentManager.beginTransaction().replace(R.id.newsDescriptionFragment, webFragment).addToBackStack(null).commit();
@@ -132,13 +126,13 @@ public class NewsDetailActivity extends AppCompatActivity implements NewsDescrip
         }
         if (check.getCount() > 0 && !isConnected) {
             check.moveToFirst();
-            String id_file = String.valueOf(check.getInt(check.getColumnIndex("_id")));
+            String id_file = String.valueOf(check.getInt(check.getColumnIndex(getResources().getString(R.string._id))));
             Bundle b = new Bundle();
-            String urls = "file://" + getFilesDir().getAbsolutePath()
-                    + File.separator + id_file + ".mht";
-            b.putString("urlForWeb", urls);
-            b.putString("titleToWeb", titleFrom);
-            b.putString("realWebUrl",url);
+            String urls = getResources().getString(R.string.file_prepend) + getFilesDir().getAbsolutePath()
+                    + File.separator + id_file + getResources().getString(R.string.MHT);
+            b.putString(getResources().getString(R.string.bundle_key_urlForWeb), urls);
+            b.putString(getResources().getString(R.string.bundle_key_titleToWeb), titleFrom);
+            b.putString(getResources().getString(R.string.bundle_key_realWebUrl),url);
             webFragment = new WebViewNewsFragment();
             webFragment.setArguments(b);
             fragmentManager.beginTransaction().replace(R.id.newsDescriptionFragment, webFragment).addToBackStack(null).commit();
@@ -159,8 +153,8 @@ public class NewsDetailActivity extends AppCompatActivity implements NewsDescrip
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        fragmentManager.putFragment(outState, "fragment_news_detail", fragmentManager.findFragmentById(R.id.newsDescriptionFragment));
-        outState.putString("title_act_news_detail", title);
+        fragmentManager.putFragment(outState, getResources().getString(R.string.fragment_news_detail_key), fragmentManager.findFragmentById(R.id.newsDescriptionFragment));
+        outState.putString(getResources().getString(R.string.title_act_news_detail), title);
     }
 
     @Override

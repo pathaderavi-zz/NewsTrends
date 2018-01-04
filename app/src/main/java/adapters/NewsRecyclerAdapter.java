@@ -119,7 +119,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
             final String source_id_string = article.getSource().getId();
             final String source_name_string = article.getSource().getName();
             if (article.getAuthor() != null) {
-                author.setText("by " + author_string + " at " + source_name_string);
+                author.setText(holderContext.getResources().getString(R.string.by) + author_string + holderContext.getResources().getString(R.string.at) + source_name_string);
             }
 
             cardView.setOnClickListener(new View.OnClickListener() {
@@ -127,15 +127,15 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
                 public void onClick(View view) {
                     Intent i = new Intent(holderContext, NewsDetailActivity.class);
 
-                    i.putExtra("list_id", position);
-                    i.putExtra("title", title_string);
-                    i.putExtra("description", desc_string);
-                    i.putExtra("urlToImage", imageUrl_string);
-                    i.putExtra("url", urlArticle_string);
-                    i.putExtra("author", author_string);
-                    i.putExtra("publishedAt", publishedAt_string);
-                    i.putExtra("source_id", source_id_string);
-                    i.putExtra("source_name", source_name_string);
+                    i.putExtra(holderContext.getResources().getString(R.string.list_id), position);
+                    i.putExtra(holderContext.getResources().getString(R.string.title_cursor_adapter), title_string);
+                    i.putExtra(holderContext.getResources().getString(R.string.description_cursor_adapter), desc_string);
+                    i.putExtra(holderContext.getResources().getString(R.string.urlToImage_cursor_adapter), imageUrl_string);
+                    i.putExtra(holderContext.getResources().getString(R.string.url_cursor_adapter), urlArticle_string);
+                    i.putExtra(holderContext.getResources().getString(R.string.author_cursor_adapter), author_string);
+                    i.putExtra(holderContext.getResources().getString(R.string.publishedAt_cursor_adapter), publishedAt_string);
+                    i.putExtra(holderContext.getResources().getString(R.string.source_id_cursor_adapter), source_id_string);
+                    i.putExtra(holderContext.getResources().getString(R.string.source_name_cursor_adapter), source_name_string);
 
                     holderContext.startActivity(i);
 

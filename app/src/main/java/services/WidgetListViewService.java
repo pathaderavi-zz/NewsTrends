@@ -51,7 +51,7 @@ public class WidgetListViewService extends RemoteViewsService {
         public List<Articles> getArticles() {
             articlesList = new ArrayList<>();
             SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
-            String news = pref.getString("topnews", "");
+            String news = pref.getString(context.getResources().getString(R.string.topnews_key),context.getResources().getString(R.string.empty_string) );
             Gson gson = new Gson();
             Type type = new TypeToken<List<Articles>>() {
             }.getType();

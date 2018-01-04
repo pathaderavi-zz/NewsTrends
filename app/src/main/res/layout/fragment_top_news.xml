@@ -15,8 +15,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:indeterminateTint="#54fffb"
+            android:indeterminateTint="@color/colorPrimary"
             android:visibility="gone"
+            android:elevation="3dp"
             />
 
         <TextView
@@ -25,9 +26,10 @@
             android:layout_height="match_parent"
             android:layout_marginBottom="5dp"
             android:layout_marginLeft="10dp"
-            android:text="Showing Results for "
+            android:text="@string/showing_results_for"
             android:textColor="#000"
-            android:textSize="14dp" />
+            android:textSize="14dp"
+            android:elevation="4dp"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/topNewsRecycler"
@@ -41,7 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="4dp"
-            android:text="END OF THE RESULTS"
+            android:text="@string/end_of_results"
             android:visibility="visible"
             android:id="@+id/textViewEnd"/>
 

@@ -31,11 +31,11 @@ public class NewsAppWidget extends AppWidgetProvider {
         Intent intent = new Intent(context, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
         views.setOnClickPendingIntent(R.id.appwidget_text, pendingIntent);
-        // views.setOnClickFillInIntent(R.id.widgetTitleTextView,pendingIntent);
-        String check = PreferenceManager.getDefaultSharedPreferences(context).getString("topnews", "");
 
-        Log.d("Check Widget","Update");
-        if (check == "" || check.isEmpty() || check == null) {
+        String check = PreferenceManager.getDefaultSharedPreferences(context).getString(context.getResources().getString(R.string.topnews_key), context.getResources().getString(R.string.empty_string));
+
+
+        if (check == context.getResources().getString(R.string.empty_string) || check.isEmpty() || check == null) {
 
 
             views.setViewVisibility(R.id.noNewsWidgetText, View.VISIBLE);

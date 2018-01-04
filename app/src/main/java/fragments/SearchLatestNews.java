@@ -62,7 +62,7 @@ public class SearchLatestNews extends Fragment {
     NewsRecyclerAdapter adapter;
     List<Articles> allArticles;
     ProgressBar progressBar;
-    public final String KEY = "16a2ce7a435e4acb8482fae088ba6b9e";
+    public String KEY ;
 
     private OnFragmentInteractionListener mListener;
     private FirebaseAnalytics mFirebaseAnalytics;
@@ -107,6 +107,8 @@ public class SearchLatestNews extends Fragment {
         View view = inflater.inflate(R.layout.fragment_search_latest_news, container, false);
         int h = view.getWidth();
 
+        KEY = getActivity().getString(R.string.API_KEY);
+
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(getContext());
         searchView = view.findViewById(R.id.searchViewLatest);
         spinner = view.findViewById(R.id.spinnerPriority);
@@ -117,7 +119,7 @@ public class SearchLatestNews extends Fragment {
         searchRecycler = view.findViewById(R.id.searchLatestRecycler);
         layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
 
-        String[] spinnerItems = {"Popularity", "Published At", "Relevancy"};
+        String[] spinnerItems = {getContext().getResources().getString(R.string.popularity_search), getContext().getResources().getString(R.string.published_at_search), getContext().getResources().getString(R.string.relevancy_search)};
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getContext(), R.layout.support_simple_spinner_dropdown_item, spinnerItems);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         spinner.setAdapter(spinnerAdapter);
@@ -132,25 +134,24 @@ public class SearchLatestNews extends Fragment {
                 searchView.onActionViewCollapsed();
                 if (isConnected) {
 
-                    textView.setText("Showing results for " + query.toUpperCase() + " by " + spinnerText);
-                    if (spinnerText.equals("Published At")) {
-                        spinnerText = "publishedAt";
+                    textView.setText(getContext().getResources().getString(R.string.showing_results_for) + query.toUpperCase() + getContext().getResources().getString(R.string.by)+ spinnerText);
+
+                    if (spinnerText.equals(getContext().getResources().getString(R.string.published_at_search))) {
+                        spinnerText = getContext().getResources().getString(R.string.publishedAtSpinned);
                     }
 
                     Bundle bundle = new Bundle();
 
-                    bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Search");
+                    bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, getContext().getResources().getString(R.string.firebase_search));
                     bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, query);
 
                     mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
 
-
-                    query = query.replaceAll("\\s+","+");
                     progressBar.setVisibility(View.VISIBLE);
                     makeSearchCall(query, spinnerText);
 
                 } else {
-                    textView.setText("Please Connect to Internet First");
+                    textView.setText(getContext().getResources().getString(R.string.no_internet_search_frag));
                 }
 
                 return false;
@@ -184,7 +185,7 @@ public class SearchLatestNews extends Fragment {
 
             @Override
             public void onFailure(Call<CompleteResponse> call, Throwable t) {
-                textView.setText("Sorry, News Could not be searched due to some Error.");
+                textView.setText(getContext().getResources().getString(R.string.search_frag_error));
             }
         });
     }

@@ -60,9 +60,9 @@ public class KeywordsAdapter extends ArrayAdapter<String> {
                 for (int i = 0; i < allString.size(); i++) {
                     j.put(allString.get(i));
                 }
-                editor.putString("jArrayWords", j.toString());
+                editor.putString(getContext().getResources().getString(R.string.jArrayWords), j.toString());
                 editor.commit();
-                Log.d("Check Adapter", j.toString());
+
 
                 notifyDataSetChanged();
             }

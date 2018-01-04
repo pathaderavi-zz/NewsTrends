@@ -1,6 +1,167 @@
 <resources>
     <string name="app_name">NewsTrends</string>
 
+    <string name="API_KEY">16a2ce7a435e4acb8482fae088ba6b9e</string>>
+    <string name="jArrayWords">jArrayWords</string>
+    <string name="NewsUpatesWidget">NewsUpatesWidget</string>
+    <string name="searchViewQueryHind">ENTER KEYWORD</string>
+    <string name="maxNumOfWords">Max 4 words</string>
+    <string name="no_alerts_found">NO ALERTS FOUND</string>
+    <string name="no_favorites_found">No Favorite News Found</string>
+    <string name="read_article">Read Full Article</string>
+    <string name="end_of_results"></string>
+    <string name="powered_by">Powered by NewsAPI.org</string>
+    <string name="no_news_available">No News Available</string>
+    <string name="headline_card">Headline</string>
+    <string name="by_author">by Author</string>
+    <string name="notification">notification</string>
+    <string name="currentArchive">currentArchive.mht</string>
+
+
+    <!--Notifications-->
+    <string name="notification_ticker">You have got latest NEWS ALERTS</string>
+    <string name="notification_title">Your picked NEWS Alerts</string>
+    <string name="notification_text_1">You have new </string>
+    <string name="notification_text_2"> NEWS Alerts</string>
+    <string name="default_sound">DEFAULT_SOUND</string>
+    <string name="vibrate_setting">notifications_new_message_vibrate</string>
+
+    <!--WebView Fragment-->
+    <string name="scrollX">scrollX</string>
+    <string name="scrollY">scrollY</string>
+    <string name="loading">Loading...</string>
+    <!--Top News Fragment-->
+
+    <string name="pref_country_key">countryList</string>
+    <string name="pref_category_key">categoriesList</string>
+    <string name="pref_language_key">languageList</string>
+    <string name="null_value_string">null</string>
+    <string name="empty_array">[]</string>
+    <string name="World">World</string>
+    <string name="no_internet_topnews">Please Connect to Internet and Tap Here to Start Fetching News</string>
+    <string name="previousUrl">previousUrl</string>
+    <string name="topNewsFetchedAt">topNewsFetchedAt</string>>
+    <string name="showing_news_for_world">Showing News For World</string>
+    <string name="settings_0_results">Settings for Top News might be fetching 0 results. Please try changing Top News settings.</string>
+    <string name="no_news_key">noNews</string>
+    <!--Facorite News Fragment-->
+    <string name="favorite_fragment_toolbar">Favorite News</string>
+    <string name="ID_DESC">ID DESC</string>
+
+    <!--NewsDescription Fragment-->
+    <string name="title_pref">title_pref</string>
+    <string name="desc_pref">desc_pref</string>
+    <string name="imageUrl_pref">imageUrl_pref</string>
+    <string name="urlArticle_pref">urlArticle_pref</string>
+    <string name="authorName_pref">authorName_pref</string>
+    <string name="sourceId_pref">sourceId_pref</string>
+    <string name="sourceName_pref">sourceName_pref</string>
+    <string name="publishedAt_pref">publishedAt_pref</string>
+    <string name="id_pref">id_pref</string>
+    <string name="scrollXRelative">scrollXRelative</string>
+    <string name="scrollYRelative">scrollYRelative</string>
+
+    <!--SearchLatestNews Fragment-->
+    <string name="popularity_search">Popularity</string>
+    <string name="published_at_search">Published At</string>
+    <string name="relevancy_search">Relevancy</string>
+    <string name="showing_results_for">Showing results for </string>
+    <string name="publishedAtSpinned">publishedAt</string>
+    <string name="firebase_search">Search</string>
+    <string name="no_internet_search_frag">Please Connect to Internet First</string>
+    <string name="search_frag_error">Sorry, News Could not be searched due to some Error.</string>
+
+
+    <!--COLUMN NAMES-->
+    <string name="_id">_id</string>
+    <string name="TITLE">TITLE</string>
+    <string name="DESCRIPTION">DESCRIPTION</string>
+    <string name="URL">URL</string>
+    <string name="AUTHOR">AUTHOR</string>
+    <string name="PUBLISHEDAT">PUBLISHEDAT</string>
+    <string name="SOURCEID">SOURCEID</string>
+    <string name="SOURCENAME">SOURCENAME</string>
+    <string name="KEYWORDCOLUMN">KEYWORD</string>
+    <string name="URLTOIMAGE">URLTOIMAGE</string>
+
+
+    <!--Files and directories-->
+    <string name="images">images</string>
+    <string name="JPG">.jpg</string>
+    <string name="MHT">.mht</string>
+
+
+    <!--Extras-->
+
+    <string name="by">by </string>
+    <string name="at"> at </string>
+    <string name="dateFormatToInsert">yyyy-MM-dd HH:mm:ss</string>
+    <string name="id_append_string">id</string>
+    <string name="DATE_DESC">DATE DESC</string>
+    <string name="empty_string"></string>
+    <string name="zero">0</string>
+    <string name="english">en</string>
+    <string name="firebase_country">Country</string>
+    <string name="firebase_city">City</string>
+
+    <!--TO CursorAdapter-->
+    <string name="list_id">list_id</string>
+    <string name="title_cursor_adapter">title</string>
+    <string name="description_cursor_adapter">description</string>
+    <string name="urlToImage_cursor_adapter">urlToImage</string>
+    <string name="url_cursor_adapter">url</string>
+    <string name="author_cursor_adapter">author</string>
+    <string name="publishedAt_cursor_adapter">publishedAt</string>
+    <string name="source_name_cursor_adapter">source_name</string>
+    <string name="source_id_cursor_adapter">source_id</string>
+
+    <!--SnackBar messeges-->
+    <string name="snackbar_delete_messsege">News Deleted</string>
+    <string name="news_added_to_favorites">News Added to Favorites</string>
+    <string name="no_internet_snackbar">No Internet Connection. Cannot Save when Offline</string>
+
+    <!--AddKeyWordActivity-->
+    <string name="toolbar_alert_keywords_activity">Manage Alert Keywords"</string>
+    <string name="already_exists">Already Exists</string>
+
+    <!--AlertedNewsActivity-->
+    <string name="news_alerts_toolbar">News Alerts</string>
+    <string name="check_string_for_adapter">CHECK</string>
+
+    <!--FavoritesNewsActivity-->
+    <string name="toolbar_favorite_activity">Favorite News</string>
+    <string name="favorite_fragment_key">favorite_fragment</string>
+
+    <!--NewsDetailActivity-->
+    <string name="fragment_news_detail_key">fragment_news_detail</string>
+    <string name="title_act_news_detail">title_act_news_detail</string>
+    <string name="checkString_setCheck">NotSet</string>
+    <string name="delete_files">delete_files</string>
+    <string name="favorites_changed">favorites_changed</string>
+    <string name="delete_image_boolean_key">delete_image</string>
+    <string name="delete_mht_boolean_key">delete_mht</string>
+    <string name="no_internet_connection">NO INTERNET CONNECTION</string>
+
+    <string name="bundle_key_urlForWeb">urlForWeb</string>
+    <string name="bundle_key_titleToWeb">titleToWeb</string>
+    <string name="bundle_key_realWebUrl">realWebUrl</string>
+
+    <string name="file_prepend">file://</string>
+    <!--SettingsActivity-->
+    <string name="notifications_new_message_ringtone">notifications_new_message_ringtone</string>
+    <string name="notifications_new_message">notifications_new_message</string>
+
+    <!--Permission Messeges-->
+    <string name="need_storage_permission">Need Storage Permission</string>
+    <string name="permission_rationale">You can read NEWS online when NewsTrends saves files for the web archive on your phone. For it , the app needs permissions to store these files on you device.</string>
+    <string name="grant">Grant</string>
+    <string name="cancel">Cancel</string>
+    <string name="denied">DENIED</string>
+    <string name="package_permission">package</string>
+    <string name="toast_permissions">Go to Permissions to Grant Storage</string>
+
+    <string name="topnews_key">topnews</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="homeMenu">Home</string>
@@ -210,4 +371,5 @@ Quis non odit sordidos, vanos, leves, futtiles? Sed venio ad inconstantiae crime
     </string-array>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+    <string name="snackbar_moved_messege">News Moved to Favorites</string>
 </resources>

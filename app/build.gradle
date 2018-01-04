@@ -3,8 +3,16 @@ apply plugin: 'io.fabric'
 
 
 android {
-    compileSdkVersion 27
+    signingConfigs {
 
+        config1 {
+            keyAlias 'key3'
+            keyPassword '21Whites'
+            storeFile file('../key')
+            storePassword '21Whites'
+        }
+    }
+    compileSdkVersion 27
     defaultConfig {
         applicationId "com.example.ravikiranpathade.newstrends"
         minSdkVersion 16
@@ -14,10 +22,12 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
+
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config1
         }
     }
 }
@@ -42,16 +52,12 @@ dependencies {
     compile 'com.firebase:firebase-jobdispatcher:0.8.5'
     //noinspection GradleCompatible
     compile 'com.google.android.gms:play-services-gcm:11.8.0'
-    compile "com.daimajia.swipelayout:library:1.2.0@aar"
+    compile 'com.daimajia.swipelayout:library:1.2.0@aar'
     compile 'com.github.seventhmoon:GeoIp-android:v1.2'
-
     compile 'com.google.firebase:firebase-core:11.8.0'
     compile('com.crashlytics.sdk.android:crashlytics:2.7.1@aar') {
         transitive = true
     }
     compile 'com.google.firebase:firebase-core:11.8.0'
-
-
-
 }
 apply plugin: 'com.google.gms.google-services'

@@ -82,28 +82,28 @@ public class NewsCursorAdapter extends CursorAdapter {
         CardView cardView = view.findViewById(R.id.news_card);
         final WebView webViewAdapter = view.findViewById(R.id.adapterWeb);
 
-        final String cursorId = String.valueOf(cursor.getInt(cursor.getColumnIndex("_id")));
-        final String title_string = cursor.getString(cursor.getColumnIndex("TITLE"));
-        final String desc_string = cursor.getString(cursor.getColumnIndex("DESCRIPTION"));
+        final String cursorId = String.valueOf(cursor.getInt(cursor.getColumnIndex(context.getResources().getString(R.string._id))));
+        final String title_string = cursor.getString(cursor.getColumnIndex(context.getResources().getString(R.string.TITLE)));
+        final String desc_string = cursor.getString(cursor.getColumnIndex(context.getResources().getString(R.string.DESCRIPTION)));
         final String imageUrl_string = context.getFilesDir().getAbsolutePath()
-                + File.separator + "images" + File.separator + String.valueOf(cursorId) + ".jpg";
-        final String urlArticle_string = cursor.getString(cursor.getColumnIndex("URL"));
-        final String author_string = cursor.getString(cursor.getColumnIndex("AUTHOR"));
-        final String publishedAt_string = cursor.getString(cursor.getColumnIndex("PUBLISHEDAT"));
-        final String source_id_string = cursor.getString(cursor.getColumnIndex("SOURCEID"));
-        final String source_name_string = cursor.getString(cursor.getColumnIndex("SOURCENAME"));
+                + File.separator + context.getResources().getString(R.string.images) + File.separator + String.valueOf(cursorId) + context.getResources().getString(R.string.JPG);
+        final String urlArticle_string = cursor.getString(cursor.getColumnIndex(context.getResources().getString(R.string.URL)));
+        final String author_string = cursor.getString(cursor.getColumnIndex(context.getResources().getString(R.string.AUTHOR)));
+        final String publishedAt_string = cursor.getString(cursor.getColumnIndex(context.getResources().getString(R.string.PUBLISHEDAT)));
+        final String source_id_string = cursor.getString(cursor.getColumnIndex(context.getResources().getString(R.string.SOURCEID)));
+        final String source_name_string = cursor.getString(cursor.getColumnIndex(context.getResources().getString(R.string.SOURCENAME)));
         final String keyword_string;
         if (check != null) {
-            keyword_string = cursor.getString(cursor.getColumnIndex("KEYWORD"));
+            keyword_string = cursor.getString(cursor.getColumnIndex(context.getResources().getString(R.string.KEYWORDCOLUMN)));
         }
 
         //TODO Load Images for Alerts and Favorites Separately
 
-        final String imageUrl_string_web = cursor.getString(cursor.getColumnIndex("URLTOIMAGE"));
+        final String imageUrl_string_web = cursor.getString(cursor.getColumnIndex(context.getResources().getString(R.string.URLTOIMAGE)));
 
 
         if (author_string != null) {
-            author.setText("by " + author_string + " at " + source_name_string);
+            author.setText(context.getResources().getString(R.string.by) + author_string + context.getResources().getString(R.string.at)+ source_name_string);
 
         }
 
@@ -122,21 +122,21 @@ public class NewsCursorAdapter extends CursorAdapter {
             public void onClick(View view) {
                 Intent i = new Intent(context, NewsDetailActivity.class);
 
-                i.putExtra("list_id", Integer.parseInt(cursorId));
-                i.putExtra("title", title_string);
-                i.putExtra("description", desc_string);
+                i.putExtra(context.getResources().getString(R.string.list_id), Integer.parseInt(cursorId));
+                i.putExtra(context.getResources().getString(R.string.title_cursor_adapter), title_string);
+                i.putExtra(context.getResources().getString(R.string.description_cursor_adapter), desc_string);
                 if (check == null) {
-                    i.putExtra("urlToImage", imageUrl_string);
+                    i.putExtra(context.getResources().getString(R.string.urlToImage_cursor_adapter), imageUrl_string);
 
                 } else {
-                    i.putExtra("urlToImage", imageUrl_string_web);
+                    i.putExtra(context.getResources().getString(R.string.urlToImage_cursor_adapter), imageUrl_string_web);
 
                 }
-                i.putExtra("url", urlArticle_string);
-                i.putExtra("author", author_string);
-                i.putExtra("publishedAt", publishedAt_string);
-                i.putExtra("source_id", source_id_string);
-                i.putExtra("source_name", source_name_string);
+                i.putExtra(context.getResources().getString(R.string.url_cursor_adapter), urlArticle_string);
+                i.putExtra(context.getResources().getString(R.string.author_cursor_adapter), author_string);
+                i.putExtra(context.getResources().getString(R.string.publishedAt_cursor_adapter), publishedAt_string);
+                i.putExtra(context.getResources().getString(R.string.source_id_cursor_adapter), source_id_string);
+                i.putExtra(context.getResources().getString(R.string.source_name_cursor_adapter), source_name_string);
 
                 context.startActivity(i);
             }
@@ -168,7 +168,7 @@ public class NewsCursorAdapter extends CursorAdapter {
                                                cv.put(NewsContract.NewsDeletedAlerts.COLUMN_NAME_SOURCE_NAME, source_name_string);
 
                                                Date dateInsert = DateTimeUtils.formatDate(publishedAt_string);
-                                               SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                               SimpleDateFormat simpleDateFormat = new SimpleDateFormat(context.getResources().getString(R.string.dateFormatToInsert));
 
                                                cv.put(NewsContract.NewsDeletedAlerts.COLUMN_NAME_DATE, simpleDateFormat.format(dateInsert));
 
@@ -176,13 +176,13 @@ public class NewsCursorAdapter extends CursorAdapter {
                                                try {
                                                    uri = context.getContentResolver().insert(
                                                            NewsContract.NewsDeletedAlerts.FINAL_URI, cv);
-                                                   Log.d("Check Cursor Delete", String.valueOf(uri));
+
                                                } catch (SQLException e) {
                                                    e.printStackTrace();
                                                }
                                                Uri delete = null;
                                                if (check != null) {
-                                                   delete = NewsContract.NewsAlertsEntry.FINAL_URI.buildUpon().appendPath("id").build();
+                                                   delete = NewsContract.NewsAlertsEntry.FINAL_URI.buildUpon().appendPath(context.getResources().getString(R.string.id_append_string)).build();
                                                    context.getContentResolver().delete(delete, title_string, null);
 
 
@@ -190,7 +190,7 @@ public class NewsCursorAdapter extends CursorAdapter {
                                                            null,
                                                            null,
                                                            null,
-                                                           "DATE DESC"));
+                                                           context.getResources().getString(R.string.DATE_DESC)));
                                                    //TODO Move in new table called deletedAlerts
 
 
@@ -199,13 +199,13 @@ public class NewsCursorAdapter extends CursorAdapter {
                                                            null,
                                                            null,
                                                            null,
-                                                           "DATE DESC").getCount() == 0) {
+                                                           context.getResources().getString(R.string.DATE_DESC)).getCount() == 0) {
                                                        checkListener.onCheckEmpty(true);
                                                    }
                                                    swipeLayout.close();
-                                                   Snackbar.make(view, "News Deleted", Snackbar.LENGTH_SHORT).show();
+                                                   Snackbar.make(view, context.getResources().getString(R.string.snackbar_delete_messsege), Snackbar.LENGTH_SHORT).show();
                                                } else {
-                                                   delete = NewsContract.NewsFavoritesEntry.FINAL_URI.buildUpon().appendPath("id").build();
+                                                   delete = NewsContract.NewsFavoritesEntry.FINAL_URI.buildUpon().appendPath(context.getResources().getString(R.string.id_append_string)).build();
                                                    context.getContentResolver().delete(delete, title_string, null);
 
 
@@ -213,18 +213,18 @@ public class NewsCursorAdapter extends CursorAdapter {
                                                            null,
                                                            null,
                                                            null,
-                                                           "DATE DESC"));
+                                                           context.getResources().getString(R.string.DATE_DESC)));
                                                    //TODO Move in new table called deletedAlerts
                                                    notifyDataSetChanged();
                                                    if (context.getContentResolver().query(NewsContract.NewsFavoritesEntry.FINAL_URI,
                                                            null,
                                                            null,
                                                            null,
-                                                           "DATE DESC").getCount() == 0) {
+                                                           context.getResources().getString(R.string.DATE_DESC)).getCount() == 0) {
                                                        checkListener.onCheckEmpty(true);
                                                    }
                                                    swipeLayout.close();
-                                                   Snackbar.make(view, "News Deleted", Snackbar.LENGTH_SHORT).show();
+                                                   Snackbar.make(view, context.getResources().getString(R.string.snackbar_delete_messsege), Snackbar.LENGTH_SHORT).show();
                                                }
 
 
@@ -243,16 +243,16 @@ public class NewsCursorAdapter extends CursorAdapter {
                         if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) context, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
 
                             AlertDialog.Builder builder = new AlertDialog.Builder((Activity) context);
-                            builder.setTitle("Need Storage Permission");
-                            builder.setMessage("You can read NEWS online when NewsTrends saves files for the web archive on your phone. For it , the app needs permissions to store these files on you device.");
-                            builder.setPositiveButton("Grant", new DialogInterface.OnClickListener() {
+                            builder.setTitle(context.getResources().getString(R.string.need_storage_permission));
+                            builder.setMessage(context.getResources().getString(R.string.permission_rationale));
+                            builder.setPositiveButton(context.getResources().getString(R.string.grant), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.cancel();
                                     ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 22);
                                 }
                             });
-                            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            builder.setNegativeButton(context.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.cancel();
@@ -261,22 +261,22 @@ public class NewsCursorAdapter extends CursorAdapter {
                                 }
                             });
                             builder.show();
-                        } else if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("DENIED", false)) {
+                        } else if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean(context.getResources().getString(R.string.denied), false)) {
                             AlertDialog.Builder builder = new AlertDialog.Builder((Activity) context);
-                            builder.setTitle("Need Storage Permission");
-                            builder.setMessage("You can read NEWS online when NewsTrends saves files for the web archive on your phone. For it , the app needs permissions to store these files on you device.");
-                            builder.setPositiveButton("Grant", new DialogInterface.OnClickListener() {
+                            builder.setTitle(context.getResources().getString(R.string.need_storage_permission));
+                            builder.setMessage(context.getResources().getString(R.string.permission_rationale));
+                            builder.setPositiveButton(context.getResources().getString(R.string.grant), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.cancel();
                                     Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                                    Uri uri = Uri.fromParts("package", context.getPackageName(), null);
+                                    Uri uri = Uri.fromParts(context.getResources().getString(R.string.package_permission), context.getPackageName(), null);
                                     intent.setData(uri);
                                     ((Activity) context).startActivityForResult(intent, 22);
-                                    Toast.makeText(context, "Go to Permissions to Grant Storage", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(context, context.getResources().getString(R.string.toast_permissions), Toast.LENGTH_LONG).show();
                                 }
                             });
-                            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            builder.setNegativeButton(context.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.cancel();
@@ -290,7 +290,7 @@ public class NewsCursorAdapter extends CursorAdapter {
                         SharedPreferences r = PreferenceManager.getDefaultSharedPreferences(context);
                         SharedPreferences.Editor editor = r.edit();
 
-                        editor.putBoolean("DENIED", true);
+                        editor.putBoolean(context.getResources().getString(R.string.denied), true);
                         editor.commit();
                         swipeLayout.close();
                     } else {
@@ -306,7 +306,7 @@ public class NewsCursorAdapter extends CursorAdapter {
                         cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_SOURCE_NAME, source_name_string);
 
                         Date dateInsert = DateTimeUtils.formatDate(publishedAt_string);
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(context.getResources().getString(R.string.dateFormatToInsert));
 
                         cv.put(NewsContract.NewsFavoritesEntry.COLUMN_NAME_DATE, simpleDateFormat.format(dateInsert));
                         Uri uri = null;
@@ -319,21 +319,21 @@ public class NewsCursorAdapter extends CursorAdapter {
                         if (uri != null) {
                             cursor_insert = ContentUris.parseId(uri);
 
-                            //TODO remove from alerts
-                            Uri delete = NewsContract.NewsAlertsEntry.FINAL_URI.buildUpon().appendPath("id").build();
+
+                            Uri delete = NewsContract.NewsAlertsEntry.FINAL_URI.buildUpon().appendPath(context.getResources().getString(R.string.id_append_string)).build();
                             context.getContentResolver().delete(delete, title_string, null);
 
 
-                            //TODO Save Image
+
                             Glide.with(context).load(imageUrl_string_web).asBitmap().override(400, 300).centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).into(new SimpleTarget<Bitmap>() {
                                 @Override
                                 public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                                     File dir = new File(context.getFilesDir().getAbsolutePath()
-                                            + File.separator + "images");
+                                            + File.separator + context.getResources().getString(R.string.images));
                                     if (!dir.exists()) {
                                         dir.mkdir();
                                     }
-                                    File ff = new File(dir, String.valueOf(cursor_insert) + ".jpg");
+                                    File ff = new File(dir, String.valueOf(cursor_insert) + context.getResources().getString(R.string.JPG));
                                     try {
                                         FileOutputStream fileOutputStream = new FileOutputStream(ff);
                                         resource.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
@@ -348,20 +348,20 @@ public class NewsCursorAdapter extends CursorAdapter {
                             });
 
 
-                            //TODO Save webViewarchive
+
 
                             WebViewClient wClient = new CustomWebView(context, String.valueOf(cursor_insert));
                             webViewAdapter.setWebViewClient(wClient);
                             webViewAdapter.loadUrl(urlArticle_string);
 
-                            //TODO Update Cursor
+
 
 
                             swapCursor(context.getContentResolver().query(NewsContract.NewsAlertsEntry.FINAL_URI,
                                     null,
                                     null,
                                     null,
-                                    "DATE DESC"));
+                                    context.getResources().getString(R.string.DATE_DESC)));
 
 
                             notifyDataSetChanged();
@@ -370,10 +370,11 @@ public class NewsCursorAdapter extends CursorAdapter {
                                 null,
                                 null,
                                 null,
-                                "DATE DESC").getCount() == 0) {
+                                context.getResources().getString(R.string.DATE_DESC)).getCount() == 0) {
                             checkListener.onCheckEmpty(true);
                         }
                         swipeLayout.close();
+                        Snackbar.make(view,context.getResources().getString(R.string.snackbar_moved_messege),Snackbar.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -382,7 +383,7 @@ public class NewsCursorAdapter extends CursorAdapter {
                 null,
                 null,
                 null,
-                "DATE DESC").getCount() == 0) {
+                context.getResources().getString(R.string.DATE_DESC)).getCount() == 0) {
             checkListener.onCheckEmpty(true);
         }
     }
@@ -407,7 +408,7 @@ public class NewsCursorAdapter extends CursorAdapter {
                 dir.mkdir();
             }
             view.saveWebArchive(customContext.getFilesDir().getAbsolutePath()
-                    + File.separator + id_file + ".mht");
+                    + File.separator + id_file + customContext.getResources().getString(R.string.MHT));
         }
     }
 

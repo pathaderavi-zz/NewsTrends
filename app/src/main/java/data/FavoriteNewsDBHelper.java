@@ -13,7 +13,7 @@ public class FavoriteNewsDBHelper extends SQLiteOpenHelper {
 
     private static final String FAVORITE_DATABASE_NAME = "favorites.db";
 
-    private static final int VERSION = 15; //TODO
+    private static final int VERSION = 15;
 
     public FavoriteNewsDBHelper(Context context) {
         super(context, FAVORITE_DATABASE_NAME, null, VERSION);
@@ -21,7 +21,6 @@ public class FavoriteNewsDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        Log.d("Favorite Table", "Create");
 
         final String CREATE_TABLE = "CREATE TABLE " + NewsContract.NewsFavoritesEntry.TABLE_NAME + " ( " +
                 NewsContract.NewsFavoritesEntry.COLUMN_ID + " INTEGER PRIMARY KEY, " +

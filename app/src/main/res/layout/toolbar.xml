@@ -4,7 +4,6 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/toolbarCustom"
-
     android:elevation="4dp"
     android:minHeight="?attr/actionBarSize"
    >

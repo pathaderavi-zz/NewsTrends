@@ -14,8 +14,7 @@
         android:layout_margin="8dp"
         android:src="@drawable/newslogowidget"
 
-        android:textSize="24sp"
-        android:textStyle="bold|italic" />
+        android:elevation="4dp" />
 
     <ListView
         android:id="@+id/listViewWidget"
@@ -26,7 +25,7 @@
         android:id="@+id/noNewsWidgetText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="No News Available"
+        android:text="@string/no_news_available"
         android:gravity="center"
         android:textColor="#000"
         android:visibility="gone" />
