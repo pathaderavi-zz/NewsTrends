@@ -23,7 +23,7 @@ import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.ravikiranpathade.newstrends.R;
+
 
 import java.io.File;
 import java.util.ArrayList;
@@ -34,6 +34,7 @@ import adapters.NewsRecyclerAdapter;
 import data.NewsContract;
 import models.Articles;
 import models.Source;
+import ravikiran.pathade.ravikiranpathade.newstrends.R;
 
 /**
  * A simple {@link Fragment} subclass.

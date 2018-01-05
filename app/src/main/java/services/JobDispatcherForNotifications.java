@@ -2,14 +2,14 @@ package services;
 
 import android.annotation.SuppressLint;
 
-import com.example.ravikiranpathade.newstrends.R;
-import com.example.ravikiranpathade.newstrends.activities.AlertedNewsActivity;
-import com.example.ravikiranpathade.newstrends.activities.MainActivity;
+
+import ravikiran.pathade.ravikiranpathade.newstrends.R;
+import ravikiran.pathade.ravikiranpathade.newstrends.activities.AlertedNewsActivity;
+
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
 import com.github.thunder413.datetimeutils.DateTimeUtils;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ContentValues;
@@ -21,14 +21,12 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 

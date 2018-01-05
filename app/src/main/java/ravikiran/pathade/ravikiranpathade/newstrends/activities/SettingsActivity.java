@@ -1,9 +1,8 @@
-package com.example.ravikiranpathade.newstrends.activities;
+package ravikiran.pathade.ravikiranpathade.newstrends.activities;
 
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -19,18 +18,13 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
-import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.Switch;
-import android.widget.Toast;
-import android.widget.Toolbar;
 
-import com.example.ravikiranpathade.newstrends.R;
+
 import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
@@ -41,7 +35,7 @@ import com.firebase.jobdispatcher.Trigger;
 
 import java.util.List;
 
-import services.FetchTopNewsService;
+import ravikiran.pathade.ravikiranpathade.newstrends.R;
 import services.JobDispatcherForNotifications;
 
 /**
@@ -111,7 +105,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements and
 
     /**
      * Helper method to determine if the device has an extra-large screen. For
-     * example, 10" tablets are extra-large.
+     * pathade, 10" tablets are extra-large.
      */
     private static boolean isXLargeTablet(Context context) {
         return (context.getResources().getConfiguration().screenLayout

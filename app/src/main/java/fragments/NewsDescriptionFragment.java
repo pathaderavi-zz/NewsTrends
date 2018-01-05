@@ -57,7 +57,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 
-import com.example.ravikiranpathade.newstrends.R;
 import com.github.thunder413.datetimeutils.DateTimeUtils;
 
 import java.io.File;
@@ -74,6 +73,7 @@ import java.util.List;
 
 import data.NewsContract;
 import models.Articles;
+import ravikiran.pathade.ravikiranpathade.newstrends.R;
 import utils.HelperFunctions;
 
 //TODO Implement to request Permissions during Runtime

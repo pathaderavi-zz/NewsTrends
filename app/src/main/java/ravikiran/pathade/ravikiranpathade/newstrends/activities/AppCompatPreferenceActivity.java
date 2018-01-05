@@ -1,4 +1,4 @@
-package com.example.ravikiranpathade.newstrends.activities;
+package ravikiran.pathade.ravikiranpathade.newstrends.activities;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

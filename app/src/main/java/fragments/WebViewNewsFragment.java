@@ -21,11 +21,9 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
-import android.widget.ShareActionProvider;
 
-import com.example.ravikiranpathade.newstrends.R;
+import ravikiran.pathade.ravikiranpathade.newstrends.R;
 
-import java.io.File;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -211,6 +209,7 @@ public class WebViewNewsFragment extends Fragment {
             if (checkBundle != null) {
                 scrollXToCustom(checkBundle.getInt(scrollY));
             }
+            shareButton.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -218,7 +217,7 @@ public class WebViewNewsFragment extends Fragment {
             super.onPageFinished(view, url);
 
             toolbar.setTitle(titleTo);
-            shareButton.setVisibility(View.VISIBLE);
+
 
 
         }

@@ -8,17 +8,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1047665722375:android:bd07039e85af922c",
+        "mobilesdk_app_id": "1:1047665722375:android:95a5ee536fb2c0b3",
         "android_client_info": {
-          "package_name": "com.example.ravikiranpathade.newstrends"
+          "package_name": "ravikiran.pathade.ravikiranpathade.newstrends"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1047665722375-0auhrumlo1iv9j14hoge8p9dpautvp2p.apps.googleusercontent.com",
+          "client_id": "1047665722375-jj1ojmme7afijshu0mrmbtf5ca73m4f1.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.ravikiranpathade.newstrends",
+            "package_name": "ravikiran.pathade.ravikiranpathade.newstrends",
             "certificate_hash": "fa4a2df79fc392702945114fbf8953f3d57f1e74"
           }
         },

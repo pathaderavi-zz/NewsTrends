@@ -1,18 +1,14 @@
 package fragments;
 
-import android.app.LoaderManager;
 import android.content.Context;
-import android.content.Loader;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +18,7 @@ import android.widget.TextView;
 import com.androidfung.geoip.IpApiService;
 import com.androidfung.geoip.ServicesManager;
 import com.androidfung.geoip.model.GeoIpResponseModel;
-import com.example.ravikiranpathade.newstrends.R;
-import com.example.ravikiranpathade.newstrends.activities.MainActivity;
+
 import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
@@ -31,22 +26,19 @@ import com.firebase.jobdispatcher.Job;
 import com.firebase.jobdispatcher.Lifetime;
 import com.firebase.jobdispatcher.RetryStrategy;
 import com.firebase.jobdispatcher.Trigger;
-import com.github.thunder413.datetimeutils.DateTimeUtils;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import adapters.NewsRecyclerAdapter;
 import models.Articles;
 import models.CompleteResponse;
+import ravikiran.pathade.ravikiranpathade.newstrends.R;
 import rest.Client;
 import rest.GetTopNewsWorldEnglish;
 import retrofit2.Call;
@@ -55,8 +47,6 @@ import retrofit2.Response;
 import services.FetchTopNewsService;
 import services.WidgetUpdateService;
 import utils.HelperFunctions;
-
-import static android.provider.Contacts.SettingsColumns.KEY;
 
 /**
  * A simple {@link Fragment} subclass.

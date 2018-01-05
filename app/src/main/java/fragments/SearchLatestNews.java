@@ -17,9 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.ravikiranpathade.newstrends.R;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
@@ -28,6 +26,7 @@ import java.util.List;
 import adapters.NewsRecyclerAdapter;
 import models.Articles;
 import models.CompleteResponse;
+import ravikiran.pathade.ravikiranpathade.newstrends.R;
 import rest.Client;
 import rest.GetTopNewsWorldEnglish;
 import retrofit2.Call;

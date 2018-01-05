@@ -12,9 +12,10 @@ android {
             storePassword '21Whites'
         }
     }
+
     compileSdkVersion 27
     defaultConfig {
-        applicationId "com.example.ravikiranpathade.newstrends"
+        applicationId "ravikiran.pathade.ravikiranpathade.newstrends"
         minSdkVersion 16
         targetSdkVersion 27
         versionCode 1

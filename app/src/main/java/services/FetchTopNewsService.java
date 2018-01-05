@@ -2,7 +2,7 @@ package services;
 
 import android.annotation.SuppressLint;
 
-import com.example.ravikiranpathade.newstrends.R;
+
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
 
@@ -19,6 +19,7 @@ import java.util.List;
 
 import models.Articles;
 import models.CompleteResponse;
+import ravikiran.pathade.ravikiranpathade.newstrends.R;
 import rest.Client;
 import rest.GetTopNewsWorldEnglish;
 import retrofit2.Call;

@@ -12,7 +12,6 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
@@ -20,7 +19,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,9 +34,10 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.daimajia.swipe.SwipeLayout;
-import com.example.ravikiranpathade.newstrends.R;
-import com.example.ravikiranpathade.newstrends.activities.AlertedNewsActivity;
-import com.example.ravikiranpathade.newstrends.activities.NewsDetailActivity;
+
+
+import ravikiran.pathade.ravikiranpathade.newstrends.R;
+import ravikiran.pathade.ravikiranpathade.newstrends.activities.NewsDetailActivity;
 import com.github.thunder413.datetimeutils.DateTimeUtils;
 
 import java.io.File;

@@ -1,11 +1,8 @@
-package com.example.ravikiranpathade.newstrends.activities;
+package ravikiran.pathade.ravikiranpathade.newstrends.activities;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -16,33 +13,15 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.Toast;
-import android.widget.Toolbar;
 
 
-import com.example.ravikiranpathade.newstrends.R;
 import com.google.firebase.crash.FirebaseCrash;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import fragments.FavoritesFragment;
 import fragments.SearchLatestNews;
 import fragments.TopNewsFragment;
-import models.Articles;
-import models.CompleteResponse;
-import rest.Client;
-import rest.GetTopNewsWorldEnglish;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import ravikiran.pathade.ravikiranpathade.newstrends.R;
 
 public class MainActivity extends AppCompatActivity implements TopNewsFragment.OnFragmentInteractionListener, SearchLatestNews.OnFragmentInteractionListener {
 
@@ -73,7 +52,8 @@ public class MainActivity extends AppCompatActivity implements TopNewsFragment.O
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(null);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        
+
+
 
         frame = findViewById(R.id.mainActivityFramelayout);
         drawerLayout = findViewById(R.id.drawerLayout);

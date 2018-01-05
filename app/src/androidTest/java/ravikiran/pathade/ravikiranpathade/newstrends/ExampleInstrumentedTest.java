@@ -1,4 +1,4 @@
-package com.example.ravikiranpathade.newstrends;
+package ravikiran.pathade.ravikiranpathade.newstrends;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.example.ravikiranpathade.newstrends", appContext.getPackageName());
+        assertEquals("com.pathade.ravikiranpathade.newstrends", appContext.getPackageName());
     }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.ravikiranpathade.newstrends">
+    package="ravikiran.pathade.ravikiranpathade.newstrends">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -14,14 +14,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.MainActivity">
+        <activity android:name="ravikiran.pathade.ravikiranpathade.newstrends.activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.NewsDetailActivity" />
+        <activity android:name="ravikiran.pathade.ravikiranpathade.newstrends.activities.NewsDetailActivity" />
 
         <provider
             android:name="data.NewsContentProvider"
@@ -29,10 +29,10 @@
             android:enabled="true" />
 
         <activity
-            android:name=".activities.SettingsActivity"
+            android:name="ravikiran.pathade.ravikiranpathade.newstrends.activities.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".activities.MainActivity" />
-        <activity android:name=".activities.AddKeywordActivity" />
+            android:parentActivityName="ravikiran.pathade.ravikiranpathade.newstrends.activities.MainActivity" />
+        <activity android:name="ravikiran.pathade.ravikiranpathade.newstrends.activities.AddKeywordActivity" />
 
         <service
             android:name="services.JobDispatcherForNotifications"
@@ -55,9 +55,9 @@
         </service>
         <service android:name="services.WidgetUpdateService" />
 
-        <activity android:name=".activities.AlertedNewsActivity" />
+        <activity android:name="ravikiran.pathade.ravikiranpathade.newstrends.activities.AlertedNewsActivity" />
 
-        <receiver android:name=".NewsAppWidget">
+        <receiver android:name="ravikiran.pathade.ravikiranpathade.newstrends.NewsAppWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -67,7 +67,7 @@
                 android:resource="@xml/news_app_widget_info" />
         </receiver>
 
-        <activity android:name=".activities.FavoritesActivity"></activity>
+        <activity android:name="ravikiran.pathade.ravikiranpathade.newstrends.activities.FavoritesActivity"></activity>
     </application>
 
 </manifest>

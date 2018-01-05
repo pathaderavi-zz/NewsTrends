@@ -1,22 +1,20 @@
-package com.example.ravikiranpathade.newstrends.activities;
+package ravikiran.pathade.ravikiranpathade.newstrends.activities;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 
-import com.example.ravikiranpathade.newstrends.R;
+
 
 import fragments.FavoritesFragment;
+import ravikiran.pathade.ravikiranpathade.newstrends.R;
 
 public class FavoritesActivity extends AppCompatActivity {
     FragmentManager fragmentManager;

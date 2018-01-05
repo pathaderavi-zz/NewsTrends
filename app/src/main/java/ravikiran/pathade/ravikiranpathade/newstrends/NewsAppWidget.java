@@ -1,18 +1,15 @@
-package com.example.ravikiranpathade.newstrends;
+package ravikiran.pathade.ravikiranpathade.newstrends;
 
-import android.app.IntentService;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
-import android.widget.TextView;
 
-import com.example.ravikiranpathade.newstrends.activities.MainActivity;
+import ravikiran.pathade.ravikiranpathade.newstrends.activities.MainActivity;
 
 import services.WidgetListViewService;
 

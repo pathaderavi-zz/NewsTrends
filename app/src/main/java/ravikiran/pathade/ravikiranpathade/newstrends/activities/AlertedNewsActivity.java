@@ -1,4 +1,4 @@
-package com.example.ravikiranpathade.newstrends.activities;
+package ravikiran.pathade.ravikiranpathade.newstrends.activities;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -11,27 +11,18 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
 
-import com.example.ravikiranpathade.newstrends.R;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import adapters.NewsCursorAdapter;
-import adapters.NewsRecyclerAdapter;
 import data.NewsContract;
-import models.Articles;
-import models.Source;
+import ravikiran.pathade.ravikiranpathade.newstrends.R;
 
 public class AlertedNewsActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, NewsCursorAdapter.checkEmpty {
 

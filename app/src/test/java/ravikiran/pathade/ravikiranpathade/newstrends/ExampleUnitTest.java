@@ -1,4 +1,4 @@
-package com.example.ravikiranpathade.newstrends;
+package ravikiran.pathade.ravikiranpathade.newstrends;
 
 import org.junit.Test;
 

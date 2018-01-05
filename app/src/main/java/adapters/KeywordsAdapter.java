@@ -14,7 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.ravikiranpathade.newstrends.R;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,6 +22,8 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import ravikiran.pathade.ravikiranpathade.newstrends.R;
 
 /**
  * Created by ravikiranpathade on 12/21/17.

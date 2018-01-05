@@ -5,7 +5,7 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.ravikiranpathade.newstrends.activities.MainActivity">
+    tools:context="com.example.ravikiranpathade.newstrends.ravikiran.example.ravikiranpathade.newstrends.activities.MainActivity">
 
 
     <LinearLayout

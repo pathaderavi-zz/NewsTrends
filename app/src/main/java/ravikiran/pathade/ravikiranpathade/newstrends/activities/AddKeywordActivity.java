@@ -1,4 +1,4 @@
-package com.example.ravikiranpathade.newstrends.activities;
+package ravikiran.pathade.ravikiranpathade.newstrends.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,20 +12,13 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.ravikiranpathade.newstrends.R;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import adapters.KeywordsAdapter;
+import ravikiran.pathade.ravikiranpathade.newstrends.R;
 
 public class AddKeywordActivity extends AppCompatActivity {
     SharedPreferences preferences;

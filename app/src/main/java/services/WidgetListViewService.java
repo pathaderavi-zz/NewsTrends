@@ -4,18 +4,14 @@ import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
-import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.AppWidgetTarget;
-import com.example.ravikiranpathade.newstrends.R;
-import com.example.ravikiranpathade.newstrends.activities.MainActivity;
+
+import ravikiran.pathade.ravikiranpathade.newstrends.R;
+import ravikiran.pathade.ravikiranpathade.newstrends.activities.MainActivity;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

@@ -1,29 +1,23 @@
 
-package com.example.ravikiranpathade.newstrends.activities;
+package ravikiran.pathade.ravikiranpathade.newstrends.activities;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
 
-import com.example.ravikiranpathade.newstrends.R;
 
 import java.io.File;
 
 import data.NewsContract;
 import fragments.NewsDescriptionFragment;
 import fragments.WebViewNewsFragment;
+import ravikiran.pathade.ravikiranpathade.newstrends.R;
 import utils.HelperFunctions;
 
 public class NewsDetailActivity extends AppCompatActivity implements NewsDescriptionFragment.OnFragmentInteractionListener,
@@ -124,7 +118,7 @@ public class NewsDetailActivity extends AppCompatActivity implements NewsDescrip
             fragmentManager.beginTransaction().replace(R.id.newsDescriptionFragment, webFragment).addToBackStack(null).commit();
 
         }
-        if (check.getCount() > 0 && !isConnected) {
+        if (check != null && check.getCount() > 0 && !isConnected) {
             check.moveToFirst();
             String id_file = String.valueOf(check.getInt(check.getColumnIndex(getResources().getString(R.string._id))));
             Bundle b = new Bundle();

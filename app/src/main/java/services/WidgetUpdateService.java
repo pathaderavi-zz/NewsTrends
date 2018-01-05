@@ -5,19 +5,16 @@ import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
-import com.example.ravikiranpathade.newstrends.NewsAppWidget;
+import ravikiran.pathade.ravikiranpathade.newstrends.NewsAppWidget;
 
 /**
  * Created by ravikiranpathade on 12/24/17.
  */
 
 public class WidgetUpdateService extends IntentService {
-    public static final String ACTION_UPDATE_WIDGET = "cpm.example.ravikiranpathade.newstrends.action_update_widget";
+    public static final String ACTION_UPDATE_WIDGET = "cpm.pathade.ravikiranpathade.newstrends.action_update_widget";
 
     public WidgetUpdateService() {
         super("NewsUpatesWidget");

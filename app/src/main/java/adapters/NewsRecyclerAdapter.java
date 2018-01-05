@@ -2,12 +2,8 @@ package adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Parcelable;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,17 +12,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.example.ravikiranpathade.newstrends.R;
-import com.example.ravikiranpathade.newstrends.activities.NewsDetailActivity;
-import com.github.thunder413.datetimeutils.DateTimeUtils;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
+import ravikiran.pathade.ravikiranpathade.newstrends.R;
+import ravikiran.pathade.ravikiranpathade.newstrends.activities.NewsDetailActivity;
+
 import java.util.List;
-import java.util.Locale;
 
 import models.Articles;
 
