@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="ravikiran.pathade.ravikiranpathade.newstrends">
+    package="ravikiran.pathade.ravikiranpathade.newstrends"
+    android:versionCode="3">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -25,7 +26,7 @@
 
         <provider
             android:name="data.NewsContentProvider"
-            android:authorities="com.example.ravikiranpathade.newstrends"
+            android:authorities="ravikiran.pathade.ravikiranpathade.newstrends"
             android:enabled="true" />
 
         <activity

@@ -11,7 +11,7 @@ import java.util.Date;
 
 public class NewsContract {
 
-    public static final String AUTHORITY = "com.pathade.ravikiranpathade.newstrends";
+    public static final String AUTHORITY = "ravikiran.pathade.ravikiranpathade.newstrends";
     public static final Uri baseUri = Uri.parse("content://"+AUTHORITY);
 
     public static final String PATH_FAVORITES = "favorites";

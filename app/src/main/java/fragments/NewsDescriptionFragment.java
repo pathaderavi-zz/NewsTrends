@@ -417,7 +417,7 @@ public class NewsDescriptionFragment extends Fragment {
 
                 });
                 fav.setImageResource(R.drawable.ic_star_white_24px);
-                fav.setContentDescription(context.getResources().getString(R.string.deleteNewsContentDescription));
+                fav.setContentDescription(getActivity().getResources().getString(R.string.deleteNewsContentDescription));
 
                 snackbar = Snackbar.make(view, getContext().getResources().getString(R.string.news_added_to_favorites), Snackbar.LENGTH_SHORT);
 
@@ -446,7 +446,7 @@ public class NewsDescriptionFragment extends Fragment {
                 getContext().getContentResolver().delete(delete, title, null);
 
                 fav.setImageResource(R.drawable.ic_star_border_white_24px);
-                fav.setContentDescription(context.getResources().getString(R.string.addFavoritesContentDescription));
+                fav.setContentDescription(getActivity().getResources().getString(R.string.addFavoritesContentDescription));
                 snackbar = Snackbar.make(view, getContext().getResources().getString(R.string.snackbar_delete_messsege), Snackbar.LENGTH_SHORT);
             } else {
                 Snackbar.make(view, getContext().getResources().getString(R.string.no_internet_snackbar), Snackbar.LENGTH_SHORT).show();

@@ -1,3 +1,8 @@
+
+<img src="gifs/workflow.gif" title="App Workflow"/>
+
+
+
 ## License
     Copyright 2017 Ravikiran Pathade
 
