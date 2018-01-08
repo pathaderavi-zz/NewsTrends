@@ -65,7 +65,7 @@ public class JobDispatcherForNotifications extends JobService {
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         String words = preferences.getString(getApplicationContext().getResources().getString(R.string.jArrayWords), checkNull);
         listValues = new ArrayList<>();
-        Log.d("Check Empty Array", String.valueOf(words.equals(getApplicationContext().getResources().getString(R.string.empty_array))));
+
         if (words != null || words != checkNull || !words.isEmpty() || !words.equals(getApplicationContext().getResources().getString(R.string.empty_array))) {
             JSONArray wordsJsonArray = null;
             try {

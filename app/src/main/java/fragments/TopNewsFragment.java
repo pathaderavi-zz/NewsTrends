@@ -1,9 +1,11 @@
 package fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -39,6 +41,7 @@ import adapters.NewsRecyclerAdapter;
 import models.Articles;
 import models.CompleteResponse;
 import ravikiran.pathade.ravikiranpathade.newstrends.R;
+import ravikiran.pathade.ravikiranpathade.newstrends.activities.SettingsActivity;
 import rest.Client;
 import rest.GetTopNewsWorldEnglish;
 import retrofit2.Call;
@@ -89,6 +92,7 @@ public class TopNewsFragment extends Fragment {
     String language;
     String category;
     private FirebaseAnalytics mFirebaseAnalytics;
+    TextView changeSettingsTextView;
 
     public TopNewsFragment() {
         // Required empty public constructor
@@ -137,6 +141,18 @@ public class TopNewsFragment extends Fragment {
         viewEnd = view.findViewById(R.id.textViewEnd);
         layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         topNewsRecycler = view.findViewById(R.id.topNewsRecycler);
+        changeSettingsTextView = view.findViewById(R.id.topNewsChangeSettingsTextView);
+
+        final Intent settingsIntent = new Intent(getContext(), SettingsActivity.class);
+        settingsIntent.putExtra( PreferenceActivity.EXTRA_SHOW_FRAGMENT, SettingsActivity.GeneralPreferenceFragment.class.getName() );
+        settingsIntent.putExtra( PreferenceActivity.EXTRA_NO_HEADERS, true );
+        changeSettingsTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(settingsIntent);
+            }
+        });
+
         boolean isTablet = getActivity().getResources().getBoolean(R.bool.isTablet);
 
         if (isTablet) {
@@ -152,6 +168,7 @@ public class TopNewsFragment extends Fragment {
         topNewsRecycler.setVisibility(View.INVISIBLE);
         view.findViewById(R.id.textViewEnd).setVisibility(View.INVISIBLE);
         showingTopNewsFor.setVisibility(View.INVISIBLE);
+        changeSettingsTextView.setVisibility(View.INVISIBLE);
 
 
         prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
@@ -242,6 +259,7 @@ public class TopNewsFragment extends Fragment {
                 topNewsRecycler.setVisibility(View.VISIBLE);
                 view.findViewById(R.id.textViewEnd).setVisibility(View.VISIBLE);
                 showingTopNewsFor.setVisibility(View.VISIBLE);
+                changeSettingsTextView.setVisibility(View.VISIBLE);
                 if (country.equals(getContext().getResources().getString(R.string.empty_string)) || country.equals(getContext().getResources().getString(R.string.null_value_string)) || country.equals(getContext().getResources().getString(R.string.zero))) {
                     country = getContext().getResources().getString(R.string.World);
                 } else {
@@ -261,6 +279,7 @@ public class TopNewsFragment extends Fragment {
                     }
                 });
                 showingTopNewsFor.setVisibility(View.GONE);
+                changeSettingsTextView.setVisibility(View.GONE);
 
             }
 
@@ -301,6 +320,7 @@ public class TopNewsFragment extends Fragment {
             topNewsRecycler.setVisibility(View.VISIBLE);
             view.findViewById(R.id.textViewEnd).setVisibility(View.VISIBLE);
             showingTopNewsFor.setVisibility(View.VISIBLE);
+            changeSettingsTextView.setVisibility(View.VISIBLE);
 
             if (cou.equals(getContext().getResources().getString(R.string.empty_string)) || cou.equals(getContext().getResources().getString(R.string.empty_array)) || cou.equals(getContext().getResources().getString(R.string.zero))) {
                 showingTopNewsFor.setText(getContext().getResources().getString(R.string.showing_news_for_world));
@@ -324,6 +344,7 @@ public class TopNewsFragment extends Fragment {
                     topNewsRecycler.setVisibility(View.VISIBLE);
                     view.findViewById(R.id.textViewEnd).setVisibility(View.VISIBLE);
                     showingTopNewsFor.setVisibility(View.VISIBLE);
+                    changeSettingsTextView.setVisibility(View.VISIBLE);
 
 
                     if (a1[0].size() == 0) {
@@ -334,6 +355,7 @@ public class TopNewsFragment extends Fragment {
                         editor.putLong(getContext().getResources().getString(R.string.topNewsFetchedAt), 108000000);
                         editor.commit();
                         showingTopNewsFor.setVisibility(View.GONE);
+                        changeSettingsTextView.setVisibility(View.GONE);
 
                     } else {
                         editor.putBoolean(getContext().getResources().getString(R.string.no_news_key), false);

@@ -8,9 +8,9 @@
     <!-- Bottom View Start-->
     <LinearLayout
         android:id="@+id/bottom_wrapper"
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="match_parent"
-        android:background="#66ddff00"
+        android:background="#FFA500"
         android:orientation="horizontal"
         android:weightSum="1">
         <ImageView android:id="@+id/deleteFromCursorAdater"
@@ -41,7 +41,7 @@
         <!--What you want to show in SurfaceView-->
         <include
             layout="@layout/news_item_cardview"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent" />
         <WebView
             android:layout_height="wrap_content"
