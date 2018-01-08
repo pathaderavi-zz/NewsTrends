@@ -1,24 +1,29 @@
 
-<img src="" alt="NewsTrends Logo">
+<img src="gifs/newslogowidget.png" alt="NewsTrends Logo"/>
 
-##About
-NewsTrens is a News app developed to organize and customize the way user wants to read the the news. Most of the news apps suggest News around the world to the user which user can customize using categories, country and language in settings so that it will get to see the news from specified settings only.
+## About
+NewsTrends is a News app developed to organize and customize the way user wants to read the the news. Most of the news apps suggest News around the world to the user which user can customize using categories, country and language in settings so that it will get to see the news from specified settings only.
 
 Moreover, the user can save the news which he or she can read offline anywhere, anytime.
 
 The app also features custom alerts for custom keywords for which FirebaseJobDispatcher works every 12 hours to see if any new News is there for the specified keyword. This news is available in the Alerts option in the app. If the users has previously deleted any news from alerts, favorites or currently present in the favorites, the news will not show up in the Alerts menu.
 
-##Libraries Used
+Top News are fetched every 3 hours or when the settings are changed. User cannot refresh Top News unless they change the settings.
+
+## Libraries Used
 
 The app uses following libraries
-1) IpAndroid
-2) Retrofit / GSON
-3) FirebaseJobDispatcher
-4) Glide
-5) SwipeMenu
+1) GeoIp - To detect Country at First Run
+2) Retrofit / GSON - To make API calls and serialize/de-serialize JSON objects
+3) FirebaseJobDispatcher - For regualr API calls
+4) Glide - For Image Management
+5) SwipeMenu - Swipe Menu for Alerts and Favorites screens
+6) Firebase Crashalytics
+7) Firebase Analytics
 
-##ScreenFlow
-<img src="gifs/workflow.gif" title="App Workflow"/>
+## ScreenFlow
+
+<img src="gifs/newstrends.gif" title="App Workflow"/>
 
 
 
