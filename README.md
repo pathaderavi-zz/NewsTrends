@@ -25,7 +25,8 @@ The app uses following libraries
 
 <img src="gifs/newstrends.gif" title="App Workflow"/>
 
-
+## API Key
+Get your key from NEWSApi.org and paste it in strings.xml for API_KEY
 
 ## License
     Copyright 2017 Ravikiran Pathade
